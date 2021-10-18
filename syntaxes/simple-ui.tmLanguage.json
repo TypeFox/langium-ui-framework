@@ -1,0 +1,48 @@
+{
+  "name": "simple-ui",
+  "scopeName": "source.simple-ui",
+  "fileTypes": [
+    ".sui"
+  ],
+  "patterns": [
+    {
+      "name": "keyword.control.simple-ui",
+      "match": "\\b(Hello|person)\\b"
+    },
+    {
+      "name": "keyword.symbol.simple-ui",
+      "match": "(\\!)"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.simple-ui",
+          "begin": "/\\*",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.simple-ui"
+            }
+          },
+          "end": "\\*/",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.simple-ui"
+            }
+          }
+        },
+        {
+          "begin": "(^\\s+)?(?=//)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.cs"
+            }
+          },
+          "end": "(?=$)",
+          "name": "comment.line.simple-ui"
+        }
+      ]
+    }
+  }
+}
