@@ -6,12 +6,15 @@
   ],
   "patterns": [
     {
+      "include": "#comments"
+    },
+    {
       "name": "keyword.control.simple-ui",
-      "match": "\\b(Hello|person)\\b"
+      "match": "\\b(color:|h1|heightpx:|img|p|sizepx:|title|widthpx:)\\b"
     },
     {
       "name": "keyword.symbol.simple-ui",
-      "match": "(\\!)"
+      "match": "(\\,|\\{|\\}|\\color:|\\heightpx:|\\sizepx:|\\widthpx:)"
     }
   ],
   "repository": {
@@ -33,10 +36,10 @@
           }
         },
         {
-          "begin": "(^\\s+)?(?=//)",
+          "begin": "//",
           "beginCaptures": {
             "1": {
-              "name": "punctuation.whitespace.comment.leading.cs"
+              "name": "punctuation.whitespace.comment.leading.simple-ui"
             }
           },
           "end": "(?=$)",

@@ -26,15 +26,6 @@
         "onLanguage:simple-ui"
     ],
     "main": "./out/extension.js",
-    "langium": {
-        "languageId": "simple-ui",
-        "grammar": "src/language-server/simple-ui.langium",
-        "extensions": [".sui"],
-        "out": "src/language-server/generated",
-        "textMate": {
-            "out": "syntaxes/simple-ui.tmLanguage.json"
-        }
-    },
     "scripts": {
         "vscode:prepublish": "npm run build && npm run lint",
         "build": "webpack",
@@ -43,7 +34,7 @@
         "langium:generate": "langium generate"
     },
     "dependencies": {
-        "langium": "^0.1.0",
+        "langium": "0.2.0-next.1f60202",
         "vscode-languageclient": "^7.0.0",
         "vscode-languageserver": "^7.0.0"
     },
@@ -52,9 +43,8 @@
         "@types/vscode": "^1.56.0",
         "@typescript-eslint/eslint-plugin": "^4.14.1",
         "@typescript-eslint/parser": "^4.14.1",
-        "copy-webpack-plugin": "^9.0.0",
         "eslint": "^7.19.0",
-        "langium-cli": "^0.1.0",
+        "langium-cli": "0.2.0-next.17bdb70",
         "source-map-loader": "^3.0.0",
         "ts-loader": "^9.2.3",
         "typescript": "^4.1.3",
