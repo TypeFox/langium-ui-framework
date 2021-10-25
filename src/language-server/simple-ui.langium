@@ -3,7 +3,7 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (component+=Component | div+=Div | HTMLTags | JSFunctions)*;
+    (usecomponent+=UseComponent | component+=Component | div+=Div | HTMLTags | JSFunctions)*;
 
 // Implementation of the <div> container
 
@@ -76,6 +76,8 @@ Function:
 Component:
     'component' componentname=ID '{' SimpleUi '}';
 
+UseComponent:
+    'usecomp' compname=STRING;
 
 terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

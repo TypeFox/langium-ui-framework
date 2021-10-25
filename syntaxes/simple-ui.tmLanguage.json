@@ -10,7 +10,7 @@
     },
     {
       "name": "keyword.control.simple-ui",
-      "match": "\\b(basetext:|button|color:|component|div|function|header|heightpx:|image|input|level:|onclick:|paragraph|popup|sizepx:|title|widthpx:)\\b"
+      "match": "\\b(basetext:|button|color:|component|div|function|header|heightpx:|image|input|level:|onclick:|paragraph|popup|sizepx:|title|usecomp|widthpx:)\\b"
     },
     {
       "name": "keyword.symbol.simple-ui",

@@ -3,7 +3,7 @@ import { CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { SimpleUi } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
-export function generateJavaScript(model: SimpleUi, filePath: string, destination: string | undefined): string {
+export function generateHTML(model: SimpleUi, filePath: string, destination: string | undefined): string {
     const data = extractDestinationAndName(filePath, destination);
     const generatedFilePath = `${data.destination}${data.name}.js`;
 
