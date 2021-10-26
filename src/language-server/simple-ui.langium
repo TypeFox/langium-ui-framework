@@ -74,7 +74,7 @@ Function:
 // Implementation of components
 
 Component:
-    'component' componentname=ID '{' SimpleUi '}';
+    'component' componentname=ID '{' content=SimpleUi '}';
 
 UseComponent:
     'usecomp' compname=STRING;

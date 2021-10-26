@@ -47,6 +47,19 @@ const lspConfig = {
     }
 };
 
+/**@type {import('webpack').Configuration} */
+const cliConfig = {
+    ...commonConfig,
+    entry: './src/cli/index.ts',
+    output: {
+        path: path.resolve(__dirname, 'out', 'cli'),
+        filename: 'index.js',
+        libraryTarget: 'commonjs2',
+        devtoolModuleFilenameTemplate: '../../[resource-path]',
+        clean: true
+    }
+}
+
 /**@type {import('webpack').Configuration}*/
 const vscodeConfig = {
     ...commonConfig,
@@ -58,4 +71,4 @@ const vscodeConfig = {
         devtoolModuleFilenameTemplate: '../[resource-path]'
     }
 };
-module.exports = [lspConfig, vscodeConfig];
+module.exports = [lspConfig, vscodeConfig, cliConfig];
