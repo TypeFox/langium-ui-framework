@@ -4,7 +4,7 @@ import { Button, Div, Header, Image, Label, Link, Paragraph, reflection, SimpleU
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
-    [key in SimpleUiAstType]?:(el: AstNode)=>string
+    [key in SimpleUiAstType]?:(el: AstNode)=>string|CompositeGeneratorNode
 }
 
 export function generateHTML(model: SimpleUi, filePath: string, destination: string | undefined): string {
@@ -46,8 +46,13 @@ const titleFunc = (titleEL: AstNode) => {
 // Body generate functions
 const divFunc = (divEl: AstNode) => {
     const el = divEl as Div;
-    console.log(el);
-    return `<div></div>`;
+    const fileNode = new CompositeGeneratorNode()
+    fileNode.append('<div>', NL)
+    fileNode.indent(divcontent => {
+        generateBody(el.value, divcontent)
+    });
+    fileNode.append('</div>')
+    return fileNode
 };
 
 const paragraphFunc = (paragraphEl: AstNode) => {

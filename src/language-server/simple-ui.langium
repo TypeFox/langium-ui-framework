@@ -3,11 +3,13 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csstextelements+=CSSTextElement | CSSText)*;
 
 HeadElement: Title;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label;
+
+CSSTextElement: Color | Sizepx;
 
 JSElements: JSFunctions;
 
@@ -45,22 +47,19 @@ Image:
 Linebreak:    
     {Linebreak} 'linebreak'; //done
 
-// CSS Text related stuff
+// CSS related stuff
 
-CSSOptionsText:
-    (color+=Color|sizepx+=Sizepx) (',' CSSOptionsText)?;
+// Text
+CSSText:
+    'csstext' '{' 'for:' forid=ID (',' 'color:' Color | ',' 'sizepx:' Sizepx) '}';
 
 Color:
-    'color:' color=STRING;
+    color=STRING;
 
 Sizepx:
-    'sizepx:' size=INT;
+    sizepx=INT;
 
-// CSS Object related stuff
-
-CSSOptionsObject:
-    (heightpx+=Heightpx|widthpx+=Widthpx) (',' CSSOptionsObject)?;
-
+// Image
 Heightpx:
     'heightpx:' size=INT;
 
