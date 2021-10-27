@@ -6,6 +6,25 @@
 	"version": "0.2.0",
     "configurations": [
         {
+			"name": "Bootstrap",
+			"request": "launch",
+			"runtimeArgs": [
+				"./bin/cli",
+				"generate",
+                "test.sui"
+			],
+			"runtimeExecutable": "node",
+			"cwd": "${workspaceFolder}",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"sourceMaps": true,
+			"outFiles": [
+				"${workspaceFolder}/out/cli/**/*.js"
+			],
+			"type": "pwa-node"
+		},    
+        {
             "name": "Extension",
             "type": "extensionHost",
             "request": "launch",

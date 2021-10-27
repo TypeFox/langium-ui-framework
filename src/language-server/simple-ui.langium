@@ -3,22 +3,28 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (usecomponent+=UseComponent | component+=Component | div+=Div | HTMLTags | JSFunctions)*;
+    (elements+=AbstractElement)*;
+
+AbstractElement: Text | UseComponent | Component | Div | Paragraph | Title | H1 | Img | Input | Button | JSFunctions;
+    //(text+=STRING | usecomponent+=UseComponent | component+=Component | div+=Div | paragraph+=Paragraph | title+=Title | h1+=H1 | img+=Img | input+=Input | button+=Button | JSFunctions)*;
 
 // Implementation of the <div> container
 
+Text: value=STRING;
+
 Div:
-    'div' '{' SimpleUi '}';
+    'div' '{' value=SimpleUi '}';
 
 // Implementation of HTML Tags
 
-HTMLTags:
-    (p+=P | title+=Title | h1+=H1 | img+=Img | input+=Input | button+=Button);
+
+// HTMLTags:
+//     (p+=P | title+=Title | h1+=H1 | img+=Img | input+=Input | button+=Button);
 
 Title:
     'title' text=STRING;
 
-P:
+Paragraph:
     'paragraph' text=STRING ('{' CSSOptionsText '}')?;
 
 H1:
