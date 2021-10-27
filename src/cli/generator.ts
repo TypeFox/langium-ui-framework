@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { Button, Div, Paragraph, reflection, SimpleUi, SimpleUiAstType } from '../language-server/generated/ast';
+import { Button, Div, Header, Image, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -17,7 +17,7 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
     fileNode.indent(head => {
         head.append('<head>', NL);
         head.indent(headcontent => {
-
+            generateHead(model, headcontent)
         });
         head.append('</head>', NL);
     });
@@ -30,21 +30,6 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
     });
     fileNode.append('</html>', NL);
 
-/**
-    const fileNode = new CompositeGeneratorNode();
-    fileNode.append('<!DOCTYPE html>',NL,'<html>',NL,'<head>',NL,'<title>Title of the document</title>',NL,'</head>',NL,'<body>', NL);
-    fileNode.indent(html => {
-        html.append('<html>', NL);
-        html.indent(test => {
-            test.append('<p> This is a Test <p>', NL);
-        });
-        html.append('</html>'), NL;
-    });
-    const componentComments = model.component.map(c => `<!-- ${c.componentname} -->`);
-    fileNode.append(...componentComments, NL);
-    fileNode.append('</body>',NL,'</html>');
-*/
-
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
@@ -52,6 +37,13 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
     return generatedFilePath;
 }
 
+// Head generate functions
+const titleFunc = (titleEL: AstNode) => {
+    const el = titleEL as Title;
+    return `<title>${el.text}</title>`
+}
+
+// Body generate functions
 const divFunc = (divEl: AstNode) => {
     const el = divEl as Div;
     console.log(el);
@@ -60,23 +52,115 @@ const divFunc = (divEl: AstNode) => {
 
 const paragraphFunc = (paragraphEl: AstNode) => {
     const el = paragraphEl as Paragraph;
-    return `<p>${el.text}</p>`;
-}
+    if (typeof el.elementid === 'undefined') {
+        return `<p>${el.text}</p>`;
+    }
+    else {
+        return `<p id='${el.elementid}'>${el.text}</p>`
+    }
+};
 
 const buttonFunc = (buttonEL: AstNode) => {
     const el = buttonEL as Button;
-    return `<button>${el.buttontext}</button>`;
+    if (typeof el.onclickaction === 'undefined') {
+        return `<button>${el.buttontext}</button>`;
+    }
+    else {
+        return `<button onclick='${el.onclickaction}'>${el.buttontext}</button>`;
+    };
+};
+
+const linkFunc = (linkEL: AstNode) => {
+    const el = linkEL as Link;
+    if (typeof el.linktext === 'undefined') {
+        return `<a href='${el.linkurl}'>${el.linkurl}</a>`;
+    }
+    else {
+        return `<a href='${el.linkurl}'>${el.linktext}</a>`;
+    };
+};
+
+const textboxFunc = (textboxEL: AstNode) => {
+    const el = textboxEL as Textbox;
+    if (typeof el.placeholdertext === 'undefined') {
+        return `<input type='text' id='${el.name}'>`;
+    }
+    else {
+        return `<input type='text' id='${el.name}' placeholder='${el.placeholdertext}'>`;
+    };
+};
+
+const linebreakFunc = (linebreakEL: AstNode) => {
+    return '<br>';
+};
+
+const labelFunc = (labelEL: AstNode) => {
+    const el = labelEL as Label;
+    return `<label for='${el.elementid}'>${el.labeltext}</label>`;
+};
+
+const imageFunc = (imageEL: AstNode) => {
+    const el = imageEL as Image;
+    if (typeof el.elementid === 'undefined') {
+        return `<img src='${el.imagepath}'>`
+    }
+    else {
+        return `<img src='${el.imagepath}' id='${el.elementid}'>`
+    }
 }
 
+const headerFunc = (headerEL: AstNode) => {
+    const el = headerEL as Header;
+    if (typeof el.elementid === 'undefined') {
+        return `<h${el.headerlevel}>${el.text}</h${el.headerlevel}>`
+    }
+    else {
+        return `<h${el.headerlevel} id='${el.elementid}'>${el.text}</h${el.headerlevel}>`
+    }
+}
+
+// Redirect to generator function by Type
+
+// Head functions
+export const generateHeadFunctions: GenerateFunctions = {
+    Title: titleFunc
+};
+
+// Body functions
 export const generateBodyFunctions: GenerateFunctions = {
     Div: divFunc,
     Paragraph: paragraphFunc,
-    Button: buttonFunc
+    Button: buttonFunc,
+    Link: linkFunc,
+    Textbox: textboxFunc,
+    Linebreak: linebreakFunc,
+    Label: labelFunc,
+    Image: imageFunc,
+    Header: headerFunc
 };
 
+// Check for Type and call head functions
+export function generateHead(model: SimpleUi, bodyNode: CompositeGeneratorNode) {
+    const suiTypes = reflection.getAllTypes();
+    model.headelements.forEach(el => {
+        suiTypes.forEach(suiType => {
+            const t = suiType as SimpleUiAstType;
+            const isInstance = reflection.isInstance(el, t);
+            if(isInstance) {
+                const func = generateHeadFunctions[t];
+                if(func) {
+                    const content = func(el);
+                    bodyNode.append(content, NL);
+                }
+            }
+        })
+    })
+}
+
+// Check for Type and call body functions
 export function generateBody(model: SimpleUi, bodyNode: CompositeGeneratorNode) {
     const suiTypes = reflection.getAllTypes();
-    model.elements.forEach(el => {
+    model.bodyelements.forEach(el => {
         suiTypes.forEach(suiType => {
             const t = suiType as SimpleUiAstType;
             const isInstance = reflection.isInstance(el, t);
@@ -84,7 +168,6 @@ export function generateBody(model: SimpleUi, bodyNode: CompositeGeneratorNode) 
                 const func = generateBodyFunctions[t];
                 if(func) {
                     const content = func(el);
-                    console.log(content);
                     bodyNode.append(content, NL);
                 }
             }

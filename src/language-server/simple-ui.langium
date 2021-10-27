@@ -3,46 +3,47 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (elements+=AbstractElement)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements)*;
 
-AbstractElement: Text | UseComponent | Component | Div | Paragraph | Title | H1 | Img | Input | Button | JSFunctions;
-    //(text+=STRING | usecomponent+=UseComponent | component+=Component | div+=Div | paragraph+=Paragraph | title+=Title | h1+=H1 | img+=Img | input+=Input | button+=Button | JSFunctions)*;
+HeadElement: Title;
+
+BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label;
+
+JSElements: JSFunctions;
 
 // Implementation of the <div> container
-
-Text: value=STRING;
 
 Div:
     'div' '{' value=SimpleUi '}';
 
 // Implementation of HTML Tags
 
-
-// HTMLTags:
-//     (p+=P | title+=Title | h1+=H1 | img+=Img | input+=Input | button+=Button);
-
 Title:
-    'title' text=STRING;
+    'title' text=STRING; //done
 
 Paragraph:
-    'paragraph' text=STRING ('{' CSSOptionsText '}')?;
+    'paragraph' text=STRING ('{' 'id:' elementid=ID '}')?; //done
 
-H1:
-    'header' text=STRING '{' HeaderLevel (',' CSSOptionsText '}'| '}');
+Header:
+    'header' text=STRING '{' 'headerlevel:' headerlevel=INT (',' 'id:' elementid=ID '}'| '}'); //done
 
-Img:
-    'image' url=STRING ('{' CSSOptionsObject'}'?);
+Label:
+    'label' '{' 'for:' elementid=ID ',' 'labeltext:' labeltext=STRING '}'; //done
 
-Input:
-    'input' name=ID ('{' 'basetext:' basetext=STRING '}')?;
+Textbox:
+    'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=STRING '}')?; //done
 
 Button:
-    'button' buttontext=STRING ('{' 'onclick:' onclickaction=STRING '}')?; 
+    'button' buttontext=STRING ('{' 'onclick:' onclickaction=STRING '}')?;  //done
 
-// Header sizes
+Link:
+    'link' linkurl=STRING ('{' 'linktext:' linktext=STRING '}')?; //done
 
-HeaderLevel:
-    'level:' level=INT;
+Image:
+    'image' imagepath=STRING ('{' 'id:' elementid=ID '}')?; //done
+
+Linebreak:    
+    {Linebreak} 'linebreak'; //done
 
 // CSS Text related stuff
 
@@ -50,7 +51,7 @@ CSSOptionsText:
     (color+=Color|sizepx+=Sizepx) (',' CSSOptionsText)?;
 
 Color:
-    'color:' color=ID;
+    'color:' color=STRING;
 
 Sizepx:
     'sizepx:' size=INT;
