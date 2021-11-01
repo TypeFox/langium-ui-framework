@@ -4,7 +4,8 @@ import { languageMetaData } from '../language-server/generated/module';
 import { SimpleUi } from '../language-server/generated/ast';
 import { createSimpleUiServices } from '../language-server/simple-ui-module';
 import { extractAstNode } from './cli-util';
-import { generateHTML } from './generator';
+import { generateHTML } from './generator-html';
+import { generateCSS } from './generator-css';
 
 const program = new Command();
 
@@ -19,8 +20,10 @@ program
     .description('generates HTML code based on the input')
     .action((fileName: string, opts: GenerateOptions) => {
         const model = extractAstNode<SimpleUi>(fileName, languageMetaData.fileExtensions, createSimpleUiServices());
-        const generatedFilePath = generateHTML(model, fileName, opts.destination);
-        console.log(colors.green('HTML code generated successfully:'), colors.yellow(generatedFilePath));
+        const generatedHTMLFilePath = generateHTML(model, fileName, opts.destination);
+        const generatedCSSFilePath = generateCSS(model, fileName, opts.destination);
+        console.log(colors.green('HTML code generated successfully:'), colors.yellow(generatedHTMLFilePath));
+        console.log(colors.green('CSS code generated successfully:'), colors.yellow(generatedCSSFilePath))
     });
 
 program.parse(process.argv);

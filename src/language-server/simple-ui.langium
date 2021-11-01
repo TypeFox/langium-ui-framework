@@ -3,13 +3,15 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csstextelements+=CSSTextElement | CSSText)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csstextelements+=CSSTextElement | CSSText | cssobjectelements+=CSSObjectElement | CSSObject)*;
 
 HeadElement: Title;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label;
 
 CSSTextElement: Color | Sizepx;
+
+CSSObjectElement: Widthpx | Heightpx;
 
 JSElements: JSFunctions;
 
@@ -60,6 +62,9 @@ Sizepx:
     sizepx=INT;
 
 // Image
+CSSObject:
+    'cssobject' '{' 'for:' forid=ID (',' 'heightpx:' Heightpx | ',' 'widthpx:' Widthpx) '}';
+
 Heightpx:
     'heightpx:' size=INT;
 
@@ -80,10 +85,10 @@ Function:
 // Implementation of components
 
 Component:
-    'component' componentname=ID '{' content=SimpleUi '}';
+    'component' name=ID '{' content=SimpleUi '}';
 
 UseComponent:
-    'usecomp' compname=STRING;
+    'usecomp' component=[Component];
 
 terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

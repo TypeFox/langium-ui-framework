@@ -39,7 +39,8 @@
         "build": "webpack",
         "watch": "webpack --watch",
         "lint": "eslint src --ext ts",
-        "langium:generate": "langium generate"
+        "langium:generate": "langium generate",
+        "langium:watch": "langium generate --watch"
     },
     "dependencies": {
         "commander": "^8.0.0",
