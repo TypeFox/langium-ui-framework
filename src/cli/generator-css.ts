@@ -22,7 +22,7 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
 }
 
 export const generateCSSTextFunctions: GenerateFunctions = {
-
+    
 }
 
 export const generateCSSObjectFunctions: GenerateFunctions = {

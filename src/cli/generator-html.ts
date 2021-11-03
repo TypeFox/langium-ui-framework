@@ -9,7 +9,7 @@ export type GenerateFunctions = {
 
 export function generateHTML(model: SimpleUi, filePath: string, destination: string | undefined): string {
     const data = extractDestinationAndName(filePath, destination);
-    const generatedFilePath = `${data.destination}${data.name}.html`;
+    const generatedFilePath = `${data.destination}index.html`;
 
     const fileNode = new CompositeGeneratorNode();
     fileNode.append('<!DOCTYPE html>', NL);
