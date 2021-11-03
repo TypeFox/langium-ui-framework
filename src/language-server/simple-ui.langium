@@ -18,7 +18,7 @@ JSElements: JSFunctions;
 // Implementation of the <div> container
 
 Div:
-    'div' '{' value=SimpleUi '}';
+    'div' '{' content=SimpleUi '}';
 
 // Implementation of HTML Tags
 
@@ -88,7 +88,7 @@ Component:
     'component' name=ID '{' content=SimpleUi '}';
 
 UseComponent:
-    'usecomp' component=[Component];
+    'usecomponent' component=[Component];
 
 terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

@@ -3,4 +3,5 @@ out/
 src/language-server/generated/
 test.sui
 example.sui
+componenttest.sui
 generated/

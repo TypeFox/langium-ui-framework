@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { Button, Div, Header, Image, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title } from '../language-server/generated/ast';
+import { Button, Div, Header, Image, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -50,7 +50,7 @@ const divFunc = (divEl: AstNode) => {
     const fileNode = new CompositeGeneratorNode()
     fileNode.append('<div>', NL)
     fileNode.indent(divcontent => {
-        generateBody(el.value, divcontent)
+        generateBody(el.content, divcontent)
     });
     fileNode.append('</div>')
     return fileNode
@@ -125,6 +125,15 @@ const headerFunc = (headerEL: AstNode) => {
     }
 }
 
+const useComponentFunc = (UseComponentEL: AstNode) => {
+    const el = UseComponentEL as UseComponent;
+    const componentNode = new CompositeGeneratorNode()
+    const refContent = el.component.ref?.content as SimpleUi
+    generateBody(refContent, componentNode)
+    return componentNode
+}
+
+
 // Redirect to generator function by Type
 
 // Head functions
@@ -142,7 +151,8 @@ export const generateBodyFunctions: GenerateFunctions = {
     Linebreak: linebreakFunc,
     Label: labelFunc,
     Image: imageFunc,
-    Header: headerFunc
+    Header: headerFunc,
+    UseComponent: useComponentFunc
 };
 
 // Check for Type and call head functions
