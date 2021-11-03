@@ -3,15 +3,11 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csstextelements+=CSSTextElement | CSSText | cssobjectelements+=CSSObjectElement | CSSObject)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csstext+=CSSText | cssobject+=CSSObject)*;
 
 HeadElement: Title;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label;
-
-CSSTextElement: Color | Sizepx;
-
-CSSObjectElement: Widthpx | Heightpx;
 
 JSElements: JSFunctions;
 
@@ -53,23 +49,11 @@ Linebreak:
 
 // Text
 CSSText:
-    'csstext' '{' 'for:' forid=ID (',' 'color:' Color | ',' 'sizepx:' Sizepx) '}';
-
-Color:
-    color=STRING;
-
-Sizepx:
-    sizepx=INT;
+    'csstext' '{' 'for:' forid=ID (',' 'color:' color=ID)? (',' 'sizepx:' sizepx=INT )? '}';
 
 // Image
 CSSObject:
-    'cssobject' '{' 'for:' forid=ID (',' 'heightpx:' Heightpx | ',' 'widthpx:' Widthpx) '}';
-
-Heightpx:
-    'heightpx:' size=INT;
-
-Widthpx:
-    'widthpx:' size=INT;
+    'cssobject' '{' 'for:' forid=ID (',' 'heightpx:' heightpx=INT )? (',' 'widthpx:' widthpx=INT)? '}';
 
 // JS Functions
 
