@@ -9,7 +9,6 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
 
     const fileNode = new CompositeGeneratorNode();
     generateCSSText(model, fileNode)
-    console.log(fileNode.contents)
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
