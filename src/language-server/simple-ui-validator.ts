@@ -1,5 +1,5 @@
-import { ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUiAstType } from './generated/ast';
+import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
+import { CSSText, SimpleUiAstType } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
@@ -16,6 +16,7 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
             // Person: validator.checkPersonStartsWithCapital
+            CSSText: validator.checkCSSTextProperties
         };
         this.register(checks, validator);
     }
@@ -30,9 +31,11 @@ export class SimpleUiValidator {
     //     if (person.name) {
     //         const firstChar = person.name.substring(0, 1);
     //         if (firstChar.toUpperCase() !== firstChar) {
-    //             accept('warning', 'Person name should start with a capital.', { node: person, property: 'name' });
+    //             accept('warning', 'Pers on name should start with a capital.', { node: person, property: 'name' });
     //         }
     //     }
     // }
 
+    checkCSSTextProperties(csstext: CSSText, accept: ValidationAcceptor): void {
+    }
 }

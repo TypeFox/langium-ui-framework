@@ -18,7 +18,7 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
         head.append('<head>', NL);
         head.indent(headcontent => {
             generateHead(model, headcontent);
-            headcontent.append('<link rel="stylesheet" href="stylesheet.css">');
+            headcontent.append('<link rel="stylesheet" href="stylesheet.css">', NL);
         });
         head.append('</head>', NL);
     });

@@ -47,13 +47,29 @@ Linebreak:
 
 // CSS related stuff
 
+Expression:
+    StringExpression|NumberExpression;
+
+StringExpression:
+    value=(ID|STRING);
+
+NumberExpression:
+    value=INT;
+
 // Text
 CSSText:
-    'csstext' '{' 'for:' forid=ID (',' 'color:' color=ID)? (',' 'sizepx:' sizepx=INT )? '}';
+    'csstext' for=ID '{' (properties+=CSSTextProperty (',' properties+=CSSTextProperty)*)? '}';
+
+CSSTextProperty:
+    property=('color'|'size')':' value=Expression;
+
 
 // Image
 CSSObject:
-    'cssobject' '{' 'for:' forid=ID (',' 'heightpx:' heightpx=INT )? (',' 'widthpx:' widthpx=INT)? '}';
+    'cssobject' for=ID '{' (properties+=CSSObjectProperty (',' properties+=CSSObjectProperty)*)? '}';
+
+CSSObjectProperty:
+    property=('width'|'height')':' value=Expression;
 
 // JS Functions
 
