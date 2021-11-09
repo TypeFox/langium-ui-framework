@@ -36,6 +36,7 @@ function generateCSSText(model: SimpleUi, fileNode: CompositeGeneratorNode) {
         fileNode.append('}', NL);
         });
     });
+    fileNode.append(NL);
 }
 
 function generateCSSObject(model: SimpleUi, fileNode: CompositeGeneratorNode) {
@@ -56,6 +57,7 @@ function generateCSSObject(model: SimpleUi, fileNode: CompositeGeneratorNode) {
         fileNode.append('}', NL)
         })
     })
+    fileNode.append(NL);
 }
 
 /*
