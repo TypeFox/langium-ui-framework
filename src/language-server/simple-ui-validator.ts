@@ -1,5 +1,5 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { CSSText, SimpleUiAstType } from './generated/ast';
+import { CSSObject, CSSText, SimpleUiAstType } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
@@ -15,8 +15,8 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         super(services);
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
-            // Person: validator.checkPersonStartsWithCapital
-            CSSText: validator.checkCSSTextProperties
+            CSSText: validator.checkCSSTextProperties,
+            CSSObject: validator.checkCSSObjectProperties
         };
         this.register(checks, validator);
     }
@@ -27,15 +27,17 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
  */
 export class SimpleUiValidator {
 
-    // checkPersonStartsWithCapital(person: Person, accept: ValidationAcceptor): void {
-    //     if (person.name) {
-    //         const firstChar = person.name.substring(0, 1);
-    //         if (firstChar.toUpperCase() !== firstChar) {
-    //             accept('warning', 'Pers on name should start with a capital.', { node: person, property: 'name' });
-    //         }
-    //     }
-    // }
-
     checkCSSTextProperties(csstext: CSSText, accept: ValidationAcceptor): void {
+        if (typeof csstext.properties[0] === 'undefined') {
+            accept('error', 'CSS properties should not be empty.', { node: csstext })
+        }
     }
+
+    checkCSSObjectProperties(cssobject: CSSObject, accept: ValidationAcceptor): void {
+        if (typeof cssobject.properties[0] === 'undefined') {
+            accept('error', 'CSS properties should not be empty.', { node: cssobject })
+        }
+    }
+
+
 }
