@@ -59,30 +59,3 @@ function generateCSSObject(model: SimpleUi, fileNode: CompositeGeneratorNode) {
     })
     fileNode.append(NL);
 }
-
-/*
-    model.csstext.forEach(el => {
-        fileNode.append(`${el.forid} {`, NL)
-        fileNode.indent(cssTextContent => {
-            if (typeof el.color === 'undefined') {
-                if (typeof el.sizepx === 'undefined') {
-                    return //both undefined
-                }
-                else {
-                    cssTextContent.append(`font-size: ${el.sizepx}px`, NL) //color undefined, size defined
-                };
-            }
-            else {
-                if (typeof el.sizepx === 'undefined') {
-                    cssTextContent.append(`color: ${el.color}`, NL) // color defined, size undefined
-                }
-                else {
-                    cssTextContent.append(`font-size: ${el.sizepx}px`, NL) // both defined
-                    cssTextContent.append(`color: ${el.color}`, NL)
-                }
-            }
-        })
-        fileNode.append('}', NL) 
-    })
-    */
-
