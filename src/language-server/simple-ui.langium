@@ -58,31 +58,31 @@ NumberExpression:
 
 // Text
 CSSText:
-    'csstext' for=ID '{' (properties+=CSSTextProperty (',' properties+=CSSTextProperty)*)? '}';
+    'csstext' for=ID '{' (properties+=CSSTextProperty (',' properties+=CSSTextProperty)*)? '}'; //done
 
 CSSTextProperty:
-    property=('color'|'size')':' value=Expression;
+    property=('color'|'size')':' value=Expression; //done
 
 
 // Image
 CSSObject:
-    'cssobject' for=ID '{' (properties+=CSSObjectProperty (',' properties+=CSSObjectProperty)*)? '}';
+    'cssobject' for=ID '{' (properties+=CSSObjectProperty (',' properties+=CSSObjectProperty)*)? '}'; //done
 
 CSSObjectProperty:
-    property=('width'|'height')':' value=Expression;
+    property=('width'|'height')':' value=Expression; //done
 
-// JS Functions
+// JS Functions (tbd)
 
 JSFunctions:
-    (popup+=Popup | function+=Function);
+    (popup+=Popup | jsfunction+=JSFunction); 
 
 Popup:
-    'popup' popuptext=STRING;
+    'popup' '{' text=STRING '}';
 
-Function:
-    'function' functionname=ID '{' JSFunctions '}';
+JSFunction:
+    'function' functionname=ID '{' content=JSFunctions '}';
 
-// Implementation of components
+// Implementation of components (partly done)
 
 Component:
     'component' name=ID '{' content=SimpleUi '}';
