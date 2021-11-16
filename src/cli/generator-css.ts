@@ -21,7 +21,7 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
 function generateCSSText(model: SimpleUi, fileNode: CompositeGeneratorNode) {
 
     model.csstext.forEach(el =>{
-        fileNode.append(`${el.for} {`, NL)
+        fileNode.append(`#${el.for} {`, NL)
         fileNode.indent(cssTextNode => {
             el.properties.forEach(prop =>{
                 switch (prop.property) {
@@ -29,7 +29,7 @@ function generateCSSText(model: SimpleUi, fileNode: CompositeGeneratorNode) {
                         cssTextNode.append(`color: ${prop.value.value};`, NL);
                         break;
                     case 'size' :
-                        cssTextNode.append(`size: ${prop.value.value}px;`, NL);
+                        cssTextNode.append(`font-size: ${prop.value.value}px;`, NL);
                         break;
                 } 
             })
@@ -42,7 +42,7 @@ function generateCSSText(model: SimpleUi, fileNode: CompositeGeneratorNode) {
 function generateCSSObject(model: SimpleUi, fileNode: CompositeGeneratorNode) {
 
     model.cssobject.forEach(el =>{
-        fileNode.append(`${el.for} {`, NL)
+        fileNode.append(`#${el.for} {`, NL)
         fileNode.indent(cssObjectNode => {
             el.properties.forEach(prop => {
                 switch (prop.property) {
