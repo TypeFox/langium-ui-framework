@@ -9,7 +9,7 @@ HeadElement: Title;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label;
 
-JSElements: JSFunctions;
+JSElements: Popup | JSFunction;
 
 // Implementation of the <div> container
 
@@ -73,14 +73,11 @@ CSSObjectProperty:
 
 // JS Functions (tbd)
 
-JSFunctions:
-    (popup+=Popup | jsfunction+=JSFunction); 
-
 Popup:
     'popup' '{' text=STRING '}';
 
 JSFunction:
-    'function' functionname=ID '{' content=JSFunctions '}';
+    'function' functionname=ID '{' content=SimpleUi '}';
 
 // Implementation of components (partly done)
 
