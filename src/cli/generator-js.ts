@@ -45,7 +45,6 @@ const varFunc = (varEL: AstNode) => {
     else {
         return `const ${el.varname} = '${el.varvalue[0].value}'`
     }
-    return ''
 }
 
 export const generateJSFunctions: GenerateFunctions = {
