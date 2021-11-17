@@ -19,31 +19,31 @@ Div:
 // Implementation of HTML Tags
 
 Title:
-    'title' text=STRING; //done
+    'title' text=STRING; 
 
 Paragraph:
-    'paragraph' text=STRING ('{' 'id:' elementid=ID '}')?; //done
+    'paragraph' text=STRING ('{' 'id:' elementid=ID '}')?; 
 
 Header:
-    'header' text=STRING '{' 'headerlevel:' headerlevel=INT (',' 'id:' elementid=ID '}'| '}'); //done
+    'header' text=STRING '{' 'headerlevel:' headerlevel=INT (',' 'id:' elementid=ID '}'| '}');
 
 Label:
-    'label' '{' 'for:' elementid=ID ',' 'labeltext:' labeltext=STRING '}'; //done
+    'label' '{' 'for:' elementid=ID ',' 'labeltext:' labeltext=STRING '}';
 
 Textbox:
-    'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=STRING '}')?; //done
+    'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=STRING '}')?;
 
 Button:
-    'button' buttontext=STRING ('{' 'onclick:' onclickaction=STRING '}')?;  //done
+    'button' buttontext=STRING ('{' 'onclick:' onclickaction=STRING '}')?;
 
 Link:
-    'link' linkurl=STRING ('{' 'linktext:' linktext=STRING '}')?; //done
+    'link' linkurl=STRING ('{' 'linktext:' linktext=STRING '}')?;
 
 Image:
-    'image' imagepath=STRING ('{' 'id:' elementid=ID '}')?; //done
+    'image' imagepath=STRING ('{' 'id:' elementid=ID '}')?;
 
 Linebreak:    
-    {Linebreak} 'linebreak'; //done
+    {Linebreak} 'linebreak';
 
 // CSS related stuff
 
@@ -58,20 +58,20 @@ NumberExpression:
 
 // Text
 CSSText:
-    'csstext' for=ID '{' (properties+=CSSTextProperty (',' properties+=CSSTextProperty)*)? '}'; //done
+    'csstext' for=ID '{' (properties+=CSSTextProperty (',' properties+=CSSTextProperty)*)? '}';
 
 CSSTextProperty:
-    property=('color'|'size')':' value=Expression; //done
+    property=('color'|'size')':' value=Expression;
 
 
 // Image
 CSSObject:
-    'cssobject' for=ID '{' (properties+=CSSObjectProperty (',' properties+=CSSObjectProperty)*)? '}'; //done
+    'cssobject' for=ID '{' (properties+=CSSObjectProperty (',' properties+=CSSObjectProperty)*)? '}';
 
 CSSObjectProperty:
-    property=('width'|'height')':' value=Expression; //done
+    property=('width'|'height')':' value=Expression;
 
-// JS Functions (tbd)
+// JS Functions
 
 Popup:
     'popup' '{' text=STRING '}';
