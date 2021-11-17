@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { JSFunction, Popup, SimpleUi, SimpleUiAstType, reflection } from '../language-server/generated/ast';
+import { JSFunction, Popup, SimpleUi, SimpleUiAstType, reflection, Variable } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -37,9 +37,21 @@ const functionFunc = (functionEL: AstNode) => {
     return fileNode
 }
 
+const varFunc = (varEL: AstNode) => {
+    const el = varEL as Variable;
+    if (typeof el.varvalue[0].value === 'number') {
+        return `const ${el.varname} = ${el.varvalue[0].value}`
+    }
+    else {
+        return `const ${el.varname} = '${el.varvalue[0].value}'`
+    }
+    return ''
+}
+
 export const generateJSFunctions: GenerateFunctions = {
     Popup: popupFunc,
-    JSFunction: functionFunc
+    JSFunction: functionFunc,
+    Variable: varFunc
 }
 
 

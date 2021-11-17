@@ -9,7 +9,7 @@ HeadElement: Title;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label;
 
-JSElements: Popup | JSFunction;
+JSElements: Popup | JSFunction | Variable;
 
 // Implementation of the <div> container
 
@@ -78,6 +78,12 @@ Popup:
 
 JSFunction:
     'function' functionname=ID '{' content=SimpleUi '}';
+
+Variable:
+    'variable' varname=ID':' varvalue+=VariableExpression;
+
+VariableExpression:
+    value=(STRING|INT);
 
 // Implementation of components (partly done)
 
