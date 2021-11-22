@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { Button, Div, Header, Image, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, UseComponent } from '../language-server/generated/ast';
+import { Button, Div, Expression, Header, Image, isNumberExpression, isStringExpression, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -60,30 +60,30 @@ const divFunc = (divEl: AstNode) => {
 const paragraphFunc = (paragraphEl: AstNode) => {
     const el = paragraphEl as Paragraph;
     if (typeof el.elementid === 'undefined') {
-        return `<p>${el.text}</p>`;
+        return `<p>${generateExpression(el.text)}</p>`;
     }
     else {
-        return `<p id='${el.elementid}'>${el.text}</p>`
+        return `<p id='${el.elementid}'>${generateExpression(el.text)}</p>`
     }
 };
 
 const buttonFunc = (buttonEL: AstNode) => {
     const el = buttonEL as Button;
     if (typeof el.onclickaction === 'undefined') {
-        return `<button>${el.buttontext}</button>`;
+        return `<button>${generateExpression(el.buttontext)}</button>`;
     }
     else {
-        return `<button onclick='${el.onclickaction}'>${el.buttontext}</button>`;
+        return `<button onclick='${generateExpression(el.onclickaction)}'>${generateExpression(el.buttontext)}</button>`;
     };
 };
 
 const linkFunc = (linkEL: AstNode) => {
     const el = linkEL as Link;
     if (typeof el.linktext === 'undefined') {
-        return `<a href='${el.linkurl}'>${el.linkurl}</a>`;
+        return `<a href='${generateExpression(el.linkurl)}'>${generateExpression(el.linkurl)}</a>`;
     }
     else {
-        return `<a href='${el.linkurl}'>${el.linktext}</a>`;
+        return `<a href='${generateExpression(el.linkurl)}'>${generateExpression(el.linktext)}</a>`;
     };
 };
 
@@ -93,7 +93,7 @@ const textboxFunc = (textboxEL: AstNode) => {
         return `<input type='text' id='${el.name}'>`;
     }
     else {
-        return `<input type='text' id='${el.name}' placeholder='${el.placeholdertext}'>`;
+        return `<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext)}'>`;
     };
 };
 
@@ -103,26 +103,26 @@ const linebreakFunc = (linebreakEL: AstNode) => {
 
 const labelFunc = (labelEL: AstNode) => {
     const el = labelEL as Label;
-    return `<label for='${el.elementid}'>${el.labeltext}</label>`;
+    return `<label for='${el.elementid}'>${generateExpression(el.labeltext)}</label>`;
 };
 
 const imageFunc = (imageEL: AstNode) => {
     const el = imageEL as Image;
     if (typeof el.elementid === 'undefined') {
-        return `<img src='${el.imagepath}'>`
+        return `<img src='${generateExpression(el.imagepath)}'>`
     }
     else {
-        return `<img src='${el.imagepath}' id='${el.elementid}'>`
+        return `<img src='${generateExpression(el.imagepath)}' id='${el.elementid}'>`
     }
 }
 
 const headerFunc = (headerEL: AstNode) => {
     const el = headerEL as Header;
     if (typeof el.elementid === 'undefined') {
-        return `<h${el.headerlevel}>${el.text}</h${el.headerlevel}>`
+        return `<h${el.headerlevel}>${generateExpression(el.text)}</h${el.headerlevel}>`
     }
     else {
-        return `<h${el.headerlevel} id='${el.elementid}'>${el.text}</h${el.headerlevel}>`
+        return `<h${el.headerlevel} id='${el.elementid}'>${generateExpression(el.text)}</h${el.headerlevel}>`
     }
 }
 
@@ -155,6 +155,18 @@ export const generateBodyFunctions: GenerateFunctions = {
     Header: headerFunc,
     UseComponent: useComponentFunc
 };
+
+function generateExpression(expression: Expression):string {
+    if (isStringExpression(expression)){
+        return expression.value
+    }
+    else if (isNumberExpression(expression)){
+        return expression.value.toString()
+    }
+    else {
+        throw new Error ('Unhandled Expression type: ' + expression.$type)
+    }
+}
 
 // Check for Type and call head functions
 export function generateHead(model: SimpleUi, bodyNode: CompositeGeneratorNode) {

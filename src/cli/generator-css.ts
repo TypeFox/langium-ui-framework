@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { SimpleUi } from '../language-server/generated/ast';
+import { Expression, isNumberExpression, isStringExpression, SimpleUi } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export function generateCSS(model: SimpleUi, filePath: string, destination: string | undefined): string {
@@ -26,10 +26,10 @@ function generateCSSText(model: SimpleUi, fileNode: CompositeGeneratorNode) {
             el.properties.forEach(prop =>{
                 switch (prop.property) {
                     case 'color' :
-                        cssTextNode.append(`color: ${prop.value.value};`, NL);
+                        cssTextNode.append(`color: ${generateExpression(prop.value)};`, NL);
                         break;
                     case 'size' :
-                        cssTextNode.append(`font-size: ${prop.value.value}px;`, NL);
+                        cssTextNode.append(`font-size: ${generateExpression(prop.value)}px;`, NL);
                         break;
                 } 
             })
@@ -37,6 +37,18 @@ function generateCSSText(model: SimpleUi, fileNode: CompositeGeneratorNode) {
         fileNode.append(NL);
         });
     });
+}
+
+function generateExpression(expression: Expression):string {
+    if (isStringExpression(expression)) {
+        return expression.value
+    }
+    else if (isNumberExpression(expression)) {
+        return expression.value.toString()
+    }
+    else {
+        throw new Error ('Unhandled Expression type: ' + expression.$type)
+    }
 }
 
 function generateCSSObject(model: SimpleUi, fileNode: CompositeGeneratorNode) {
@@ -47,10 +59,10 @@ function generateCSSObject(model: SimpleUi, fileNode: CompositeGeneratorNode) {
             el.properties.forEach(prop => {
                 switch (prop.property) {
                     case 'width' :
-                        cssObjectNode.append(`width: ${prop.value.value}px;`, NL)
+                        cssObjectNode.append(`width: ${generateExpression(prop.value)}px;`, NL)
                         break
                     case 'height' :
-                        cssObjectNode.append(`height: ${prop.value.value}px;`, NL)
+                        cssObjectNode.append(`height: ${generateExpression(prop.value)}px;`, NL)
                         break
                 }
             })

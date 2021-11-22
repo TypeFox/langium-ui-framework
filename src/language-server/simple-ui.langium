@@ -19,28 +19,28 @@ Div:
 // Implementation of HTML Tags
 
 Title:
-    'title' text=STRING; 
+    'title' text=Expression; 
 
 Paragraph:
-    'paragraph' text=STRING ('{' 'id:' elementid=ID '}')?; 
+    'paragraph' text=Expression ('{' 'id:' elementid=ID '}')?; 
 
 Header:
-    'header' text=STRING '{' 'headerlevel:' headerlevel=INT (',' 'id:' elementid=ID '}'| '}');
+    'header' text=Expression '{' 'headerlevel:' headerlevel=INT (',' 'id:' elementid=ID '}'| '}');
 
 Label:
-    'label' '{' 'for:' elementid=ID ',' 'labeltext:' labeltext=STRING '}';
+    'label' '{' 'for:' elementid=ID ',' 'labeltext:' labeltext=Expression '}';
 
 Textbox:
-    'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=STRING '}')?;
+    'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
 
 Button:
-    'button' buttontext=STRING ('{' 'onclick:' onclickaction=STRING '}')?;
+    'button' buttontext=Expression ('{' 'onclick:' onclickaction=Expression '}')?;
 
 Link:
-    'link' linkurl=STRING ('{' 'linktext:' linktext=STRING '}')?;
+    'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=STRING ('{' 'id:' elementid=ID '}')?;
+    'image' imagepath=Expression ('{' 'id:' elementid=ID '}')?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -48,13 +48,16 @@ Linebreak:
 // CSS related stuff
 
 Expression:
-    StringExpression|NumberExpression;
+    StringExpression|NumberExpression|SymbolReference;
 
 StringExpression:
-    value=(ID|STRING);
+    value=STRING;
 
 NumberExpression:
     value=INT;
+
+SymbolReference:
+    symbol=[Parameter];
 
 // Text
 CSSText:
@@ -74,13 +77,13 @@ CSSObjectProperty:
 // JS Functions
 
 Popup:
-    'popup' '{' text=STRING '}';
+    'popup' text=Expression;
 
 JSFunction:
-    'function' functionname=ID '{' content=SimpleUi '}';
+    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
 
 Variable:
-    'variable' varname=ID':' varvalue+=VariableExpression;
+    'variable' name=ID':' varvalue+=VariableExpression;
 
 VariableExpression:
     value=(STRING|INT);
@@ -88,10 +91,16 @@ VariableExpression:
 // Implementation of components (partly done)
 
 Component:
-    'component' name=ID '{' content=SimpleUi '}';
+    'component' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
 
 UseComponent:
     'usecomponent' component=[Component];
+
+Parameter:
+    name=ID ':' type=Type;
+
+Type returns string:
+    'string' | 'number';
 
 terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

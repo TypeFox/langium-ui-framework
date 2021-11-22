@@ -29,7 +29,7 @@ const popupFunc = (popupEL: AstNode) => {
 const functionFunc = (functionEL: AstNode) => {
     const el = functionEL as JSFunction;
     const fileNode = new CompositeGeneratorNode()
-    fileNode.append(`function ${el.functionname}() {`, NL);
+    fileNode.append(`function ${el.name}() {`, NL);
     fileNode.indent(functioncontent => {
         generateJSFunc(el.content, functioncontent);
     });
@@ -40,10 +40,10 @@ const functionFunc = (functionEL: AstNode) => {
 const varFunc = (varEL: AstNode) => {
     const el = varEL as Variable;
     if (typeof el.varvalue[0].value === 'number') {
-        return `const ${el.varname} = ${el.varvalue[0].value}`
+        return `const ${el.name} = ${el.varvalue[0].value}`
     }
     else {
-        return `const ${el.varname} = '${el.varvalue[0].value}'`
+        return `const ${el.name} = '${el.varvalue[0].value}'`
     }
 }
 
