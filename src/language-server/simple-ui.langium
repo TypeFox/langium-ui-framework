@@ -3,13 +3,19 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csselements+=CSSElements)*;
 
 HeadElement: Title;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label;
 
 JSElements: Popup | JSFunction | Variable;
+
+CSSElements: CSSText | CSSObject;
+
+CSSTextElements: Paragraph | Header;
+
+CSSObjectElements: Image;
 
 // Implementation of the <div> container
 
@@ -22,14 +28,13 @@ Title:
     'title' text=Expression; 
 
 Paragraph:
-    'paragraph' text=Expression ('{' (css+=CSSTextProperty(',' css+=CSSTextProperty)*)? '}')?; 
+    'paragraph' text=Expression ('{' (css+=CSSText(',' css+=CSSText)*) '}')?;
 
 Header:
-    'header' text=Expression '{' 'headerlevel:' headerlevel=INT '}';
+    'header' text=Expression '{' 'headerlevel:' headerlevel=INT (',' css+=CSSText(',' css+=CSSText)*)? '}';
 
 Label:
-    'label' '{' 'for:' elementid=ID ',' 'labeltext:' labeltext=Expression '}';
-
+    'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSText(',' css+=CSSText)*)? '}';
 Textbox:
     'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
 
@@ -40,8 +45,7 @@ Link:
     'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=Expression;
-
+    'image' imagepath=Expression ('{' (css+=CSSObject(',' css+=CSSObject)*) '}')?;
 Linebreak:    
     {Linebreak} 'linebreak';
 
@@ -59,10 +63,10 @@ NumberExpression:
 SymbolReference:
     symbol=[Parameter];
 
-CSSTextProperty:
+CSSText:
     property=('color'|'size')':' value=Expression;
 
-CSSObjectProperty:
+CSSObject:
     property=('width'|'height')':' value=Expression;
 
 // JS Functions

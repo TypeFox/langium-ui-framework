@@ -1,5 +1,5 @@
-import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { CSSObject, CSSText, SimpleUiAstType } from './generated/ast';
+import { ValidationCheck, ValidationRegistry } from 'langium';
+import { SimpleUiAstType } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
@@ -15,8 +15,6 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         super(services);
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
-            CSSText: validator.checkCSSTextProperties,
-            CSSObject: validator.checkCSSObjectProperties
         };
         this.register(checks, validator);
     }
@@ -26,18 +24,4 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
  * Implementation of custom validations.
  */
 export class SimpleUiValidator {
-
-    checkCSSTextProperties(csstext: CSSText, accept: ValidationAcceptor): void {
-        if (typeof csstext.properties[0] === 'undefined') {
-            accept('error', 'CSS properties should not be empty.', { node: csstext })
-        }
-    }
-
-    checkCSSObjectProperties(cssobject: CSSObject, accept: ValidationAcceptor): void {
-        if (typeof cssobject.properties[0] === 'undefined') {
-            accept('error', 'CSS properties should not be empty.', { node: cssobject })
-        }
-    }
-
-
 }

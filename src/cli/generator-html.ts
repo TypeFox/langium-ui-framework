@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { Button, Div, Expression, Header, Image, isNumberExpression, isStringExpression, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, UseComponent } from '../language-server/generated/ast';
+import { Button, CSSObjectElements, CSSTextElements, Div, Expression, Header, Image, isNumberExpression, isStringExpression, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -59,22 +59,11 @@ const divFunc = (divEl: AstNode) => {
 
 const paragraphFunc = (paragraphEl: AstNode) => {
     const el = paragraphEl as Paragraph;
-    let cssString = ''
-    el.css.forEach(cssel => {
-        switch (cssel.property){
-            case 'color':
-                cssString += `color:${generateExpression(cssel.value)}; `
-                break;
-            case 'size':
-                cssString += `font-size:${generateExpression(cssel.value)}px; `
-                break;
-        }
-    })
-    if (cssString === '') {
+    if (generateInlineCSS(el) === '') {
         return `<p>${generateExpression(el.text)}</p>`;
     }
     else {
-        return `<p style='${cssString}'>${generateExpression(el.text)}</p>`;
+        return `<p style='${generateInlineCSS(el)}'>${generateExpression(el.text)}</p>`;
     }
 };
 
@@ -114,17 +103,33 @@ const linebreakFunc = (linebreakEL: AstNode) => {
 
 const labelFunc = (labelEL: AstNode) => {
     const el = labelEL as Label;
-    return `<label for='${el.elementid}'>${generateExpression(el.labeltext)}</label>`;
+    if (generateInlineCSS(el) === '') {
+        return `<label for='${el.elementid}'>${generateExpression(el.text)}</label>`;
+    }
+    else {
+        return `<label for='${el.elementid}' style='${generateInlineCSS(el)}'>${generateExpression(el.text)}</label>`;
+    }
+    
 };
 
 const imageFunc = (imageEL: AstNode) => {
     const el = imageEL as Image;
-    return `<img src='${generateExpression(el.imagepath)}'>`
+    if (generateInlineCSS(el) === '') {
+        return `<img src='${generateExpression(el.imagepath)}'>`
+    }
+    else {
+        return `<img src='${generateExpression(el.imagepath)}' style='${generateInlineCSS(el)}'>`
+    }
 }
 
 const headerFunc = (headerEL: AstNode) => {
     const el = headerEL as Header;
-    return `<h${el.headerlevel}>${generateExpression(el.text)}</h${el.headerlevel}>`
+    if (generateInlineCSS(el) === '') {
+        return `<h${el.headerlevel}>${generateExpression(el.text)}</h${el.headerlevel}>`
+    }
+    else {
+        return `<h${el.headerlevel} style='${generateInlineCSS(el)}'>${generateExpression(el.text)}</h${el.headerlevel}>`
+    }
 }
 
 const useComponentFunc = (UseComponentEL: AstNode) => {
@@ -167,6 +172,27 @@ function generateExpression(expression: Expression):string {
     else {
         throw new Error ('Unhandled Expression type: ' + expression.$type)
     }
+}
+
+function generateInlineCSS(element: (CSSTextElements|CSSObjectElements)):string {
+    let cssString = ''
+    element.css.forEach(cssel => {
+        switch (cssel.property){
+            case 'color':
+                cssString += `color:${generateExpression(cssel.value)}; `
+                break;
+            case 'size':
+                cssString += `font-size:${generateExpression(cssel.value)}px; `
+                break;
+            case 'height':
+                cssString += `height:${generateExpression(cssel.value)}px; `
+                break;
+            case 'width':
+                cssString += `width:${generateExpression(cssel.value)}px; `
+                break
+        }
+    })
+    return cssString
 }
 
 // Check for Type and call head functions

@@ -10,11 +10,11 @@
     },
     {
       "name": "keyword.control.simple-ui",
-      "match": "\\b(button|color|component|div|for:|function|header|headerlevel:|height|image|label|labeltext:|linebreak|link|linktext:|number|onclick:|paragraph|placeholdertext:|popup|size|string|textbox|title|usecomponent|variable|width)\\b"
+      "match": "\\b(button|color|component|div|for:|function|header|headerlevel:|height|image|label|linebreak|link|linktext:|number|onclick:|paragraph|placeholdertext:|popup|size|string|textbox|title|usecomponent|variable|width)\\b"
     },
     {
       "name": "keyword.symbol.simple-ui",
-      "match": "(\\,|\\:|\\(|\\)|\\{|\\}|\\for:|\\headerlevel:|\\labeltext:|\\linktext:|\\onclick:|\\placeholdertext:)"
+      "match": "(\\,|\\:|\\(|\\)|\\{|\\}|\\for:|\\headerlevel:|\\linktext:|\\onclick:|\\placeholdertext:)"
     }
   ],
   "repository": {
