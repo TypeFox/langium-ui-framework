@@ -3,7 +3,7 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csstext+=CSSText | cssobject+=CSSObject)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements)*;
 
 HeadElement: Title;
 
@@ -22,10 +22,10 @@ Title:
     'title' text=Expression; 
 
 Paragraph:
-    'paragraph' text=Expression ('{' 'id:' elementid=ID '}')?; 
+    'paragraph' text=Expression ('{' (css+=CSSTextProperty(',' css+=CSSTextProperty)*)? '}')?; 
 
 Header:
-    'header' text=Expression '{' 'headerlevel:' headerlevel=INT (',' 'id:' elementid=ID '}'| '}');
+    'header' text=Expression '{' 'headerlevel:' headerlevel=INT '}';
 
 Label:
     'label' '{' 'for:' elementid=ID ',' 'labeltext:' labeltext=Expression '}';
@@ -40,7 +40,7 @@ Link:
     'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=Expression ('{' 'id:' elementid=ID '}')?;
+    'image' imagepath=Expression;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -59,17 +59,8 @@ NumberExpression:
 SymbolReference:
     symbol=[Parameter];
 
-// Text
-CSSText:
-    'csstext' for=ID '{' (properties+=CSSTextProperty (',' properties+=CSSTextProperty)*)? '}';
-
 CSSTextProperty:
     property=('color'|'size')':' value=Expression;
-
-
-// Image
-CSSObject:
-    'cssobject' for=ID '{' (properties+=CSSObjectProperty (',' properties+=CSSObjectProperty)*)? '}';
 
 CSSObjectProperty:
     property=('width'|'height')':' value=Expression;

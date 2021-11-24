@@ -59,11 +59,22 @@ const divFunc = (divEl: AstNode) => {
 
 const paragraphFunc = (paragraphEl: AstNode) => {
     const el = paragraphEl as Paragraph;
-    if (typeof el.elementid === 'undefined') {
+    let cssString = ''
+    el.css.forEach(cssel => {
+        switch (cssel.property){
+            case 'color':
+                cssString += `color:${generateExpression(cssel.value)}; `
+                break;
+            case 'size':
+                cssString += `font-size:${generateExpression(cssel.value)}px; `
+                break;
+        }
+    })
+    if (cssString === '') {
         return `<p>${generateExpression(el.text)}</p>`;
     }
     else {
-        return `<p id='${el.elementid}'>${generateExpression(el.text)}</p>`
+        return `<p style='${cssString}'>${generateExpression(el.text)}</p>`;
     }
 };
 
@@ -108,22 +119,12 @@ const labelFunc = (labelEL: AstNode) => {
 
 const imageFunc = (imageEL: AstNode) => {
     const el = imageEL as Image;
-    if (typeof el.elementid === 'undefined') {
-        return `<img src='${generateExpression(el.imagepath)}'>`
-    }
-    else {
-        return `<img src='${generateExpression(el.imagepath)}' id='${el.elementid}'>`
-    }
+    return `<img src='${generateExpression(el.imagepath)}'>`
 }
 
 const headerFunc = (headerEL: AstNode) => {
     const el = headerEL as Header;
-    if (typeof el.elementid === 'undefined') {
-        return `<h${el.headerlevel}>${generateExpression(el.text)}</h${el.headerlevel}>`
-    }
-    else {
-        return `<h${el.headerlevel} id='${el.elementid}'>${generateExpression(el.text)}</h${el.headerlevel}>`
-    }
+    return `<h${el.headerlevel}>${generateExpression(el.text)}</h${el.headerlevel}>`
 }
 
 const useComponentFunc = (UseComponentEL: AstNode) => {
