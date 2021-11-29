@@ -3,7 +3,7 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csselements+=CSSElements)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csselements+=CSSElements | parameters+=Parameter)*;
 
 HeadElement: Title;
 
@@ -89,10 +89,15 @@ Component:
     'component' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
 
 UseComponent:
-    'usecomponent' component=[Component];
+    'usecomponent' component=[Component] ('('(parameters+=UseParameter(',' parameters+=UseParameter)*)?')')?;
+
+
 
 Parameter:
     name=ID ':' type=Type;
+
+UseParameter:
+    name=ID ':' value=(STRING|INT);
 
 Type returns string:
     'string' | 'number';

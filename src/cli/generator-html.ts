@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { Button, CSSObjectElements, CSSTextElements, Div, Expression, Header, Image, isNumberExpression, isStringExpression, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, UseComponent } from '../language-server/generated/ast';
+import { Button, CSSObjectElements, CSSTextElements, Div, Expression, Header, Image, isNumberExpression, isStringExpression, isSymbolReference, Label, Link, Paragraph, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -136,7 +136,7 @@ const useComponentFunc = (UseComponentEL: AstNode) => {
     const el = UseComponentEL as UseComponent;
     const componentNode = new CompositeGeneratorNode()
     const refContent = el.component.ref?.content as SimpleUi
-    generateBody(refContent, componentNode)
+    generateComponent(refContent, componentNode)
     return componentNode
 }
 
@@ -168,6 +168,9 @@ function generateExpression(expression: Expression):string {
     }
     else if (isNumberExpression(expression)){
         return expression.value.toString()
+    }
+    else if (isSymbolReference(expression)){
+        return 'Sample Text'
     }
     else {
         throw new Error ('Unhandled Expression type: ' + expression.$type)
@@ -215,6 +218,24 @@ export function generateHead(model: SimpleUi, bodyNode: CompositeGeneratorNode) 
 
 // Check for Type and call body functions
 export function generateBody(model: SimpleUi, bodyNode: CompositeGeneratorNode) {
+    const suiTypes = reflection.getAllTypes();
+    model.bodyelements.forEach(el => {
+        suiTypes.forEach(suiType => {
+            const t = suiType as SimpleUiAstType;
+            const isInstance = reflection.isInstance(el, t);
+            if(isInstance) {
+                const func = generateBodyFunctions[t];
+                if(func) {
+                    const content = func(el);
+                    bodyNode.append(content, NL);
+                }
+            }
+        })
+    })
+}
+
+// Check for Type and call body functions
+export function generateComponent(model: SimpleUi, bodyNode: CompositeGeneratorNode) {
     const suiTypes = reflection.getAllTypes();
     model.bodyelements.forEach(el => {
         suiTypes.forEach(suiType => {
