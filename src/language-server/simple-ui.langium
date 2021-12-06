@@ -7,7 +7,7 @@ SimpleUi:
 
 HeadElement: Title;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label;
+BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label | Topbar;
 
 JSElements: Popup | JSFunction | Variable;
 
@@ -46,8 +46,12 @@ Link:
 
 Image:
     'image' imagepath=Expression ('{' (css+=CSSObject(',' css+=CSSObject)*) '}')?;
+
 Linebreak:    
     {Linebreak} 'linebreak';
+
+Topbar:
+    'topbar' value=Expression;
 
 // CSS related stuff
 
@@ -75,7 +79,7 @@ Popup:
     'popup' text=Expression;
 
 JSFunction:
-    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
+    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content+=JSElements* '}';
 
 Variable:
     'variable' name=ID':' varvalue+=VariableExpression;
@@ -89,15 +93,10 @@ Component:
     'component' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
 
 UseComponent:
-    'usecomponent' component=[Component] ('('(parameters+=UseParameter(',' parameters+=UseParameter)*)?')')?;
-
-
+    'usecomponent' component=[Component] ('('(arguments+=Expression(',' arguments+=Expression)*)?')')?;
 
 Parameter:
     name=ID ':' type=Type;
-
-UseParameter:
-    name=ID ':' value=(STRING|INT);
 
 Type returns string:
     'string' | 'number';
