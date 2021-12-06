@@ -156,7 +156,7 @@ const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
     const topbarNode = new CompositeGeneratorNode()
     topbarNode.append(`<div style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
     topbarNode.indent(topbarContent => {
-        topbarContent.append(`<p style='color: #f2f2f2; font-family: Arial, Helvetica, sans-serif; margin-left: 5px; font-size: 17px;'>${generateExpression(el.value, ctx)}</p>`)
+        topbarContent.append(`<p style='color: #f2f2f2; margin-left: 1%; font-size: 17px;'>${generateExpression(el.value, ctx)}</p>`)
     })
     topbarNode.append('</div>')
     return topbarNode

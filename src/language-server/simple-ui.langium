@@ -27,6 +27,9 @@ Div:
 Title:
     'title' text=Expression; 
 
+Topbar:
+    'topbar' value=Expression;
+
 Paragraph:
     'paragraph' text=Expression ('{' (css+=CSSText(',' css+=CSSText)*) '}')?;
 
@@ -49,9 +52,6 @@ Image:
 
 Linebreak:    
     {Linebreak} 'linebreak';
-
-Topbar:
-    'topbar' value=Expression;
 
 // CSS related stuff
 
@@ -79,7 +79,7 @@ Popup:
     'popup' text=Expression;
 
 JSFunction:
-    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content+=JSElements* '}';
+    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content+=SimpleUi* '}';
 
 Variable:
     'variable' name=ID':' varvalue+=VariableExpression;

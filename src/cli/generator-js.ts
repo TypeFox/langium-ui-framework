@@ -31,7 +31,7 @@ const functionFunc = (functionEL: AstNode) => {
     const fileNode = new CompositeGeneratorNode()
     fileNode.append(`function ${el.name}() {`, NL);
     fileNode.indent(functioncontent => {
-        generateJSFunc(el.content, functioncontent);
+        //generateJSFunc(el.content, functioncontent);
     });
     fileNode.append('}', NL);
     return fileNode
