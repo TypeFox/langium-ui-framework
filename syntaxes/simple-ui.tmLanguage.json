@@ -10,11 +10,11 @@
     },
     {
       "name": "keyword.control.simple-ui",
-      "match": "\\b(background-color|button|component|div|font-size|for:|function|header|headerlevel:|height|image|label|linebreak|link|linktext:|number|onclick:|paragraph|placeholdertext:|popup|string|text-color|textbox|title|topbar|usecomponent|variable|width)\\b"
+      "match": "\\b(background-color|button|component|div|font-size|for:|function|header|headerlevel:|height|image|label|linebreak|link|linktext:|number|onClick:|paragraph|placeholdertext:|popup|string|text-color|textbox|title|topbar|usecomponent|variable|width)\\b"
     },
     {
       "name": "keyword.symbol.simple-ui",
-      "match": "(\\,|\\:|\\(|\\)|\\{|\\}|\\background-color|\\font-size|\\for:|\\headerlevel:|\\linktext:|\\onclick:|\\placeholdertext:|\\text-color)"
+      "match": "(\\,|\\:|\\(|\\)|\\{|\\}|\\background-color|\\font-size|\\for:|\\headerlevel:|\\linktext:|\\onClick:|\\placeholdertext:|\\text-color)"
     }
   ],
   "repository": {

@@ -39,7 +39,7 @@ Textbox:
     'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
 
 Button:
-    'button' buttontext=Expression ('{' 'onclick:' onclickaction=Expression '}')?;
+    'button' buttontext=Expression ('{' 'onClick:' onclickaction=Expression '}')?;
 
 Link:
     'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
@@ -73,7 +73,7 @@ Popup:
     'popup' text=Expression;
 
 JSFunction:
-    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content+=SimpleUi* '}';
+    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
 
 Variable:
     'variable' name=ID':' varvalue+=VariableExpression;

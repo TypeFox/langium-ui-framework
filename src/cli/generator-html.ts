@@ -47,7 +47,7 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
 // Head generate functions
 const titleFunc = (titleEL: AstNode, ctx:GeneratorContext) => {
     const el = titleEL as Title;
-    return `<title>${el.text}</title>`
+    return `<title>${generateExpression(el.text, ctx)}</title>`
 }
 
 // Body generate functions
