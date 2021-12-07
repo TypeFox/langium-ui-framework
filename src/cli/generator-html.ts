@@ -222,16 +222,17 @@ function generateInlineCSS(element: (CSSElements), ctx:GeneratorContext):string 
                 cssString += `color:${generateExpression(cssel.value, ctx)}; `
                 break;
             case 'font-size':
-                cssString += `font-size:${generateExpression(cssel.value, ctx)}px; `
+                cssString += `font-size:${generateExpression(cssel.value, ctx)}; `
                 break;
             case 'height':
-                cssString += `height:${generateExpression(cssel.value, ctx)}px; `
+                cssString += `height:${generateExpression(cssel.value, ctx)}; `
                 break;
             case 'width':
-                cssString += `width:${generateExpression(cssel.value, ctx)}px; `
+                cssString += `width:${generateExpression(cssel.value, ctx)}; `
                 break
             case 'background-color':
-                cssString += `background-color: ${generateExpression(cssel.value, ctx)};`
+                cssString += `background-color: ${generateExpression(cssel.value, ctx)}; `
+                break
         }
     })
     return cssString
