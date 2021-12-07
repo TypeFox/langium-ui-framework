@@ -3,7 +3,7 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 
 // Main Part
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | csselements+=CSSElements | parameters+=Parameter)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | CSSProperties+=CSSProperties | parameters+=Parameter)*;
 
 HeadElement: Title;
 
@@ -11,11 +11,7 @@ BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textb
 
 JSElements: Popup | JSFunction | Variable;
 
-CSSElements: CSSText | CSSObject;
-
-CSSTextElements: Paragraph | Header;
-
-CSSObjectElements: Image;
+CSSElements: Paragraph | Header | Topbar | Image;
 
 // Implementation of the <div> container
 
@@ -28,16 +24,17 @@ Title:
     'title' text=Expression; 
 
 Topbar:
-    'topbar' value=Expression;
+    'topbar' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
-    'paragraph' text=Expression ('{' (css+=CSSText(',' css+=CSSText)*) '}')?;
+    'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Header:
-    'header' text=Expression '{' 'headerlevel:' headerlevel=INT (',' css+=CSSText(',' css+=CSSText)*)? '}';
+    'header' text=Expression '{' 'headerlevel:' headerlevel=INT (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
 
 Label:
-    'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSText(',' css+=CSSText)*)? '}';
+    'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
+
 Textbox:
     'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
 
@@ -48,12 +45,10 @@ Link:
     'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=Expression ('{' (css+=CSSObject(',' css+=CSSObject)*) '}')?;
+    'image' imagepath=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
-
-// CSS related stuff
 
 Expression:
     StringExpression|NumberExpression|SymbolReference;
@@ -67,11 +62,10 @@ NumberExpression:
 SymbolReference:
     symbol=[Parameter];
 
-CSSText:
-    property=('color'|'size')':' value=Expression;
+// CSS related stuff
 
-CSSObject:
-    property=('width'|'height')':' value=Expression;
+CSSProperties:
+    property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
 
 // JS Functions
 

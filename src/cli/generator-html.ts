@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSObjectElements, CSSTextElements, Div, Expression, Header, Image, isNumberExpression, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -154,11 +154,20 @@ const useComponentFunc = (UseComponentEL: AstNode, ctx:GeneratorContext) => {
 const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
     const el = TopbarEl as Topbar;
     const topbarNode = new CompositeGeneratorNode()
-    topbarNode.append(`<div style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
-    topbarNode.indent(topbarContent => {
-        topbarContent.append(`<p style='color: #f2f2f2; margin-left: 1%; font-size: 17px;'>${generateExpression(el.value, ctx)}</p>`)
-    })
-    topbarNode.append('</div>')
+    if (generateInlineCSS(el, ctx) === '') {
+        topbarNode.append(`<div style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
+        topbarNode.indent(topbarContent => {
+            topbarContent.append(`<p style='color: #f2f2f2; margin-left: 1%; font-size: 17px;'>${generateExpression(el.value, ctx)}</p>`)
+        })
+        topbarNode.append('</div>')
+    }
+    else {
+        topbarNode.append(`<div style='${generateInlineCSS(el, ctx)} overflow: hidden;' class='topbar'>`, NL)
+        topbarNode.indent(topbarContent => {
+            topbarContent.append(`<p style='${generateInlineCSS(el,ctx)} margin-left: 1%;'>${generateExpression(el.value, ctx)}</p>`)
+        })
+        topbarNode.append('</div>')
+    }
     return topbarNode
 }
 
@@ -205,14 +214,14 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
     }
 }
 
-function generateInlineCSS(element: (CSSTextElements|CSSObjectElements), ctx:GeneratorContext):string {
+function generateInlineCSS(element: (CSSElements), ctx:GeneratorContext):string {
     let cssString = ''
     element.css.forEach(cssel => {
         switch (cssel.property){
-            case 'color':
+            case 'text-color':
                 cssString += `color:${generateExpression(cssel.value, ctx)}; `
                 break;
-            case 'size':
+            case 'font-size':
                 cssString += `font-size:${generateExpression(cssel.value, ctx)}px; `
                 break;
             case 'height':
@@ -221,6 +230,8 @@ function generateInlineCSS(element: (CSSTextElements|CSSObjectElements), ctx:Gen
             case 'width':
                 cssString += `width:${generateExpression(cssel.value, ctx)}px; `
                 break
+            case 'background-color':
+                cssString += `background-color: ${generateExpression(cssel.value, ctx)};`
         }
     })
     return cssString
