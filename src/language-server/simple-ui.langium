@@ -1,7 +1,8 @@
 grammar SimpleUi
 hidden(WS, SL_COMMENT, ML_COMMENT)
 
-// Main Part
+// Initialization
+
 SimpleUi:
     (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | CSSProperties+=CSSProperties | parameters+=Parameter)*;
 
@@ -12,6 +13,20 @@ BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textb
 JSElements: Popup | JSFunction | Variable;
 
 CSSElements: Paragraph | Header | Topbar | Image;
+
+// Expression
+
+Expression:
+    StringExpression|NumberExpression|SymbolReference;
+
+StringExpression:
+    value=STRING;
+
+NumberExpression:
+    value=INT;
+
+SymbolReference:
+    symbol=[Parameter];
 
 // Implementation of the <div> container
 
@@ -50,24 +65,12 @@ Image:
 Linebreak:    
     {Linebreak} 'linebreak';
 
-Expression:
-    StringExpression|NumberExpression|SymbolReference;
-
-StringExpression:
-    value=STRING;
-
-NumberExpression:
-    value=INT;
-
-SymbolReference:
-    symbol=[Parameter];
-
-// CSS related stuff
+// CSS implementation
 
 CSSProperties:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
 
-// JS Functions
+// JS implementation
 
 Popup:
     'popup' text=Expression;
@@ -81,7 +84,7 @@ Variable:
 VariableExpression:
     value=(STRING|INT);
 
-// Implementation of components (partly done)
+// Implementation of components
 
 Component:
     'component' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
