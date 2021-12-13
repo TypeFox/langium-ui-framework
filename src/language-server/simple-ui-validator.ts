@@ -1,5 +1,5 @@
-import { ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUiAstType } from './generated/ast';
+import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
+import { SimpleUi, SimpleUiAstType, UseComponent, Component, isStringExpression, isNumberExpression } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
@@ -15,6 +15,7 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         super(services);
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
+            UseComponent: validator.checkUseComponent,
         };
         this.register(checks, validator);
     }
@@ -24,4 +25,30 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
  * Implementation of custom validations.
  */
 export class SimpleUiValidator {
+    checkUseComponent(el: UseComponent, accept: ValidationAcceptor): void {
+        const refContent = el.component.ref?.content as SimpleUi
+        const refParameters = (refContent.$container as Component).parameters;
+
+        // Check type of parameters
+        el.arguments.forEach(function (el, index) {
+            if (isNumberExpression(el)) {
+                if (refParameters[index].type === 'number') {
+                    return
+                }
+                else {
+                    accept('error', `Wrong parameter type 'number', expected parameter of type '${refParameters[index].type}'`, { node: el, property: 'value'})
+                    return
+                }
+            }
+            else if (isStringExpression(el)){
+                if (refParameters[index].type === 'string') {
+                    return
+                }
+                else {
+                    accept('error', `Wrong parameter type 'string', expected parameter of type '${refParameters[index].type}'`, { node: el, property: 'value'});
+                    return
+                }
+            }
+        })
+    }
 }
