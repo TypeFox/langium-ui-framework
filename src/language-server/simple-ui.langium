@@ -4,11 +4,14 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 // Initialization
 
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | jselements+=JSElements | CSSProperties+=CSSProperties | parameters+=Parameter)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter)*;
 
 HeadElement: Title;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label | Topbar;
+
+JSModel:
+    (jselements+=JSElements);
 
 JSElements: Popup | JSFunction | Variable;
 
@@ -76,7 +79,7 @@ Popup:
     'popup' text=Expression;
 
 JSFunction:
-    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
+    'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=JSModel '}';
 
 Variable:
     'variable' name=ID':' varvalue+=VariableExpression;

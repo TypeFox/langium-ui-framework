@@ -1,5 +1,5 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUi, SimpleUiAstType, UseComponent, Component, isStringExpression, isNumberExpression } from './generated/ast';
+import { SimpleUi, SimpleUiAstType, UseComponent, Component, isStringExpression, isNumberExpression, JSFunction } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
@@ -16,6 +16,7 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
             UseComponent: validator.checkUseComponent,
+            JSFunction: validator.checkJSFunction
         };
         this.register(checks, validator);
     }
@@ -50,5 +51,9 @@ export class SimpleUiValidator {
                 }
             }
         })
+    }
+
+    checkJSFunction(el: JSFunction, accept: ValidationAcceptor): void {
+        console.log(el.content)
     }
 }

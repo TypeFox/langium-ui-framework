@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { JSFunction, Popup, SimpleUi, SimpleUiAstType, reflection, Variable, isStringExpression, isNumberExpression, isSymbolReference, Expression } from '../language-server/generated/ast';
+import { JSFunction, Popup, SimpleUiAstType, reflection, Variable, isStringExpression, isNumberExpression, isSymbolReference, Expression, JSModel } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -11,7 +11,7 @@ type GeneratorContext = {
     argumentStack: Object[][]
 }
 
-export function generateJS(model: SimpleUi, filePath: string, destination: string | undefined): string {
+export function generateJS(model: JSModel, filePath: string, destination: string | undefined): string {
     const data = extractDestinationAndName(filePath, destination);
     const generatedFilePath = `${data.destination}script.js`;
     const ctx:GeneratorContext = {argumentStack:[]}
@@ -79,7 +79,7 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
     }
 }
 
-export function generateJSFunc(model: SimpleUi, bodyNode: CompositeGeneratorNode, ctx:GeneratorContext) {
+export function generateJSFunc(model: JSModel, bodyNode: CompositeGeneratorNode, ctx:GeneratorContext) {
     const suiTypes = reflection.getAllTypes();
     model.jselements.forEach(el => {
         suiTypes.forEach(suiType => {
