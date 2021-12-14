@@ -15,8 +15,7 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         super(services);
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
-            UseComponent: validator.checkUseComponent,
-            JSFunction: validator.checkJSFunction
+            UseComponent: validator.checkUseComponent
         };
         this.register(checks, validator);
     }
@@ -51,9 +50,5 @@ export class SimpleUiValidator {
                 }
             }
         })
-    }
-
-    checkJSFunction(el: JSFunction, accept: ValidationAcceptor): void {
-        console.log(el.content)
     }
 }
