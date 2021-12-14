@@ -1,5 +1,5 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUi, SimpleUiAstType, UseComponent, Component, isStringExpression, isNumberExpression, JSFunction } from './generated/ast';
+import { SimpleUi, SimpleUiAstType, UseComponent, Component, isStringExpression, isNumberExpression } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
