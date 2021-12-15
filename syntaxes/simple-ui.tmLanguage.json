@@ -14,7 +14,7 @@
     },
     {
       "name": "keyword.symbol.simple-ui",
-      "match": "(\\,|\\:|\\(|\\)|\\{|\\}|\\background-color|\\font-size|\\for:|\\headerlevel:|\\linktext:|\\onClick:|\\placeholdertext:|\\text-color)"
+      "match": "(\\,|\\:|\\(|\\)|\\{|\\}|\\+|\\background-color|\\font-size|\\for:|\\headerlevel:|\\linktext:|\\onClick:|\\placeholdertext:|\\text-color)"
     }
   ],
   "repository": {

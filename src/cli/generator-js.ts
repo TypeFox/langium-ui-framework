@@ -58,17 +58,17 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
 
 export function generateJSFunc(model: SimpleUi, bodyNode: CompositeGeneratorNode, ctx:GeneratorContext) {
     const suiTypes = reflection.getAllTypes();
-        model.jsfunctions.forEach(el => {
-            suiTypes.forEach(suiType => {
-                const t = suiType as SimpleUiAstType;
-                const isInstance = reflection.isInstance(el, t);
-                if (isInstance) {
-                    const func = generateJSFunctions[t];
-                    if (func) {
-                        const content = func(el, ctx);
-                        bodyNode.append(content, NL);
-                    }
+    model.jsfunctions.forEach(el => {
+        suiTypes.forEach(suiType => {
+            const t = suiType as SimpleUiAstType;
+            const isInstance = reflection.isInstance(el, t);
+            if (isInstance) {
+                const func = generateJSFunctions[t];
+                if (func) {
+                    const content = func(el, ctx);
+                    bodyNode.append(content, NL);
                 }
-            })
+            }
         })
+    })
 }

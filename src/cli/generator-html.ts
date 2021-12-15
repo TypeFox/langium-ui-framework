@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleUi, SimpleUiAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUiAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -193,12 +193,12 @@ export const generateBodyFunctions: GenerateFunctions = {
     Topbar: topbarFunc
 };
 
-function generateExpression(expression: Expression, ctx:GeneratorContext):string {
+function generateExpression(expression: Expression|SimpleExpression, ctx:GeneratorContext):string|number {
     if (isStringExpression(expression)){
         return expression.value
     }
     else if (isNumberExpression(expression)){
-        return expression.value.toString()
+        return expression.value
     }
     else if (isSymbolReference(expression)){
         let value = ''
@@ -208,6 +208,14 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
             }
         })
         return value
+    }
+    else if (isOperation(expression)) {
+        let result
+        if (typeof(generateExpression(expression.left, ctx)) === typeof(generateExpression(expression.right, ctx))) {
+            result = eval(generateExpression(expression.left, ctx) + expression.operator + generateExpression(expression.right, ctx))
+        }
+        console.log(result)
+        return 'nothing'
     }
     else {
         throw new Error ('Unhandled Expression type: ' + expression.$type)

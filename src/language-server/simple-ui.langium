@@ -20,6 +20,9 @@ CSSElements: Paragraph | Header | Topbar | Image;
 // Expression
 
 Expression:
+    SimpleExpression ({Operation.left=current} operator='+' right=SimpleExpression)*;
+
+SimpleExpression:
     StringExpression|NumberExpression|SymbolReference;
 
 StringExpression:
