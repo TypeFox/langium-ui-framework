@@ -4,7 +4,7 @@ hidden(WS, SL_COMMENT, ML_COMMENT)
 // Initialization
 
 SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
 
 HeadElement: Title;
 
@@ -13,7 +13,7 @@ BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textb
 JSModel:
     (jselements+=JSElements);
 
-JSElements: Popup | JSFunction | Variable;
+JSElements: Popup;
 
 CSSElements: Paragraph | Header | Topbar | Image;
 
@@ -57,7 +57,7 @@ Textbox:
     'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
 
 Button:
-    'button' buttontext=Expression ('{' 'onClick:' onclickaction=Expression '}')?;
+    'button' buttontext=Expression ('{' 'onClick:' onclickaction=ID('('(arguments+=Expression(',' arguments+=Expression)*)?')')? '}')?;
 
 Link:
     'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
@@ -80,12 +80,6 @@ Popup:
 
 JSFunction:
     'function' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=JSModel '}';
-
-Variable:
-    'variable' name=ID':' varvalue+=VariableExpression;
-
-VariableExpression:
-    value=(STRING|INT);
 
 // Implementation of components
 
