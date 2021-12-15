@@ -78,7 +78,7 @@ const buttonFunc = (buttonEL: AstNode, ctx:GeneratorContext) => {
         return `<button>${generateExpression(el.buttontext, ctx)}</button>`;
     }
     else {
-        return `<button onclick='${generateExpression(el.onclickaction, ctx)}'>${generateExpression(el.buttontext, ctx)}</button>`;
+        return `<button onclick='${el.onclickaction}(${generateParameters(el.arguments, ctx)})'>${generateExpression(el.buttontext, ctx)}</button>`;
     };
 };
 
@@ -212,6 +212,13 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
     else {
         throw new Error ('Unhandled Expression type: ' + expression.$type)
     }
+}
+
+function generateParameters(expression: Expression[], ctx:GeneratorContext):string {
+    expression.forEach(el => {
+        console.log(generateExpression(el, ctx))
+    })
+    return 'placeholder'
 }
 
 function generateInlineCSS(element: (CSSElements), ctx:GeneratorContext):string {

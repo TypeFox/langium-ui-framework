@@ -36,15 +36,15 @@
     "main": "./out/extension.js",
     "scripts": {
         "vscode:prepublish": "npm run build && npm run lint",
-        "build": "webpack",
-        "watch": "webpack --watch",
+        "build": "tsc",
+        "watch": "tsc -w",
         "lint": "eslint src --ext ts",
         "langium:generate": "langium generate",
         "langium:watch": "langium generate --watch"
     },
     "dependencies": {
         "commander": "^8.0.0",
-        "langium": "0.2.0-next.1f60202",
+        "langium": "0.2.0",
         "vscode-languageclient": "^7.0.0",
         "vscode-languageserver": "^7.0.0"
     },
