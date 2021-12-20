@@ -1,10 +1,10 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { Popup, SimpleUiAstType, reflection, isStringExpression, isNumberExpression, isSymbolReference, Expression, SimpleUi } from '../language-server/generated/ast';
+import { Popup, SimpleUIAstType, reflection, isStringExpression, isNumberExpression, isSymbolReference, Expression, SimpleUi } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
-    [key in SimpleUiAstType]?:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
+    [key in SimpleUIAstType]?:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
 }
 
 type GeneratorContext = {
@@ -60,7 +60,7 @@ export function generateJSFunc(model: SimpleUi, bodyNode: CompositeGeneratorNode
     const suiTypes = reflection.getAllTypes();
     model.jsfunctions.forEach(el => {
         suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUiAstType;
+            const t = suiType as SimpleUIAstType;
             const isInstance = reflection.isInstance(el, t);
             if (isInstance) {
                 const func = generateJSFunctions[t];

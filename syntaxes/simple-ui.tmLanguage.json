@@ -10,11 +10,17 @@
     },
     {
       "name": "keyword.control.simple-ui",
-      "match": "\\b(background-color|button|component|div|font-size|for:|function|header|headerlevel:|height|image|label|linebreak|link|linktext:|number|onClick:|paragraph|placeholdertext:|popup|string|text-color|textbox|title|topbar|usecomponent|width)\\b"
+      "match": "\\b(background-color|button|component|div|font-size|function|header|height|image|label|linebreak|link|number|paragraph|popup|string|text-color|textbox|title|topbar|usecomponent|width)\\b|\\b(for:|headerlevel:|linktext:|onClick:|placeholdertext:)\\B"
     },
     {
-      "name": "keyword.symbol.simple-ui",
-      "match": "(\\,|\\:|\\(|\\)|\\{|\\}|\\+|\\background-color|\\font-size|\\for:|\\headerlevel:|\\linktext:|\\onClick:|\\placeholdertext:|\\text-color)"
+      "name": "string.quoted.double.simple-ui",
+      "begin": "\"",
+      "end": "\""
+    },
+    {
+      "name": "string.quoted.single.simple-ui",
+      "begin": "'",
+      "end": "'"
     }
   ],
   "repository": {

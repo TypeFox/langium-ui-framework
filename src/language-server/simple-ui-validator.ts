@@ -1,11 +1,11 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUi, SimpleUiAstType, UseComponent, Component, isStringExpression, isNumberExpression } from './generated/ast';
+import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
  * Map AST node types to validation checks.
  */
-type SimpleUiChecks = { [type in SimpleUiAstType]?: ValidationCheck | ValidationCheck[] }
+type SimpleUiChecks = { [type in SimpleUIAstType]?: ValidationCheck | ValidationCheck[] }
 
 /**
  * Registry for validation checks.

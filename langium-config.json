@@ -1,9 +1,12 @@
 {
-    "languageId": "simple-ui",
-    "grammar": "src/language-server/simple-ui.langium",
-    "fileExtensions": [".sui"],
-    "out": "src/language-server/generated",
-    "textMate": {
-        "out": "syntaxes/simple-ui.tmLanguage.json"
-    }
+    "projectName": "SimpleUI",
+    "languages": [{
+        "id": "simple-ui",
+        "grammar": "src/language-server/simple-ui.langium",
+        "fileExtensions": [".sui"],
+        "textMate": {
+            "out": "syntaxes/simple-ui.tmLanguage.json"
+        }
+    }],
+    "out": "src/language-server/generated"
 }

@@ -1,11 +1,11 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUiAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
-    [key in SimpleUiAstType]?:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
+    [key in SimpleUIAstType]?:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
 }
 
 type GeneratorContext = {
@@ -210,12 +210,22 @@ function generateExpression(expression: Expression|SimpleExpression, ctx:Generat
         return value
     }
     else if (isOperation(expression)) {
+        console.log(expression.left)
         let result
-        if (typeof(generateExpression(expression.left, ctx)) === typeof(generateExpression(expression.right, ctx))) {
+        if (typeof(generateExpression(expression.left, ctx)) && typeof(generateExpression(expression.right, ctx)) === 'number'){
             result = eval(generateExpression(expression.left, ctx) + expression.operator + generateExpression(expression.right, ctx))
         }
+        else if (typeof(generateExpression(expression.left, ctx)) === 'string' && typeof(generateExpression(expression.right, ctx)) === 'number'){
+            result = eval(new String (generateExpression(expression.left, ctx)) + expression.operator + generateExpression(expression.right, ctx))
+        } 
+        else if (typeof(generateExpression(expression.left, ctx)) === 'string' && typeof(generateExpression(expression.right, ctx)) === 'number') {
+
+        }
+        else {
+            throw new Error ('Unhandeled Combination. This is a Bug!')
+        }
         console.log(result)
-        return 'nothing'
+        return result
     }
     else {
         throw new Error ('Unhandled Expression type: ' + expression.$type)
@@ -258,7 +268,7 @@ export function generateHead(model: SimpleUi, bodyNode: CompositeGeneratorNode, 
     const suiTypes = reflection.getAllTypes();
     model.headelements.forEach(el => {
         suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUiAstType;
+            const t = suiType as SimpleUIAstType;
             const isInstance = reflection.isInstance(el, t);
             if(isInstance) {
                 const func = generateHeadFunctions[t];
@@ -276,7 +286,7 @@ export function generateBody(model: SimpleUi, bodyNode: CompositeGeneratorNode, 
     const suiTypes = reflection.getAllTypes();
     model.bodyelements.forEach(el => {
         suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUiAstType;
+            const t = suiType as SimpleUIAstType;
             const isInstance = reflection.isInstance(el, t);
             if(isInstance) {
                 const func = generateBodyFunctions[t];
@@ -294,7 +304,7 @@ export function generateComponent(model: SimpleUi, bodyNode: CompositeGeneratorN
     const suiTypes = reflection.getAllTypes();
     model.bodyelements.forEach(el => {
         suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUiAstType;
+            const t = suiType as SimpleUIAstType;
             const isInstance = reflection.isInstance(el, t);
             if(isInstance) {
                 const func = generateBodyFunctions[t];
