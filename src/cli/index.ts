@@ -1,6 +1,6 @@
 import colors from 'colors';
 import { Command } from 'commander';
-import { languageMetaData } from '../language-server/generated/module';
+import { SimpleUiLanguageMetaData } from '../language-server/generated/module';
 import { SimpleUi } from '../language-server/generated/ast';
 import { createSimpleUiServices } from '../language-server/simple-ui-module';
 import { extractAstNode } from './cli-util';
@@ -16,11 +16,11 @@ program
 
 program
     .command('generate')
-    .argument('<file>', `possible file extensions: ${languageMetaData.fileExtensions.join(', ')}`)
+    .argument('<file>', `possible file extensions: ${SimpleUiLanguageMetaData.fileExtensions.join(', ')}`)
     .option('-d, --destination <dir>', 'destination directory of generating')
     .description('generates HTML code based on the input')
     .action(async (fileName: string, opts: GenerateOptions) => {
-        const model = await extractAstNode<SimpleUi>(fileName, languageMetaData.fileExtensions, createSimpleUiServices());
+        const model = await extractAstNode<SimpleUi>(fileName, SimpleUiLanguageMetaData.fileExtensions, createSimpleUiServices().simpleUi);
         const generatedHTMLFilePath = generateHTML(model, fileName, opts.destination);
         const generatedCSSFilePath = generateCSS(model, fileName, opts.destination);
         const generatedJSFilePath = generateJS(model, fileName, opts.destination);

@@ -6,7 +6,7 @@ import { createSimpleUiServices } from './simple-ui-module';
 const connection = createConnection(ProposedFeatures.all);
 
 // Inject the language services
-const services = createSimpleUiServices({ connection });
+const { shared } = createSimpleUiServices({ connection });
 
 // Start the language server with the language-specific services
-startLanguageServer(services);
+startLanguageServer(shared);
