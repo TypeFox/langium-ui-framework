@@ -45,5 +45,6 @@ export function createSimpleUiServices(context?: DefaultSharedModuleContext): { 
         SimpleUiGeneratedModule,
         SimpleUiModule
     );
+    shared.ServiceRegistry.register(simpleUi);
     return { shared, simpleUi };
 }

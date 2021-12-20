@@ -210,21 +210,18 @@ function generateExpression(expression: Expression|SimpleExpression, ctx:Generat
         return value
     }
     else if (isOperation(expression)) {
-        console.log(expression.left)
-        let result
-        if (typeof(generateExpression(expression.left, ctx)) && typeof(generateExpression(expression.right, ctx)) === 'number'){
-            result = eval(generateExpression(expression.left, ctx) + expression.operator + generateExpression(expression.right, ctx))
+        let result, left, right
+        if (isStringExpression(expression.left) || typeof(generateExpression(expression.left, ctx)) === 'string') {
+            left = `'${generateExpression(expression.left, ctx)}'`
+        } else {
+            left = generateExpression(expression.left, ctx)
         }
-        else if (typeof(generateExpression(expression.left, ctx)) === 'string' && typeof(generateExpression(expression.right, ctx)) === 'number'){
-            result = eval(new String (generateExpression(expression.left, ctx)) + expression.operator + generateExpression(expression.right, ctx))
-        } 
-        else if (typeof(generateExpression(expression.left, ctx)) === 'string' && typeof(generateExpression(expression.right, ctx)) === 'number') {
-
+        if (isStringExpression(expression.right) || typeof(generateExpression(expression.right, ctx)) === 'string') {
+            right = `'${generateExpression(expression.right, ctx)}'`
+        } else {
+            right = generateExpression(expression.right, ctx)
         }
-        else {
-            throw new Error ('Unhandeled Combination. This is a Bug!')
-        }
-        console.log(result)
+        result = eval(left + expression.operator + right)
         return result
     }
     else {
