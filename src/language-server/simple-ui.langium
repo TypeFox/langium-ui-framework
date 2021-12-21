@@ -17,9 +17,20 @@ JSElements: Popup;
 CSSElements: Paragraph | Header | Topbar | Image;
 
 // Expression
-
 Expression:
-    SimpleExpression ({Operation.left=current} operator='+' right=SimpleExpression)*;
+    Addition;
+
+Addition returns Expression:
+    Subtraction ({Operation.left=current} operator=('+') right=Subtraction)*;
+
+Subtraction returns Expression:
+    Division ({Operation.left=current} operator=('-') right=Division)*;
+
+Division returns Expression:
+    Multiplication ({Operation.left=current} operator=('/') right=Multiplication)*;
+
+Multiplication returns Expression:
+    SimpleExpression ({Operation.left=current} operator=('*') right=SimpleExpression)*;
 
 SimpleExpression:
     StringExpression|NumberExpression|SymbolReference;

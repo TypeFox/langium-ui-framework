@@ -222,6 +222,11 @@ function generateExpression(expression: Expression|SimpleExpression, ctx:Generat
             right = generateExpression(expression.right, ctx)
         }
         result = eval(left + expression.operator + right)
+        if (isNaN(result) === false) {
+            return result
+        } else {
+            throw new Error ('Error on: ' + expression.left.$type + expression.operator + expression.right.$type )
+        }
         return result
     }
     else {
