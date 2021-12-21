@@ -225,7 +225,6 @@ function generateExpression(expression: Expression|SimpleExpression, ctx:Generat
             throw new Error (`Invalid Operation: (${left} ${expression.operator} ${right})`)
         } else {
             result = eval(left + expression.operator + right)
-            console.log(result)
             return result
         }
     }
