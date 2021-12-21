@@ -30,7 +30,10 @@ Division returns Expression:
     Multiplication ({Operation.left=current} operator=('/') right=Multiplication)*;
 
 Multiplication returns Expression:
-    SimpleExpression ({Operation.left=current} operator=('*') right=SimpleExpression)*;
+    Primary ({Operation.left=current} operator=('*') right=Primary)*;
+
+Primary returns Expression:
+    SimpleExpression | '(' Addition ')';
 
 SimpleExpression:
     StringExpression|NumberExpression|SymbolReference;

@@ -221,11 +221,12 @@ function generateExpression(expression: Expression|SimpleExpression, ctx:Generat
         } else {
             right = generateExpression(expression.right, ctx)
         }
-        if ((typeof(left) === 'string' || typeof(right) === 'string') && !(expression.operator == '*' || expression.operator == '-' || expression.operator == '/')) {
-            result = eval(left + expression.operator + right)
-            return result
-        } else {
+        if ((typeof(left) === 'string' || typeof(right) === 'string') && (expression.operator == '*' || expression.operator == '-' || expression.operator == '/')) {
             throw new Error (`Invalid Operation: (${left} ${expression.operator} ${right})`)
+        } else {
+            result = eval(left + expression.operator + right)
+            console.log(result)
+            return result
         }
     }
     else {
