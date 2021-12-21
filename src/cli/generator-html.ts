@@ -221,13 +221,12 @@ function generateExpression(expression: Expression|SimpleExpression, ctx:Generat
         } else {
             right = generateExpression(expression.right, ctx)
         }
-        result = eval(left + expression.operator + right)
-        if (isNaN(result) === false) {
+        if ((typeof(left) === 'string' || typeof(right) === 'string') && !(expression.operator == '*' || expression.operator == '-' || expression.operator == '/')) {
+            result = eval(left + expression.operator + right)
             return result
         } else {
-            throw new Error ('Error on: ' + expression.left.$type + expression.operator + expression.right.$type )
+            throw new Error (`Invalid Operation: (${left} ${expression.operator} ${right})`)
         }
-        return result
     }
     else {
         throw new Error ('Unhandled Expression type: ' + expression.$type)
