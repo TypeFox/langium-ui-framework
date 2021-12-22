@@ -73,7 +73,7 @@ Textbox:
     'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
 
 Button:
-    'button' buttontext=Expression ('{' 'onClick:' onclickaction=ID('('(arguments+=Expression(',' arguments+=Expression)*)?')')? '}')?;
+    'button' buttontext=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')')? '}')?;
 
 Link:
     'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;

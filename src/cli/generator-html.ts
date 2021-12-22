@@ -78,7 +78,7 @@ const buttonFunc = (buttonEL: AstNode, ctx:GeneratorContext) => {
         return `<button>${generateExpression(el.buttontext, ctx)}</button>`;
     }
     else {
-        return `<button onclick='${el.onclickaction}(${generateParameters(el.arguments, ctx)})'>${generateExpression(el.buttontext, ctx)}</button>`;
+        return `<button onclick='${el.onclickaction.ref?.name}(${generateParameters(el.arguments, ctx)})'>${generateExpression(el.buttontext, ctx)}</button>`;
     };
 };
 
@@ -237,7 +237,7 @@ function generateParameters(expression: Expression[], ctx:GeneratorContext):stri
     expression.forEach(el => {
         console.log(generateExpression(el, ctx))
     })
-    return 'placeholder'
+    return ''
 }
 
 function generateInlineCSS(element: (CSSElements), ctx:GeneratorContext):string {

@@ -60,11 +60,7 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
     }
     else if (isSymbolReference(expression)){
         let value = ''
-        ctx.argumentStack[0].forEach(function (el) {
-            if ((el as any).name === expression.symbol.ref?.name) {
-                value = (el as any).value 
-            }
-        })
+        value = expression.symbol.ref?.name as string
         return value
     }
     else {
