@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { AstNode, CompositeGeneratorNode, NL, Parameter, processGeneratorNode } from 'langium';
-import { Popup, SimpleUIAstType, reflection, isStringExpression, isNumberExpression, isSymbolReference, Expression, SimpleUi, JSModel, JSFunction } from '../language-server/generated/ast';
+import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
+import { Popup, SimpleUIAstType, reflection, isStringExpression, isNumberExpression, isSymbolReference, Expression, SimpleUi, JSModel } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
