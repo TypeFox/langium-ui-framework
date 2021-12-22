@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { Popup, SimpleUIAstType, reflection, isStringExpression, isNumberExpression, isSymbolReference, Expression, SimpleUi } from '../language-server/generated/ast';
+import { AstNode, CompositeGeneratorNode, NL, Parameter, processGeneratorNode } from 'langium';
+import { Popup, SimpleUIAstType, reflection, isStringExpression, isNumberExpression, isSymbolReference, Expression, SimpleUi, JSModel, JSFunction } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -17,7 +17,26 @@ export function generateJS(model: SimpleUi, filePath: string, destination: strin
     const ctx:GeneratorContext = {argumentStack:[]}
 
     const fileNode = new CompositeGeneratorNode();
-    generateJSFunc(model, fileNode, ctx)
+    model.jsfunctions.forEach(el => {
+        let argumentList = ''
+        console.log('new func')
+        const parameters = el.parameters;
+        parameters.forEach(el => {
+            if (argumentList === '') {
+                argumentList = el.name
+            } else {
+                argumentList = argumentList + `, ${el.name}`
+            }
+        })
+        console.log(argumentList)
+
+        fileNode.append(`function ${el.name}(${argumentList}) {`, NL)
+        fileNode.indent(functioncontent => {
+            generateJSFunc(el.content, functioncontent, ctx)
+        }) 
+        fileNode.append('};', NL)
+    })
+    
 
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
@@ -56,9 +75,9 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
     }
 }
 
-export function generateJSFunc(model: SimpleUi, bodyNode: CompositeGeneratorNode, ctx:GeneratorContext) {
+export function generateJSFunc(model: JSModel, bodyNode: CompositeGeneratorNode, ctx:GeneratorContext) {
     const suiTypes = reflection.getAllTypes();
-    model.jsfunctions.forEach(el => {
+    model.jselements.forEach(el => {
         suiTypes.forEach(suiType => {
             const t = suiType as SimpleUIAstType;
             const isInstance = reflection.isInstance(el, t);
