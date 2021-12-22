@@ -19,7 +19,6 @@ export function generateJS(model: SimpleUi, filePath: string, destination: strin
     const fileNode = new CompositeGeneratorNode();
     model.jsfunctions.forEach(el => {
         let argumentList = ''
-        console.log('new func')
         const parameters = el.parameters;
         parameters.forEach(el => {
             if (argumentList === '') {
@@ -28,8 +27,6 @@ export function generateJS(model: SimpleUi, filePath: string, destination: strin
                 argumentList = argumentList + `, ${el.name}`
             }
         })
-        console.log(argumentList)
-
         fileNode.append(`function ${el.name}(${argumentList}) {`, NL)
         fileNode.indent(functioncontent => {
             generateJSFunc(el.content, functioncontent, ctx)
