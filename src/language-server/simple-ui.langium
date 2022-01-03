@@ -10,7 +10,7 @@ HeadElement: Title;
 BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label | Topbar;
 
 JSModel:
-    (jselements+=JSElements);
+    (jselements+=JSElements)*;
 
 JSElements: Popup;
 
