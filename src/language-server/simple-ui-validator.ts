@@ -29,48 +29,57 @@ export class SimpleUiValidator {
     checkUseComponent(el: UseComponent, accept: ValidationAcceptor): void {
         const refContent = el.component.ref?.content as SimpleUi
         const refParameters = (refContent.$container as Component).parameters;
-        
-        // Check type of parameters
-        el.arguments.forEach(function (el, index) {
-            if (isNumberExpression(el)) {
-                if (refParameters[index].type === 'number') {
-                    return
+        if (el.arguments.length !== refParameters?.length) {
+            accept('error', `Number of parameters not matching (${el.arguments.length}), expected (${refParameters?.length}).`, {node: el, property: 'arguments'})
+        } else {
+            // Check type of parameters
+            el.arguments.forEach(function (el, index) {
+                if (isNumberExpression(el)) {
+                    if (refParameters[index].type === 'number') {
+                        return
+                    }
+                    else {
+                        accept('error', `Wrong parameter type 'number', expected parameter of type '${refParameters[index].type}'.`, { node: el, property: 'value'})
+                        return
+                    }
                 }
-                else {
-                    accept('error', `Wrong parameter type 'number', expected parameter of type '${refParameters[index].type}'`, { node: el, property: 'value'})
-                    return
+                else if (isStringExpression(el)){
+                    if (refParameters[index].type === 'string') {
+                        return
+                    }
+                    else {
+                        accept('error', `Wrong parameter type 'string', expected parameter of type '${refParameters[index].type}'.`, { node: el, property: 'value'});
+                        return
+                    }
                 }
-            }
-            else if (isStringExpression(el)){
-                if (refParameters[index].type === 'string') {
-                    return
-                }
-                else {
-                    accept('error', `Wrong parameter type 'string', expected parameter of type '${refParameters[index].type}'`, { node: el, property: 'value'});
-                    return
-                }
-            }
-        })
+            })
+        }
     }
     checkButton(el: Button, accept: ValidationAcceptor): void {
         const refParameters = el.onclickaction?.ref?.parameters
-        el.arguments.forEach(function (el, index) {
-            if (isNumberExpression(el)) {
-                if (refParameters![index].type === 'number') {
-                    return
-                } else {
-                    accept('error', `Wrong parameter type 'number', expected parameter of type '${refParameters![index].type}'`, {node: el, property: 'value'})
-                    return
+        // Check for the same number of parameters
+        if (el.arguments.length !== refParameters?.length) {
+            accept('error', `Number of parameters not matching (${el.arguments.length}), expected (${refParameters?.length}).`, {node: el, property: 'arguments'})
+        } else {
+            // Check type of parameters
+            el.arguments.forEach(function (el, index) {
+                if (isNumberExpression(el)) {
+                    if (refParameters![index].type === 'number') {
+                        return
+                    } else {
+                        accept('error', `Wrong parameter type 'number', expected parameter of type '${refParameters![index].type}'.`, {node: el, property: 'value'})
+                        return
+                    }
                 }
-            }
-            else if (isStringExpression(el)) {
-                if (refParameters![index].type === 'string') {
-                    return
+                else if (isStringExpression(el)) {
+                    if (refParameters![index].type === 'string') {
+                        return
+                    }
+                    else {
+                        accept('error', `Wrong parameter type 'string', expected parameter of type '${refParameters![index].type}'.`, { node: el, property: 'value'});
+                    }
                 }
-                else {
-                    accept('error', `Wrong parameter type 'string', expected parameter of type '${refParameters![index].type}'`, { node: el, property: 'value'});
-                }
-            }
-        })
+            })
+        }
     }
 }
