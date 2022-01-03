@@ -44,10 +44,14 @@ export function generateJS(model: SimpleUi, filePath: string, destination: strin
 
 const popupFunc = (popupEL: AstNode, ctx:GeneratorContext) => {
     const el = popupEL as Popup;
-    return `alert('${generateExpression(el.text, ctx)}')`
+    if (isStringExpression(el.text) === true) {
+        return `alert('${generateExpression(el.text, ctx)}')`
+    } else {
+        return `alert(${generateExpression(el.text, ctx)})`
+    }
 }
 
-export const generateJSFunctions: GenerateFunctions = {
+const generateJSFunctions: GenerateFunctions = {
     Popup: popupFunc
 }
 
@@ -59,9 +63,7 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
         return expression.value.toString()
     }
     else if (isSymbolReference(expression)){
-        let value = ''
-        value = expression.symbol.ref?.name as string
-        return value
+        return expression.symbol.ref?.name as string
     }
     else {
         throw new Error ('Unhandled Expression type: ' + expression.$type)

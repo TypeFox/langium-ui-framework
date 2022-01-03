@@ -234,10 +234,21 @@ function generateExpression(expression: Expression|SimpleExpression, ctx:Generat
 }
 
 function generateParameters(expression: Expression[], ctx:GeneratorContext):string {
+    let result = ''
     expression.forEach(el => {
-        console.log(generateExpression(el, ctx))
+        let currentExpression = ''
+        if (isNumberExpression(el) === true) {
+            currentExpression = `${generateExpression(el, ctx)}`
+        } else {
+            currentExpression = `"${generateExpression(el, ctx)}"`
+        }
+        if (result === '') {
+            result = currentExpression
+        } else {
+            result = `${result}, ${currentExpression}`
+        }
     })
-    return ''
+    return result
 }
 
 function generateInlineCSS(element: (CSSElements), ctx:GeneratorContext):string {
