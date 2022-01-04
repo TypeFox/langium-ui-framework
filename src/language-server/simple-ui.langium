@@ -33,7 +33,10 @@ Multiplication returns Expression:
     Primary ({Operation.left=current} operator=('*') right=Primary)*;
 
 Primary returns Expression:
-    SimpleExpression | '(' Addition ')';
+    TextboxExpression | '(' Addition ')';
+
+TextboxExpression:
+    SimpleExpression | 'getTextbox' '('name=[Textbox:ID] ')';
 
 SimpleExpression:
     StringExpression|NumberExpression|SymbolReference;
