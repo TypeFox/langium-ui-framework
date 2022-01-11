@@ -3,4 +3,3 @@ out/
 src/language-server/generated/
 tests/
 generated/
-.DS_Store
