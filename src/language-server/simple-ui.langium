@@ -67,7 +67,7 @@ Paragraph:
     'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Heading:
-    'heading' text=Expression '{' 'headinglevel:' headinglevel=HEADINGLEVEL (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
+    'heading' text=Expression 'headinglevel:' headinglevel=HEADINGLEVEL ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Label:
     'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
