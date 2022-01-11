@@ -67,7 +67,7 @@ Paragraph:
     'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Heading:
-    'heading' text=Expression '{' 'headinglevel:' headinglevel=INT (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
+    'heading' text=Expression '{' 'headinglevel:' headinglevel=HEADINGLEVEL (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
 
 Label:
     'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
@@ -116,6 +116,7 @@ Type returns string:
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;
+terminal HEADINGLEVEL returns number: /[1-6]/;
 terminal INT returns number: /[0-9]+/;
 terminal STRING: /"[^"]*"|'[^']*'/;
 
