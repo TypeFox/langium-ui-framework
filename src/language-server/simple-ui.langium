@@ -82,7 +82,7 @@ Link:
     'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=Expression ('alt' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'image' imagepath=Expression ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
