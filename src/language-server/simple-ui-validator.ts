@@ -85,7 +85,7 @@ export class SimpleUiValidator {
     }
     checkHeadingLevel(el: Heading, accept: ValidationAcceptor): void {
         if (el.level > 6 || el.level < 1) {
-            accept('error', `Heading level can't be ${el.level}.`, { node: el, property: 'level' })
+            accept('error', `Wrong headinglevel ${el.level}, expected value between 1 and 6.`, { node: el, property: 'level' })
         } 
         else {
             return
