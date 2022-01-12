@@ -130,10 +130,10 @@ const imageFunc = (imageEL: AstNode, ctx:GeneratorContext) => {
 const headingFunc = (headingEL: AstNode, ctx:GeneratorContext) => {
     const el = headingEL as Heading;
     if (generateInlineCSS(el, ctx) === '') {
-        return `<h${el.headinglevel}>${generateExpression(el.text, ctx)}</h${el.headinglevel}>`
+        return `<h${el.level}>${generateExpression(el.text, ctx)}</h${el.level}>`
     }
     else {
-        return `<h${el.headinglevel} style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</h${el.headinglevel}>`
+        return `<h${el.level} style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</h${el.level}>`
     }
 }
 
