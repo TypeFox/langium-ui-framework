@@ -94,12 +94,17 @@ const linkFunc = (linkEL: AstNode, ctx:GeneratorContext) => {
 
 const textboxFunc = (textboxEL: AstNode, ctx:GeneratorContext) => {
     const el = textboxEL as Textbox;
+    const fileNode = new CompositeGeneratorNode()
+    if (typeof el.labeltext !== 'undefined') {
+        fileNode.append(NL,`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`);
+    };
     if (typeof el.placeholdertext === 'undefined') {
-        return `<input type='text' id='${el.name}'>`;
+        fileNode.append(`<input type='text' id='${el.name}'>`);
     }
     else {
-        return `<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}'>`;
+        fileNode.append(`<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}'>`);
     };
+    return fileNode
 };
 
 const linebreakFunc = (linebreakEL: AstNode, ctx:GeneratorContext) => {
