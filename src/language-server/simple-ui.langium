@@ -73,7 +73,7 @@ Label:
     'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
 
 Textbox:
-    'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
+    'textbox' name=ID ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression)(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression))*) '}')?;
 
 Button:
     'button' buttontext=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
