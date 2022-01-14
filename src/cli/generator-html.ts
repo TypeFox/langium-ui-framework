@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Heading, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -127,13 +127,13 @@ const imageFunc = (imageEL: AstNode, ctx:GeneratorContext) => {
     }
 }
 
-const headerFunc = (headerEL: AstNode, ctx:GeneratorContext) => {
-    const el = headerEL as Header;
+const headingFunc = (headingEL: AstNode, ctx:GeneratorContext) => {
+    const el = headingEL as Heading;
     if (generateInlineCSS(el, ctx) === '') {
-        return `<h${el.headerlevel}>${generateExpression(el.text, ctx)}</h${el.headerlevel}>`
+        return `<h${el.level}>${generateExpression(el.text, ctx)}</h${el.level}>`
     }
     else {
-        return `<h${el.headerlevel} style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</h${el.headerlevel}>`
+        return `<h${el.level} style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</h${el.level}>`
     }
 }
 
@@ -188,7 +188,7 @@ export const generateBodyFunctions: GenerateFunctions = {
     Linebreak: linebreakFunc,
     Label: labelFunc,
     Image: imageFunc,
-    Header: headerFunc,
+    Heading: headingFunc,
     UseComponent: useComponentFunc,
     Topbar: topbarFunc
 };

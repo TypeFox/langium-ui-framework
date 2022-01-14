@@ -1,5 +1,5 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button } from './generated/ast';
+import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button, Heading } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
@@ -16,7 +16,8 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
             UseComponent: validator.checkUseComponent,
-            Button: validator.checkButton
+            Button: validator.checkButton,
+            Heading: validator.checkHeadingLevel
         };
         this.register(checks, validator);
     }
@@ -80,6 +81,14 @@ export class SimpleUiValidator {
                     }
                 }
             })
+        }
+    }
+    checkHeadingLevel(el: Heading, accept: ValidationAcceptor): void {
+        if (el.level > 6 || el.level < 1) {
+            accept('error', `Wrong headinglevel ${el.level}, expected value between 1 and 6.`, { node: el, property: 'level' })
+        } 
+        else {
+            return
         }
     }
 }

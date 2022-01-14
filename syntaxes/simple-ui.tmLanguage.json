@@ -10,7 +10,7 @@
     },
     {
       "name": "keyword.control.simple-ui",
-      "match": "\\b(alt|background-color|button|component|div|font-size|function|getTextbox|header|height|image|label|linebreak|link|number|paragraph|popup|string|text-color|textbox|title|topbar|usecomponent|width)\\b|\\b(for:|headerlevel:|linktext:|onClick:|placeholdertext:)\\B"
+      "match": "\\b(alt|background-color|button|component|div|font-size|function|getTextbox|heading|height|image|label|linebreak|link|number|paragraph|popup|string|text-color|textbox|title|topbar|usecomponent|width)\\b|\\b(for:|level:|linktext:|onClick:|placeholdertext:)\\B"
     },
     {
       "name": "string.quoted.double.simple-ui",
