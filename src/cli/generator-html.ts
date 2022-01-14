@@ -120,10 +120,10 @@ const labelFunc = (labelEL: AstNode, ctx:GeneratorContext) => {
 const imageFunc = (imageEL: AstNode, ctx:GeneratorContext) => {
     const el = imageEL as Image;
     if (generateInlineCSS(el, ctx) === '') {
-        return `<img src='${generateExpression(el.imagepath, ctx)}'>`
+        return `<img src='${generateExpression(el.imagepath, ctx)}' alt='${el.altText!==undefined?el.altText:''}'>`
     }
     else {
-        return `<img src='${generateExpression(el.imagepath, ctx)}' style='${generateInlineCSS(el, ctx)}'>`
+        return `<img src='${generateExpression(el.imagepath, ctx)}' alt='${el.altText!==undefined?el.altText:''}' style='${generateInlineCSS(el, ctx)}'>`
     }
 }
 
