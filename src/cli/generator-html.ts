@@ -155,7 +155,7 @@ const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
     const el = TopbarEl as Topbar;
     const topbarNode = new CompositeGeneratorNode()
 
-    topbarNode.append(`<header class='topbar' style='${generateInlineCSS(el,ctx)}'>`,NL);
+    topbarNode.append(`<header class='topbar ${el.fixed?'topbar--fixed':''}' style='${generateInlineCSS(el,ctx)}'>`,NL);
     topbarNode.indent(topbarContent => {
         topbarContent.append(`<nav>`,NL);
         topbarContent.indent(navigationContent => {
