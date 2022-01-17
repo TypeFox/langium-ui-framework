@@ -61,7 +61,7 @@ Title:
     'title' text=Expression; 
 
 Topbar:
-    'topbar' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'topbar' value=Expression (fixed?='fixed')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
     'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
