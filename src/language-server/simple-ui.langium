@@ -7,7 +7,7 @@ entry SimpleUi:
 
 HeadElement: Title;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Label | Topbar;
+BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Topbar;
 
 JSModel:
     (jselements+=JSElements)*;
@@ -68,9 +68,6 @@ Paragraph:
 
 Header:
     'header' text=Expression '{' 'headerlevel:' headerlevel=INT (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
-
-Label:
-    'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
 
 Textbox:
     'textbox' name=ID ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression)(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression))*) '}')?;

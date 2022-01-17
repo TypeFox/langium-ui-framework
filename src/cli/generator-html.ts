@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -111,17 +111,6 @@ const linebreakFunc = (linebreakEL: AstNode, ctx:GeneratorContext) => {
     return '<br>';
 };
 
-const labelFunc = (labelEL: AstNode, ctx:GeneratorContext) => {
-    const el = labelEL as Label;
-    if (generateInlineCSS(el, ctx) === '') {
-        return `<label for='${el.elementid}'>${generateExpression(el.text, ctx)}</label>`;
-    }
-    else {
-        return `<label for='${el.elementid}' style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</label>`;
-    }
-    
-};
-
 const imageFunc = (imageEL: AstNode, ctx:GeneratorContext) => {
     const el = imageEL as Image;
     if (generateInlineCSS(el, ctx) === '') {
@@ -191,7 +180,6 @@ export const generateBodyFunctions: GenerateFunctions = {
     Link: linkFunc,
     Textbox: textboxFunc,
     Linebreak: linebreakFunc,
-    Label: labelFunc,
     Image: imageFunc,
     Header: headerFunc,
     UseComponent: useComponentFunc,
