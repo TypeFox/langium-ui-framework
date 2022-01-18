@@ -95,15 +95,23 @@ const linkFunc = (linkEL: AstNode, ctx:GeneratorContext) => {
 const textboxFunc = (textboxEL: AstNode, ctx:GeneratorContext) => {
     const el = textboxEL as Textbox;
     const fileNode = new CompositeGeneratorNode()
-    if (typeof el.labeltext !== 'undefined') {
-        fileNode.append(NL,`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`);
-    };
+    const labelOrder = []
+
     if (typeof el.placeholdertext === 'undefined') {
-        fileNode.append(`<input type='text' id='${el.name}'>`);
+        labelOrder.push(`<input type='text' id='${el.name}'>`);
     }
     else {
-        fileNode.append(`<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}'>`);
+        labelOrder.push(`<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}'>`);
     };
+    if (typeof el.labeltext !== 'undefined' && el.labelAfter !== true) {
+        labelOrder.unshift(`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`, NL);
+    } 
+    else if (typeof el.labeltext !== 'undefined' && el.labelAfter === true){
+        labelOrder.push(NL,`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`);
+    }
+    labelOrder.map(el => {
+        fileNode.append(el)
+    })
     return fileNode
 };
 
