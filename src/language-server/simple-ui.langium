@@ -70,7 +70,7 @@ Header:
     'header' text=Expression '{' 'headerlevel:' headerlevel=INT (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
 
 Textbox:
-    'textbox' name=ID ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|(labelAfter?='labelAfter')?)(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|(labelAfter?='labelAfter')?))*) '}')?;
+    'textbox' name=ID ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
 
 Button:
     'button' buttontext=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
