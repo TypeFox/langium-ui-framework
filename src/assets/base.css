@@ -1,0 +1,27 @@
+.center {
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    margin: auto;
+}
+
+.flex-container{
+    display: flexs;
+}
+.hidden {
+    display: none;
+}
+
+.smooth-scroll {
+    scroll-behavior: smooth;
+}
+
+.no-scrollbar {
+    overflow: hidden;
+}
+.scrollbar {
+    overflow: show;
+}

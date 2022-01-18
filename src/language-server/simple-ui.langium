@@ -5,7 +5,7 @@ grammar SimpleUi
 entry SimpleUi:
     (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
 
-HeadElement: Title;
+HeadElement: Title | Icon;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Label | Topbar;
 
@@ -60,29 +60,32 @@ Div:
 Title:
     'title' text=Expression; 
 
+Icon:
+    'icon' imagepath=Expression;
+
 Topbar:
-    'topbar' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'topbar' value=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
-    'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'paragraph' text=Expression classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Heading:
-    'heading' text=Expression 'level:' level=INT ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'heading' text=Expression 'level:' level=INT classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Label:
-    'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
+    'label'  text=Expression classes=CSSClasses?  '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
 
 Textbox:
-    'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
+    'textbox' name=ID classes=CSSClasses?  ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
 
 Button:
-    'button' buttontext=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
+    'button' buttontext=Expression classes=CSSClasses? ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
 
 Link:
-    'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
+    'link' linkurl=Expression classes=CSSClasses? ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=Expression ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'image' imagepath=Expression classes=CSSClasses? ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -92,6 +95,8 @@ Linebreak:
 CSSProperties:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
 
+CSSClasses:
+    "classes" + "[" + names+=CSSRules(',' names+=CSSRules)* "]";
 // JS implementation
 
 Popup:
@@ -113,6 +118,9 @@ Parameter:
 
 Type returns string:
     'string' | 'number';
+
+CSSRules returns string:
+    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar';
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;
