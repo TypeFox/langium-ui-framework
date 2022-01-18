@@ -5,7 +5,7 @@ grammar SimpleUi
 entry SimpleUi:
     (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
 
-HeadElement: Title;
+HeadElement: Title | Icon;
 
 BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Label | Topbar;
 
@@ -59,6 +59,9 @@ Div:
 
 Title:
     'title' text=Expression; 
+
+Icon:
+    'icon' imagepath=Expression;
 
 Topbar:
     'topbar' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;

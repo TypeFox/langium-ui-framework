@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Heading, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -50,6 +50,10 @@ const titleFunc = (titleEL: AstNode, ctx:GeneratorContext) => {
     return `<title>${generateExpression(el.text, ctx)}</title>`
 }
 
+const iconFunc = (iconEL: AstNode, ctx:GeneratorContext) => {
+    const el = iconEL as Icon;
+    return `<link rel="icon" href="${generateExpression(el.imagepath, ctx)}">`;
+}
 // Body generate functions
 const divFunc = (divEl: AstNode, ctx:GeneratorContext) => {
     const el = divEl as Div;
@@ -175,7 +179,8 @@ const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
 
 // Head functions
 export const generateHeadFunctions: GenerateFunctions = {
-    Title: titleFunc
+    Title: titleFunc,
+    Icon: iconFunc
 };
 
 // Body functions
