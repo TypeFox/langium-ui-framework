@@ -7,6 +7,7 @@ import { extractAstNode } from './cli-util';
 import { generateHTML } from './generator-html';
 import { generateCSS } from './generator-css';
 import { generateJS } from './generator-js';
+import fs from 'fs';
 
 const program = new Command();
 
@@ -18,19 +19,41 @@ program
     .command('generate')
     .argument('<file>', `possible file extensions: ${SimpleUiLanguageMetaData.fileExtensions.join(', ')}`)
     .option('-d, --destination <dir>', 'destination directory of generating')
+    .option('-w, --watch', 'enables watch mode', false)
     .description('generates HTML code based on the input')
     .action(async (fileName: string, opts: GenerateOptions) => {
-        const model = await extractAstNode<SimpleUi>(fileName, SimpleUiLanguageMetaData.fileExtensions, createSimpleUiServices().simpleUi);
-        const generatedHTMLFilePath = generateHTML(model, fileName, opts.destination);
-        const generatedCSSFilePath = generateCSS(model, fileName, opts.destination);
-        const generatedJSFilePath = generateJS(model, fileName, opts.destination);
-        console.log(colors.green('HTML code generated successfully:'), colors.yellow(generatedHTMLFilePath));
-        console.log(colors.green('CSS code generated successfully:'), colors.yellow(generatedCSSFilePath));
-        console.log(colors.green('JS code generated successfully:'), colors.yellow(generatedJSFilePath));
+              progressCommand(fileName, opts);
     });
-
+    
 program.parse(process.argv);
+
+async function progressCommand(fileName: string, options: GenerateOptions) {
+    generate(fileName, options);
+    if (options.watch) {
+        console.log(getTime() + colors.red('SimpleUi generator will continue running in watch mode'));
+        fs.watchFile(fileName, async () => {
+            console.log(getTime() + colors.yellow('File change detected. Starting generation...'));
+            generate(fileName,options);
+        });
+    }
+}
+
+async function generate(fileName: string, options: GenerateOptions){
+    const model = await extractAstNode<SimpleUi>(fileName, SimpleUiLanguageMetaData.fileExtensions, createSimpleUiServices().simpleUi);
+    const generatedHTMLFilePath = generateHTML(model, fileName, options.destination);
+    const generatedCSSFilePath = generateCSS(model, fileName, options.destination);
+    const generatedJSFilePath = generateJS(model, fileName, options.destination);
+    console.log(getTime() + colors.green('HTML code generated successfully:'), colors.yellow(generatedHTMLFilePath));
+    console.log(getTime() + colors.green('CSS code generated successfully:'), colors.yellow(generatedCSSFilePath));
+    console.log(getTime() + colors.green('JS code generated successfully:'), colors.yellow(generatedJSFilePath));
+}
+
+function getTime(): string{
+    let dateTime = new Date()
+    return colors.gray(`[${dateTime.getHours()}:${dateTime.getMinutes()}:${dateTime.getSeconds()}] `);
+}
 
 export type GenerateOptions = {
     destination?: string;
+    watch: boolean;
 }
