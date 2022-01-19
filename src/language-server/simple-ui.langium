@@ -7,7 +7,7 @@ entry SimpleUi:
 
 HeadElement: Title | Icon;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Label | Topbar;
+BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar;
 
 JSModel:
     (jselements+=JSElements)*;
@@ -72,11 +72,8 @@ Paragraph:
 Heading:
     'heading' text=Expression 'level:' level=INT ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
-Label:
-    'label'  text=Expression '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
-
 Textbox:
-    'textbox' name=ID ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
+    'textbox' name=ID ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
 
 Button:
     'button' buttontext=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
