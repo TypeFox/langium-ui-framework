@@ -65,8 +65,7 @@ const divFunc = (divEl: AstNode, ctx: GeneratorContext) => {
 
 const paragraphFunc = (paragraphEl: AstNode, ctx: GeneratorContext) => {
     const el = paragraphEl as Paragraph;
-
-   return `<p ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</p>`;
+    return `<p ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</p>`;
 };
 
 const buttonFunc = (buttonEL: AstNode, ctx: GeneratorContext) => {
@@ -104,8 +103,8 @@ const linebreakFunc = (linebreakEL: AstNode, ctx: GeneratorContext) => {
 };
 
 const labelFunc = (labelEL: AstNode, ctx: GeneratorContext) => {
-        const el = labelEL as Label;
-        return `<label for='${el.elementid}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</label>`;
+    const el = labelEL as Label;
+    return `<label for='${el.elementid}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</label>`;
 
 };
 
@@ -136,15 +135,16 @@ const useComponentFunc = (UseComponentEL: AstNode, ctx: GeneratorContext) => {
 const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
     const el = TopbarEl as Topbar;
     const topbarNode = new CompositeGeneratorNode()
+    let classString = `class='${generateCSSClasses(el.classes)}'`;
     if (generateInlineCSS(el, ctx) === '') {
-        topbarNode.append(`<div class='${generateCSSClasses(el.classes)}' style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
+        topbarNode.append(`<div ${classString != ''? classString : ''} style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
         topbarNode.indent(topbarContent => {
             topbarContent.append(`<p style='color: #f2f2f2; margin-left: 1%; font-size: 17px;'>${generateExpression(el.value, ctx)}</p>`)
         })
         topbarNode.append('</div>')
     }
     else {
-        topbarNode.append(`<div class='${generateCSSClasses(el.classes)}' style='${generateInlineCSS(el, ctx)} overflow: hidden;' class='topbar'>`, NL)
+        topbarNode.append(`<div ${classString != '' ? classString : ''}  style='${generateInlineCSS(el, ctx)} overflow: hidden;' class='topbar'>`, NL)
         topbarNode.indent(topbarContent => {
             topbarContent.append(`<p style='${generateInlineCSS(el, ctx)} margin-left: 1%;'>${generateExpression(el.value, ctx)}</p>`)
         })
@@ -239,6 +239,7 @@ function formatCSS(classes: string, inline: string): string {
     return classString + inlineString;
 }
 function generateCSSClasses(element: CSSClasses): string {
+    if(element == undefined) return '';
     element.names.forEach(el => {
         copyCSSClass(el);
     });
