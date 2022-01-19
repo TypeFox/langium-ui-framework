@@ -65,8 +65,8 @@ const divFunc = (divEl: AstNode, ctx: GeneratorContext) => {
 
 const paragraphFunc = (paragraphEl: AstNode, ctx: GeneratorContext) => {
     const el = paragraphEl as Paragraph;
-    
-   return `<p ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}>${generateExpression(el.text, ctx)}</p>`;
+
+   return `<p ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</p>`;
 };
 
 const buttonFunc = (buttonEL: AstNode, ctx: GeneratorContext) => {
