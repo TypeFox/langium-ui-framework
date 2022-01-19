@@ -5,16 +5,16 @@ grammar SimpleUi
 entry SimpleUi:
     (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
 
-HeadElement: Title;
+HeadElement: Title | Icon;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Header | Image | Textbox | Button | Link | Linebreak | Topbar;
+BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar;
 
 JSModel:
     (jselements+=JSElements)*;
 
 JSElements: Popup;
 
-CSSElements: Paragraph | Header | Topbar | Image;
+CSSElements: Paragraph | Heading | Topbar | Image;
 
 // Expression
 Expression:
@@ -60,14 +60,17 @@ Div:
 Title:
     'title' text=Expression; 
 
+Icon:
+    'icon' imagepath=Expression;
+
 Topbar:
-    'topbar' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'topbar' value=Expression (fixed?='fixed')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
     'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
-Header:
-    'header' text=Expression '{' 'headerlevel:' headerlevel=INT (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
+Heading:
+    'heading' text=Expression 'level:' level=INT ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Textbox:
     'textbox' name=ID ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
@@ -79,7 +82,7 @@ Link:
     'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'image' imagepath=Expression ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Linebreak:    
     {Linebreak} 'linebreak';

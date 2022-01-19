@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Header, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -50,6 +50,10 @@ const titleFunc = (titleEL: AstNode, ctx:GeneratorContext) => {
     return `<title>${generateExpression(el.text, ctx)}</title>`
 }
 
+const iconFunc = (iconEL: AstNode, ctx:GeneratorContext) => {
+    const el = iconEL as Icon;
+    return `<link rel="icon" href="${generateExpression(el.imagepath, ctx)}">`;
+}
 // Body generate functions
 const divFunc = (divEl: AstNode, ctx:GeneratorContext) => {
     const el = divEl as Div;
@@ -123,20 +127,20 @@ const linebreakFunc = (linebreakEL: AstNode, ctx:GeneratorContext) => {
 const imageFunc = (imageEL: AstNode, ctx:GeneratorContext) => {
     const el = imageEL as Image;
     if (generateInlineCSS(el, ctx) === '') {
-        return `<img src='${generateExpression(el.imagepath, ctx)}'>`
+        return `<img src='${generateExpression(el.imagepath, ctx)}' alt='${el.altText!==undefined?el.altText:''}'>`
     }
     else {
-        return `<img src='${generateExpression(el.imagepath, ctx)}' style='${generateInlineCSS(el, ctx)}'>`
+        return `<img src='${generateExpression(el.imagepath, ctx)}' alt='${el.altText!==undefined?el.altText:''}' style='${generateInlineCSS(el, ctx)}'>`
     }
 }
 
-const headerFunc = (headerEL: AstNode, ctx:GeneratorContext) => {
-    const el = headerEL as Header;
+const headingFunc = (headingEL: AstNode, ctx:GeneratorContext) => {
+    const el = headingEL as Heading;
     if (generateInlineCSS(el, ctx) === '') {
-        return `<h${el.headerlevel}>${generateExpression(el.text, ctx)}</h${el.headerlevel}>`
+        return `<h${el.level}>${generateExpression(el.text, ctx)}</h${el.level}>`
     }
     else {
-        return `<h${el.headerlevel} style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</h${el.headerlevel}>`
+        return `<h${el.level} style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</h${el.level}>`
     }
 }
 
@@ -157,6 +161,17 @@ const useComponentFunc = (UseComponentEL: AstNode, ctx:GeneratorContext) => {
 const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
     const el = TopbarEl as Topbar;
     const topbarNode = new CompositeGeneratorNode()
+
+    topbarNode.append(`<header class='topbar ${el.fixed?'topbar--fixed':''}' style='${generateInlineCSS(el,ctx)}'>`,NL);
+    topbarNode.indent(topbarContent => {
+        topbarContent.append(`<nav>`,NL);
+        topbarContent.indent(navigationContent => {
+            navigationContent.append(`<a style='${generateInlineCSS(el,ctx)}' href='./'>${generateExpression(el.value, ctx)}</a>`,NL)
+        });
+        topbarContent.append(`</nav>`,NL);
+    })
+    topbarNode.append(`</header>`);
+    /*previous way of generating html
     if (generateInlineCSS(el, ctx) === '') {
         topbarNode.append(`<div style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
         topbarNode.indent(topbarContent => {
@@ -171,6 +186,7 @@ const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
         })
         topbarNode.append('</div>')
     }
+    */
     return topbarNode
 }
 
@@ -178,7 +194,8 @@ const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
 
 // Head functions
 export const generateHeadFunctions: GenerateFunctions = {
-    Title: titleFunc
+    Title: titleFunc,
+    Icon: iconFunc
 };
 
 // Body functions
@@ -190,7 +207,7 @@ export const generateBodyFunctions: GenerateFunctions = {
     Textbox: textboxFunc,
     Linebreak: linebreakFunc,
     Image: imageFunc,
-    Header: headerFunc,
+    Heading: headingFunc,
     UseComponent: useComponentFunc,
     Topbar: topbarFunc
 };
