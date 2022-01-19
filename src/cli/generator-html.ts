@@ -158,6 +158,17 @@ const useComponentFunc = (UseComponentEL: AstNode, ctx:GeneratorContext) => {
 const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
     const el = TopbarEl as Topbar;
     const topbarNode = new CompositeGeneratorNode()
+
+    topbarNode.append(`<header class='topbar ${el.fixed?'topbar--fixed':''}' style='${generateInlineCSS(el,ctx)}'>`,NL);
+    topbarNode.indent(topbarContent => {
+        topbarContent.append(`<nav>`,NL);
+        topbarContent.indent(navigationContent => {
+            navigationContent.append(`<a style='${generateInlineCSS(el,ctx)}' href='./'>${generateExpression(el.value, ctx)}</a>`,NL)
+        });
+        topbarContent.append(`</nav>`,NL);
+    })
+    topbarNode.append(`</header>`);
+    /*previous way of generating html
     if (generateInlineCSS(el, ctx) === '') {
         topbarNode.append(`<div style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
         topbarNode.indent(topbarContent => {
@@ -172,6 +183,7 @@ const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
         })
         topbarNode.append('</div>')
     }
+    */
     return topbarNode
 }
 
