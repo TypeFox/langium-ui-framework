@@ -31,6 +31,7 @@ export function copyCSSClass(name: string) {
     if(fileContent.includes(`.${name}`)) {
         let result = '';
         result += regex.exec(fileContent);
-        copiedCSS.push(result);
+        if(!copiedCSS.includes(result))
+            copiedCSS.push(result);
     }
 }
