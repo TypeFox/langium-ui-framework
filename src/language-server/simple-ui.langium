@@ -97,6 +97,7 @@ CSSProperties:
 
 CSSClasses:
     "classes" + "[" + names+=CSSRules(',' names+=CSSRules)* "]";
+
 // JS implementation
 
 Popup:
@@ -120,7 +121,7 @@ Type returns string:
     'string' | 'number';
 
 CSSRules returns string:
-    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar';
+    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar' | 'dotted-border' | 'dashed-border' | 'border';
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;
