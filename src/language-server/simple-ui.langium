@@ -14,7 +14,7 @@ JSModel:
 
 JSElements: Popup;
 
-CSSElements: Paragraph | Heading | Topbar | Image;
+CSSElements: Paragraph | Heading | Topbar | Image | Label | Button | Link | Textbox;
 
 // Expression
 Expression:
@@ -64,28 +64,28 @@ Icon:
     'icon' imagepath=Expression;
 
 Topbar:
-    'topbar' value=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'topbar' value=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Paragraph:
-    'paragraph' text=Expression classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'paragraph' text=Expression classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Heading:
-    'heading' text=Expression 'level:' level=INT classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'heading' text=Expression 'level:' level=INT classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Label:
-    'label'  text=Expression classes=CSSClasses?  '{' 'for:' elementid=ID (',' css+=CSSProperties(',' css+=CSSProperties)*)? '}';
+    'label'  text=Expression classes=CSSClasses?  '{' 'for:' elementid=ID '}' ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Textbox:
-    'textbox' name=ID classes=CSSClasses?  ('{' 'placeholdertext:' placeholdertext=Expression '}')?;
+    'textbox' name=ID classes=CSSClasses?  ('{' 'placeholdertext:' placeholdertext=Expression '}')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Button:
-    'button' buttontext=Expression classes=CSSClasses? ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
+    'button' buttontext=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
 
 Link:
-    'link' linkurl=Expression classes=CSSClasses? ('{' 'linktext:' linktext=Expression '}')?;
+    'link' linkurl=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=Expression classes=CSSClasses? ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'image' imagepath=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -96,7 +96,7 @@ CSSProperties:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
 
 CSSClasses:
-    "classes" + "[" + names+=CSSRules(',' names+=CSSRules)* "]";
+    "classes" + "[" + (names+=CSSRules(',' names+=CSSRules)*)? "]";
 
 // JS implementation
 
@@ -121,7 +121,7 @@ Type returns string:
     'string' | 'number';
 
 CSSRules returns string:
-    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar' | 'dotted-border' | 'dashed-border' | 'border';
+    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar' | 'dotted-border' | 'dashed-border' | 'border' | 'shadow';
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

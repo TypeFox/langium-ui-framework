@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSClasses, CSSElements, Div, Expression, Heading, Image, isLabel, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSClasses, CSSElements, Div, Expression, Heading, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -65,41 +65,37 @@ const divFunc = (divEl: AstNode, ctx: GeneratorContext) => {
 
 const paragraphFunc = (paragraphEl: AstNode, ctx: GeneratorContext) => {
     const el = paragraphEl as Paragraph;
-    if (generateInlineCSS(el, ctx) === '') {
-        return `<p>${generateExpression(el.text, ctx)}</p>`;
-    }
-    else {
-        return `<p style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</p>`;
-    }
+    
+   return `<p ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}>${generateExpression(el.text, ctx)}</p>`;
 };
 
 const buttonFunc = (buttonEL: AstNode, ctx: GeneratorContext) => {
     const el = buttonEL as Button;
     if (typeof el.onclickaction === 'undefined') {
-        return `<button>${generateExpression(el.buttontext, ctx)}</button>`;
+        return `<button ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.buttontext, ctx)}</button>`;
     }
     else {
-        return `<button onclick='${el.onclickaction.ref?.name}(${generateParameters(el.arguments, ctx)})'>${generateExpression(el.buttontext, ctx)}</button>`;
+        return `<button onclick='${el.onclickaction.ref?.name}(${generateParameters(el.arguments, ctx)})' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.buttontext, ctx)}</button>`;
     };
 };
 
 const linkFunc = (linkEL: AstNode, ctx: GeneratorContext) => {
     const el = linkEL as Link;
     if (typeof el.linktext === 'undefined') {
-        return `<a href='${generateExpression(el.linkurl, ctx)}'>${generateExpression(el.linkurl, ctx)}</a>`;
+        return `<a href='${generateExpression(el.linkurl, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.linkurl, ctx)}</a>`;
     }
     else {
-        return `<a href='${generateExpression(el.linkurl, ctx)}'>${generateExpression(el.linktext, ctx)}</a>`;
+        return `<a href='${generateExpression(el.linkurl, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.linktext, ctx)}</a>`;
     };
 };
 
 const textboxFunc = (textboxEL: AstNode, ctx: GeneratorContext) => {
     const el = textboxEL as Textbox;
     if (typeof el.placeholdertext === 'undefined') {
-        return `<input type='text' id='${el.name}'>`;
+        return `<input type='text' id='${el.name}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el, ctx))}>`;
     }
     else {
-        return `<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}'>`;
+        return `<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>`;
     };
 };
 
@@ -109,34 +105,18 @@ const linebreakFunc = (linebreakEL: AstNode, ctx: GeneratorContext) => {
 
 const labelFunc = (labelEL: AstNode, ctx: GeneratorContext) => {
         const el = labelEL as Label;
-        
-        if (generateInlineCSS(el, ctx) === '') {          
-            return `<label for='${el.elementid}' class='${generateCSSClasses(el.classes)}'>${generateExpression(el.text, ctx)}</label>`;
-        }
-        else {
-            return `<label for='${el.elementid}' style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</label>`;
-        }
+        return `<label for='${el.elementid}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</label>`;
+
 };
 
 const imageFunc = (imageEL: AstNode, ctx: GeneratorContext) => {
     const el = imageEL as Image;
-
-    if (generateInlineCSS(el, ctx) === '') {
-        return `<img src='${generateExpression(el.imagepath, ctx)}' alt='${el.altText !== undefined ? el.altText : ''}'>`
-    }
-    else {
-        return `<img src='${generateExpression(el.imagepath, ctx)}' alt='${el.altText !== undefined ? el.altText : ''}' style='${generateInlineCSS(el, ctx)}'>`
-    }
+    return `<img src='${generateExpression(el.imagepath, ctx)}' alt='${el.altText !== undefined ? el.altText : ''}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>`
 }
 
 const headingFunc = (headingEL: AstNode, ctx: GeneratorContext) => {
     const el = headingEL as Heading;
-    if (generateInlineCSS(el, ctx) === '') {
-        return `<h${el.level}>${generateExpression(el.text, ctx)}</h${el.level}>`
-    }
-    else {
-        return `<h${el.level} style='${generateInlineCSS(el, ctx)}'>${generateExpression(el.text, ctx)}</h${el.level}>`
-    }
+    return `<h${el.level} ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</h${el.level}>`
 }
 
 const useComponentFunc = (UseComponentEL: AstNode, ctx: GeneratorContext) => {
@@ -157,14 +137,14 @@ const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
     const el = TopbarEl as Topbar;
     const topbarNode = new CompositeGeneratorNode()
     if (generateInlineCSS(el, ctx) === '') {
-        topbarNode.append(`<div style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
+        topbarNode.append(`<div class='${generateCSSClasses(el.classes)}' style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
         topbarNode.indent(topbarContent => {
             topbarContent.append(`<p style='color: #f2f2f2; margin-left: 1%; font-size: 17px;'>${generateExpression(el.value, ctx)}</p>`)
         })
         topbarNode.append('</div>')
     }
     else {
-        topbarNode.append(`<div style='${generateInlineCSS(el, ctx)} overflow: hidden;' class='topbar'>`, NL)
+        topbarNode.append(`<div class='${generateCSSClasses(el.classes)}' style='${generateInlineCSS(el, ctx)} overflow: hidden;' class='topbar'>`, NL)
         topbarNode.indent(topbarContent => {
             topbarContent.append(`<p style='${generateInlineCSS(el, ctx)} margin-left: 1%;'>${generateExpression(el.value, ctx)}</p>`)
         })
@@ -253,7 +233,11 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
     return result
 }
 
-
+function formatCSS(classes: string, inline: string): string {
+    let classString = classes ? `class='${classes}' ` : '';
+    let inlineString = inline ? `style='${inline}'` : '';
+    return classString + inlineString;
+}
 function generateCSSClasses(element: CSSClasses): string {
     element.names.forEach(el => {
         copyCSSClass(el);
@@ -262,9 +246,8 @@ function generateCSSClasses(element: CSSClasses): string {
 }
 function generateInlineCSS(element: CSSElements, ctx: GeneratorContext): string {
     let cssString = ''
-
     element.css.forEach(cssel => {
-        switch (cssel.property) {
+        switch (cssel.property){
             case 'text-color':
                 cssString += `color:${generateExpression(cssel.value, ctx)}; `
                 break;
@@ -282,7 +265,7 @@ function generateInlineCSS(element: CSSElements, ctx: GeneratorContext): string 
                 break
         }
     })
-    return cssString
+    return cssString;
 }
 
 // Check for Type and call head functions
