@@ -55,7 +55,7 @@ const titleFunc = (titleEL: AstNode, ctx: GeneratorContext) => {
 const divFunc = (divEl: AstNode, ctx: GeneratorContext) => {
     const el = divEl as Div;
     const fileNode = new CompositeGeneratorNode()
-    fileNode.append('<div>', NL)
+    fileNode.append(`<div ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>`, NL)
     fileNode.indent(divcontent => {
         generateBody(el.content, divcontent, ctx)
     });
@@ -137,14 +137,14 @@ const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
     const topbarNode = new CompositeGeneratorNode()
     let classString = `class='${generateCSSClasses(el.classes)}'`;
     if (generateInlineCSS(el, ctx) === '') {
-        topbarNode.append(`<div ${classString != ''? classString : ''} style='background-color: #333; overflow: hidden;' class='topbar'>`, NL)
+        topbarNode.append(`<div ${classString != '' ? classString : ''} style='background-color: #333; overflow: hidden;'>`, NL)
         topbarNode.indent(topbarContent => {
             topbarContent.append(`<p style='color: #f2f2f2; margin-left: 1%; font-size: 17px;'>${generateExpression(el.value, ctx)}</p>`)
         })
         topbarNode.append('</div>')
     }
     else {
-        topbarNode.append(`<div ${classString != '' ? classString : ''}  style='${generateInlineCSS(el, ctx)} overflow: hidden;' class='topbar'>`, NL)
+        topbarNode.append(`<div ${classString != '' ? classString : ''}  style='${generateInlineCSS(el, ctx)} overflow: hidden;'>`, NL)
         topbarNode.indent(topbarContent => {
             topbarContent.append(`<p style='${generateInlineCSS(el, ctx)} margin-left: 1%;'>${generateExpression(el.value, ctx)}</p>`)
         })

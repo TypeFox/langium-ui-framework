@@ -53,7 +53,7 @@ SymbolReference:
 // Implementation of the <div> container
 
 Div:
-    'div' '{' content=SimpleUi '}';
+    'div' classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? '{' content=SimpleUi '}';
 
 // Implementation of HTML Tags
 
