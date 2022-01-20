@@ -96,7 +96,7 @@ CSSProperties:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
 
 CSSClasses:
-    "classes" + "[" + (names+=CSSRules(',' names+=CSSRules)*)? "]";
+     "classes" + "[" + (names+=CSSRules(',' names+=CSSRules)*)? "]";
 
 // JS implementation
 
@@ -121,7 +121,7 @@ Type returns string:
     'string' | 'number';
 
 CSSRules returns string:
-    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar' | 'dotted-border' | 'dashed-border' | 'border' | 'shadow';
+    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar' | 'dotted-border' | 'dashed-border' | 'border' | 'shadow' | 'hidden-border';
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

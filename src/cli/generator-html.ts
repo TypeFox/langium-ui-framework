@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSClasses, CSSElements, Div, Expression, Heading, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSClasses, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -49,6 +49,11 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
 const titleFunc = (titleEL: AstNode, ctx: GeneratorContext) => {
     const el = titleEL as Title;
     return `<title>${generateExpression(el.text, ctx)}</title>`
+}
+
+const iconFunc = (iconEL: AstNode, ctx:GeneratorContext) => {
+    const el = iconEL as Icon;
+    return `<link rel="icon" href="${generateExpression(el.imagepath, ctx)}">`;
 }
 
 // Body generate functions
@@ -157,7 +162,8 @@ const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
 
 // Head functions
 export const generateHeadFunctions: GenerateFunctions = {
-    Title: titleFunc
+    Title: titleFunc,
+    Icon: iconFunc
 };
 
 // Body functions
@@ -177,7 +183,7 @@ export const generateBodyFunctions: GenerateFunctions = {
 
 function generateExpression(expression: Expression | SimpleExpression, ctx: GeneratorContext): string | number {
     if (isStringExpression(expression)) {
-        return expression.value
+        return parseHtml(expression.value);
     }
     else if (isNumberExpression(expression)) {
         return expression.value
@@ -207,7 +213,7 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
             throw new Error(`Invalid Operation: (${left} ${expression.operator} ${right})`)
         } else {
             result = eval(left + expression.operator + right)
-            return result
+            return parseHtml(result)
         }
     }
     else {
@@ -215,6 +221,9 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
     }
 }
 
+function parseHtml(input: string): string {
+    return input.replace(/\>/g, '&lt;').replace(/\</g, '&gt;');
+}
 function generateParameters(expression: Expression[], ctx: GeneratorContext): string {
     let result = ''
     expression.forEach(el => {
