@@ -6,6 +6,7 @@
 
 .flex-container{
     display: flex;
+    padding: 10px;
 }
 .hidden {
     display: none;
@@ -21,7 +22,6 @@
 .scrollbar {
     overflow: show;
 }
-
 
 .dotted-border {
     border-style: dotted !important; 
