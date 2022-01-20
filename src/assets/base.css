@@ -1,12 +1,11 @@
 .center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .flex-container{
-    display: flexs;
+    display: flex;
 }
 .hidden {
     display: none;
@@ -25,19 +24,21 @@
 
 
 .dotted-border {
-    border-style: dotted;
+    border-style: dotted !important; 
 }
 
 .dashed-border {
-    border-style: dashed;
+    border-style: dashed !important;
 }
 
 .hidden-border {
-    border-style: hidden;
+    border-style: hidden !important;
 }
 
 .border {
     border-style: solid;
+    border-radius: 10px;
+    padding: 1.5%;
 }
 
 .shadow {
