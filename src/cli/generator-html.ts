@@ -222,7 +222,7 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
 }
 
 function parseHtml(input: string): string {
-    return input.replace(/\>/g, '&lt;').replace(/\</g, '&gt;');
+    return input.replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
 }
 function generateParameters(expression: Expression[], ctx: GeneratorContext): string {
     let result = ''
