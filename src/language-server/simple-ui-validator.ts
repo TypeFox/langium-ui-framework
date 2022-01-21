@@ -33,7 +33,7 @@ export class SimpleUiValidator {
         const refContent = el.component.ref?.content as SimpleUi
         const refParameters = (refContent.$container as Component).parameters;
         if (el.arguments.length !== refParameters?.length) {
-            accept('error', `Number of parameters not matching (${el.arguments.length}), expected (${refParameters?.length}).`, {node: el, property: 'arguments'})
+            accept('error', `ParametersNotMatchingError: Number of parameters not matching (${el.arguments.length}), expected (${refParameters?.length}).`, {node: el, property: 'arguments'})
         } else {
             // Check type of parameters
             el.arguments.forEach(function (el, index) {
@@ -42,7 +42,7 @@ export class SimpleUiValidator {
                         return
                     }
                     else {
-                        accept('error', `Wrong parameter type 'number', expected parameter of type '${refParameters[index].type}'.`, { node: el, property: 'value'})
+                        accept('error', `ParametersNotMatchingError: Wrong parameter type 'number', expected parameter of type '${refParameters[index].type}'.`, { node: el, property: 'value'})
                         return
                     }
                 }
@@ -51,7 +51,7 @@ export class SimpleUiValidator {
                         return
                     }
                     else {
-                        accept('error', `Wrong parameter type 'string', expected parameter of type '${refParameters[index].type}'.`, { node: el, property: 'value'});
+                        accept('error', `ParametersNotMatchingError: Wrong parameter type 'string', expected parameter of type '${refParameters[index].type}'.`, { node: el, property: 'value'});
                         return
                     }
                 }
@@ -59,19 +59,22 @@ export class SimpleUiValidator {
         }
     }
     checkIncludeFile(el: Include, accept: ValidationAcceptor): void {
-        el.filenames.forEach(filename => {
+        el.filenames.forEach((filename, index) => {
+            if(el.filenames.includes(filename, index + 1)) {
+                accept('warning', `Warning: Double import is not neccesary: '${filename}'.`, { node: el, property: 'filenames'});
+            }
             filename += ".sui";
             if(!fs.existsSync(filename)) {
-                accept('error', `File does not exists '${filename}'.'`, { node: el, property: 'filenames'});
+                accept('error', `FileNotFoundError: File was not found '${filename}'.`, { node: el, property: 'filenames'});
                 return
-            }
+            }        
         });     
     }
     checkButton(el: Button, accept: ValidationAcceptor): void {
         const refParameters = el.onclickaction?.ref?.parameters
         // Check for the same number of parameters
         if (el.arguments.length !== refParameters?.length) {
-            accept('error', `Number of parameters not matching (${el.arguments.length}), expected (${refParameters?.length}).`, {node: el, property: 'arguments'})
+            accept('error', `ParametersNotMatchingError: Number of parameters not matching (${el.arguments.length}), expected (${refParameters?.length}).`, {node: el, property: 'arguments'})
         } else {
             // Check type of parameters
             el.arguments.forEach(function (el, index) {
@@ -79,7 +82,7 @@ export class SimpleUiValidator {
                     if (refParameters![index].type === 'number') {
                         return
                     } else {
-                        accept('error', `Wrong parameter type 'number', expected parameter of type '${refParameters![index].type}'.`, {node: el, property: 'value'})
+                        accept('error', `ParametersNotMatchingError: Wrong parameter type 'number', expected parameter of type '${refParameters![index].type}'.`, {node: el, property: 'value'})
                         return
                     }
                 }
@@ -88,7 +91,7 @@ export class SimpleUiValidator {
                         return
                     }
                     else {
-                        accept('error', `Wrong parameter type 'string', expected parameter of type '${refParameters![index].type}'.`, { node: el, property: 'value'});
+                        accept('error', `ParametersNotMatchingError: Wrong parameter type 'string', expected parameter of type '${refParameters![index].type}'.`, { node: el, property: 'value'});
                     }
                 }
             })
@@ -96,7 +99,7 @@ export class SimpleUiValidator {
     }
     checkHeadingLevel(el: Heading, accept: ValidationAcceptor): void {
         if (el.level > 6 || el.level < 1) {
-            accept('error', `Wrong headinglevel ${el.level}, expected value between 1 and 6.`, { node: el, property: 'level' })
+            accept('error', `UnexpectedValueError: Wrong headinglevel ${el.level}, expected value between 1 and 6.`, { node: el, property: 'level' })
         } 
         else {
             return
