@@ -221,7 +221,11 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
     }
 }
 
-// encode html entities and replace linebreaks with <br>
+/**
+ * encode html entities and replace linebreaks with <br>
+ * @param input
+ * @returns encoded html string
+ */
 function encodeHtml(input: string): string {
     // https://stackoverflow.com/questions/18749591/encode-html-entities-in-javascript
     let encodedString = input.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
