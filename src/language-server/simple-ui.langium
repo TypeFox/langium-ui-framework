@@ -52,7 +52,7 @@ NumberExpression:
 SymbolReference:
     symbol=[Parameter];
 
-// Implemention of import
+// Implemention of include
 
 Include:
     'include' (filenames+=ID((',' filenames+=ID)?)*);
