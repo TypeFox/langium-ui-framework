@@ -183,7 +183,7 @@ export const generateBodyFunctions: GenerateFunctions = {
 
 function generateExpression(expression: Expression | SimpleExpression, ctx: GeneratorContext): string | number {
     if (isStringExpression(expression)) {
-        return parseHtml(expression.value);
+        return encodeHtml(expression.value);
     }
     else if (isNumberExpression(expression)) {
         return expression.value
@@ -213,7 +213,7 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
             throw new Error(`Invalid Operation: (${left} ${expression.operator} ${right})`)
         } else {
             result = eval(left + expression.operator + right)
-            return parseHtml(result)
+            return encodeHtml(result)
         }
     }
     else {
@@ -221,8 +221,13 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
     }
 }
 
-function parseHtml(input: string): string {
-    return input.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/(\r\n|\n|\r)/gm, '<br>');
+// encode html entities and replace linebreaks with <br>
+function encodeHtml(input: string): string {
+    // https://stackoverflow.com/questions/18749591/encode-html-entities-in-javascript
+    let encodedString = input.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
+        return '&#'+i.charCodeAt(0)+';';
+    });
+    return encodedString.replace(/(\r\n|\n|\r)/gm, '<br>');
 }
 function generateParameters(expression: Expression[], ctx: GeneratorContext): string {
     let result = ''
