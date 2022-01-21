@@ -5,7 +5,7 @@ grammar SimpleUi
 entry SimpleUi:
     (keywords+=Keywords| bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
 
-Keywords:Include;
+Keywords: Include;
 
 HeadElement: Title | Icon;
 

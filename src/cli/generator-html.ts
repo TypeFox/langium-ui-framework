@@ -12,14 +12,12 @@ type GeneratorContext = {
     argumentStack: Object[][]
 }
 
-let includedFiles: string[] = [];
 
 export function generateHTML(model: SimpleUi, filePath: string, destination: string | undefined): string {
     const data = extractDestinationAndName(filePath, destination);
     const generatedFilePath = `${data.destination}index.html`;
     const ctx:GeneratorContext = {argumentStack:[]}
     const fileNode = new CompositeGeneratorNode();
-    includeFiles(model, ctx);
     fileNode.append('<!DOCTYPE html>', NL);
     fileNode.append('<html>', NL);
     fileNode.indent(head => {
@@ -325,29 +323,13 @@ export function generateBody(model: SimpleUi, bodyNode: CompositeGeneratorNode, 
             if(isInstance) {
                 const func = generateBodyFunctions[t];
                 if(func) {
-                    const content = func(el, ctx);
+                    const content = func(el, ctx);                
                     bodyNode.append(content, NL);
                 }
             }
         })
     })
 }
-
-export function includeFiles(model: SimpleUi, ctx:GeneratorContext) {
-    const suiTypes = reflection.getAllTypes();
-    model.keywords.forEach(el => {
-        suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUIAstType;
-            const isInstance = reflection.isInstance(el, t);
-            if(isInstance) {
-                el.filenames.forEach(name => {
-                    includedFiles.push(name)
-                });
-            }
-        })
-    })
-}
-
 // Check for Type and call body functions
 export function generateComponent(model: SimpleUi, bodyNode: CompositeGeneratorNode, ctx:GeneratorContext) {
     const suiTypes = reflection.getAllTypes();
