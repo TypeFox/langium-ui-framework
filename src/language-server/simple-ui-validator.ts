@@ -61,7 +61,7 @@ export class SimpleUiValidator {
     checkIncludeFile(el: Include, accept: ValidationAcceptor): void {
         el.filenames.forEach((filename, index) => {
             if(el.filenames.includes(filename, index + 1)) {
-                accept('warning', `Warning: Multible include is not neccesary: '${filename}'.`, { node: el, property: 'filenames'});
+                accept('warning', `Warning: Multible include is not necessary: '${filename}'.`, { node: el, property: 'filenames'});
             }
             filename += ".sui";
             if(!fs.existsSync(filename)) {
