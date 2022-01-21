@@ -121,7 +121,7 @@ Type returns string:
     'string' | 'number';
 
 CSSRules returns string:
-    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar' | 'dotted-border' | 'dashed-border' | 'border' | 'shadow' | 'hidden-border';
+    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar' | 'border--dotted' | 'border--dashed' | 'border' | 'shadow' | 'border--hidden';
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

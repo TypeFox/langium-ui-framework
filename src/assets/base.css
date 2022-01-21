@@ -4,10 +4,11 @@
     justify-content: center;
 }
 
-.flex-container{
+.flex-container {
     display: flex;
     padding: 10px;
 }
+
 .hidden {
     display: none;
 }
@@ -19,19 +20,20 @@
 .no-scrollbar {
     overflow: hidden;
 }
+
 .scrollbar {
     overflow: show;
 }
 
-.dotted-border {
-    border-style: dotted !important; 
+.border--dotted {
+    border-style: dotted !important;
 }
 
-.dashed-border {
+.border--dashed {
     border-style: dashed !important;
 }
 
-.hidden-border {
+.border--hidden {
     border-style: hidden !important;
 }
 

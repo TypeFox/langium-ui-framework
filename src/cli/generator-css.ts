@@ -27,7 +27,7 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
 
 export function copyCSSClass(name: string) {
     const regex = new RegExp(`\\.${name}[\\s]?\\\{[\\s\\S]*?\\\}`);
-    const fileContent = fs.readFileSync(path.join(__dirname + '/../base.css'),'utf8');
+    const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
     if(fileContent.includes(`.${name}`)) {
         let result = '';
         result += regex.exec(fileContent);
