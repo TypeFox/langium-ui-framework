@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Heading, Icon, Image, Include, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -12,11 +12,14 @@ type GeneratorContext = {
     argumentStack: Object[][]
 }
 
+let includedFiles: string[] = [];
+
 export function generateHTML(model: SimpleUi, filePath: string, destination: string | undefined): string {
     const data = extractDestinationAndName(filePath, destination);
     const generatedFilePath = `${data.destination}index.html`;
     const ctx:GeneratorContext = {argumentStack:[]}
     const fileNode = new CompositeGeneratorNode();
+    includeFiles(model, ctx);
     fileNode.append('<!DOCTYPE html>', NL);
     fileNode.append('<html>', NL);
     fileNode.indent(head => {
@@ -325,6 +328,21 @@ export function generateBody(model: SimpleUi, bodyNode: CompositeGeneratorNode, 
                     const content = func(el, ctx);
                     bodyNode.append(content, NL);
                 }
+            }
+        })
+    })
+}
+
+export function includeFiles(model: SimpleUi, ctx:GeneratorContext) {
+    const suiTypes = reflection.getAllTypes();
+    model.keywords.forEach(el => {
+        suiTypes.forEach(suiType => {
+            const t = suiType as SimpleUIAstType;
+            const isInstance = reflection.isInstance(el, t);
+            if(isInstance) {
+                el.filenames.forEach(name => {
+                    includedFiles.push(name)
+                });
             }
         })
     })

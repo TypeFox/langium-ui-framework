@@ -3,7 +3,9 @@ grammar SimpleUi
 // Initialization
 
 entry SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
+    (keywords+=Keywords| bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
+
+Keywords:Include;
 
 HeadElement: Title | Icon;
 
@@ -49,6 +51,11 @@ NumberExpression:
 
 SymbolReference:
     symbol=[Parameter];
+
+// Implemention of import
+
+Include:
+    'include' (filenames+=ID((',' filenames+=ID)?)*);
 
 // Implementation of the <div> container
 

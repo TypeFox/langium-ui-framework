@@ -1,6 +1,7 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button, Heading } from './generated/ast';
+import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button, Heading, Include } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
+import fs from 'fs';
 
 /**
  * Map AST node types to validation checks.
@@ -16,6 +17,7 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
             UseComponent: validator.checkUseComponent,
+            Include: validator.checkIncludeFile,
             Button: validator.checkButton,
             Heading: validator.checkHeadingLevel
         };
@@ -55,6 +57,15 @@ export class SimpleUiValidator {
                 }
             })
         }
+    }
+    checkIncludeFile(el: Include, accept: ValidationAcceptor): void {
+        el.filenames.forEach(filename => {
+            filename += ".sui";
+            if(!fs.existsSync(filename)) {
+                accept('error', `File does not exists '${filename}'.'`, { node: el, property: 'filenames'});
+                return
+            }
+        });     
     }
     checkButton(el: Button, accept: ValidationAcceptor): void {
         const refParameters = el.onclickaction?.ref?.parameters
