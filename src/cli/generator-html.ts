@@ -1,8 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { GenericNotificationHandler } from 'vscode-jsonrpc';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Heading, Icon, Image, Import, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -161,10 +160,10 @@ const useComponentFunc = (UseComponentEL: AstNode, ctx:GeneratorContext) => {
     return componentNode;
 }
 
-const importFunc = (ImportEL: AstNode, ctx:GeneratorContext) => {
-    const el = ImportEL as Import
-    // TODO: Add Import
-}
+// const importFunc = (ImportEL: AstNode, ctx:GeneratorContext) => {
+//     const el = ImportEL as Import
+//     // TODO: Add Import
+// }
 
 const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
     const el = TopbarEl as Topbar;
