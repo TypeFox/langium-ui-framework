@@ -1,5 +1,5 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button, Heading, Include } from './generated/ast';
+import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button, Heading, Import } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 import fs from 'fs';
 
@@ -17,7 +17,7 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         const validator = services.validation.SimpleUiValidator;
         const checks: SimpleUiChecks = {
             UseComponent: validator.checkUseComponent,
-            Include: validator.checkIncludeFile,
+            Import: validator.checkImportFile,
             Button: validator.checkButton,
             Heading: validator.checkHeadingLevel
         };
@@ -58,10 +58,10 @@ export class SimpleUiValidator {
             })
         }
     }
-    checkIncludeFile(el: Include, accept: ValidationAcceptor): void {
+    checkImportFile(el: Import, accept: ValidationAcceptor): void {
         el.filenames.forEach((filename, index) => {
             if(el.filenames.includes(filename, index + 1)) {
-                accept('warning', `Warning: Multible include is not necessary: '${filename}'.`, { node: el, property: 'filenames'});
+                accept('warning', `Warning: Multiple import is not necessary: '${filename}'.`, { node: el, property: 'filenames'});
             }
             filename += ".sui";
             if(!fs.existsSync(filename)) {
