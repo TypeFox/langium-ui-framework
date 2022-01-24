@@ -67,7 +67,7 @@ Topbar:
     'topbar' value=Expression (fixed?='fixed')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Footer:
-    'footer' value=Expression (fixed?='fixed')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'footer' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
     'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
