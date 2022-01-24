@@ -5,7 +5,7 @@ grammar SimpleUi
 entry SimpleUi:
     (keywords+=Keywords| bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
 
-Keywords: Include;
+Keywords: Import;
 
 HeadElement: Title | Icon;
 
@@ -52,10 +52,10 @@ NumberExpression:
 SymbolReference:
     symbol=[Parameter];
 
-// Implemention of include
+// Implemention of Import
 
-Include:
-    'include' (filenames+=ID((',' filenames+=ID)?)*);
+Import:
+    'import' (filenames+=ID((',' filenames+=ID)?)*);
 
 // Implementation of the <div> container
 
