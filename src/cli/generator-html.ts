@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSElements, Div, Expression, Footer, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -190,6 +190,18 @@ const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
     return topbarNode
 }
 
+const footerFunc = (FooterEl: AstNode, ctx:GeneratorContext) => {
+    const el = FooterEl as Footer;
+    const footerNode = new CompositeGeneratorNode()
+
+    footerNode.append(`<div class='footer' style='${generateInlineCSS(el,ctx)}'>`, NL);
+    footerNode.indent(footerContent => {
+        footerContent.append(`<p style='${generateInlineCSS(el,ctx)}'>${generateExpression(el.value, ctx)}</p>`,NL)
+    })
+    footerNode.append(`</div>`);
+    return footerNode
+}
+
 // Redirect to generator function by Type
 
 // Head functions
@@ -209,7 +221,8 @@ export const generateBodyFunctions: GenerateFunctions = {
     Image: imageFunc,
     Heading: headingFunc,
     UseComponent: useComponentFunc,
-    Topbar: topbarFunc
+    Topbar: topbarFunc,
+    Footer: footerFunc
 };
 
 function generateExpression(expression: Expression|SimpleExpression, ctx:GeneratorContext):string|number {

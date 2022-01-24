@@ -7,14 +7,14 @@ entry SimpleUi:
 
 HeadElement: Title | Icon;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar;
+BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
 
 JSModel:
     (jselements+=JSElements)*;
 
 JSElements: Popup;
 
-CSSElements: Paragraph | Heading | Topbar | Image;
+CSSElements: Paragraph | Heading | Topbar | Image | Footer;
 
 // Expression
 Expression:
@@ -65,6 +65,9 @@ Icon:
 
 Topbar:
     'topbar' value=Expression (fixed?='fixed')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+
+Footer:
+    'footer' value=Expression (fixed?='fixed')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
     'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;

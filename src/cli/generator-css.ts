@@ -39,6 +39,26 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
     })
     fileNode.append('}',NL);
 
+    fileNode.append('.footer {', NL);
+    fileNode.indent(indentContent => {
+        indentContent.append('position: absolute;', NL);
+        indentContent.append('bottom: 0;', NL);
+        indentContent.append('left: 0;', NL);
+        indentContent.append('right: 0;', NL);
+        indentContent.append('width: 100%;', NL);
+        indentContent.append('padding: 1rem 1%;', NL);
+        indentContent.append('background: #333;', NL);
+        indentContent.append('color: #f2f2f2;', NL);
+    });
+    fileNode.append('}',NL);
+    fileNode.append('.footer > p{',NL);
+    fileNode.indent(indentContent => {
+        indentContent.append('color: #f2f2f2;',NL);
+        indentContent.append('font-size: 1.5rem;',NL);
+        indentContent.append('text-decoration: none;',NL);
+    })
+    fileNode.append('}',NL);
+
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
