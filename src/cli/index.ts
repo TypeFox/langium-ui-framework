@@ -3,7 +3,7 @@ import { Command } from 'commander';
 import { SimpleUiLanguageMetaData } from '../language-server/generated/module';
 import { SimpleUi } from '../language-server/generated/ast';
 import { createSimpleUiServices } from '../language-server/simple-ui-module';
-import { extractAstNode } from './cli-util';
+import { extractAstNode, setRootFolder } from './cli-util';
 import { generateHTML } from './generator-html';
 import { generateCSS } from './generator-css';
 import { generateJS } from './generator-js';
@@ -27,6 +27,8 @@ program
         console.log(colors.green('HTML code generated successfully:'), colors.yellow(generatedHTMLFilePath));
         console.log(colors.green('CSS code generated successfully:'), colors.yellow(generatedCSSFilePath));
         console.log(colors.green('JS code generated successfully:'), colors.yellow(generatedJSFilePath));
+
+        await setRootFolder(fileName, createSimpleUiServices().simpleUi, opts.destination);
     });
 
 program.parse(process.argv);

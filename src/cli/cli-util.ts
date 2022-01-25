@@ -3,6 +3,7 @@ import colors from 'colors';
 import { AstNode, LangiumDocument, LangiumServices } from 'langium';
 import path from 'path';
 import { URI } from 'vscode-uri';
+import { WorkspaceFolder } from 'vscode-languageserver';
 
 export async function extractDocument(fileName: string, extensions: string[], services: LangiumServices): Promise<LangiumDocument> {
     if (!extensions.includes(path.extname(fileName))) {
@@ -38,6 +39,20 @@ export async function extractAstNode<T extends AstNode>(fileName: string, extens
     const document = await extractDocument(fileName, extensions, services);
     return document.parseResult?.value as T
 }
+
+
+export async function setRootFolder(fileName: string, services: LangiumServices, root?: string): Promise<void> {
+    const folders: WorkspaceFolder[] = [];
+    if(!root) {
+        root = path.dirname(fileName);
+    }
+    folders.push({
+        name: path.basename(root),
+        uri: path.resolve(root)
+    });
+    await services.shared.workspace.IndexManager.initializeWorkspace(folders);
+}
+
 
 interface FilePathData {
     destination: string,
