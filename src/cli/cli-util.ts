@@ -1,9 +1,8 @@
 import fs from 'fs';
 import colors from 'colors';
-import { AstNode, BuildResult, LangiumDocument, LangiumServices } from 'langium';
+import { LangiumDocument, LangiumServices } from 'langium';
 import path from 'path';
 import { URI } from 'vscode-uri';
-import { Diagnostic } from 'vscode';
 import { GenerateOptions } from '.';
 
 export async function extractDocument(fileName: string, extensions: string[], services: LangiumServices, options: GenerateOptions): Promise<GeneratorResult> {

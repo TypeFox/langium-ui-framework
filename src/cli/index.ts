@@ -3,7 +3,7 @@ import { Command } from 'commander';
 import { SimpleUiLanguageMetaData } from '../language-server/generated/module';
 import { SimpleUi } from '../language-server/generated/ast';
 import { createSimpleUiServices } from '../language-server/simple-ui-module';
-import { checkValidation, extractAstNode, extractDocument } from './cli-util';
+import { extractDocument } from './cli-util';
 import { generateHTML } from './generator-html';
 import { generateCSS } from './generator-css';
 import { generateJS } from './generator-js';
