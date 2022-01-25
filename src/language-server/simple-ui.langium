@@ -93,7 +93,8 @@ CSSProperties:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
 
 CSSClasses:
-     "classes" + "[" + (names+=CSSRules(',' names+=CSSRules)*)? "]";
+    "classes" "[" (names+=CSSRule(',' names+=CSSRule)*)? "]";
+
 
 // JS implementation
 
@@ -111,14 +112,14 @@ Component:
 UseComponent:
     'usecomponent' component=[Component] ('('(arguments+=Expression(',' arguments+=Expression)*)?')')?;
 
+CSSRule returns string:
+    ID (('-')* ID)*;
+
 Parameter:
     name=ID ':' type=Type;
 
 Type returns string:
     'string' | 'number';
-
-CSSRules returns string:
-    'center' | 'flex-container' | 'hidden' | 'smooth-scroll' | 'no-scrollbar' | 'scrollbar' | 'border--dotted' | 'border--dashed' | 'border' | 'shadow' | 'border--hidden';
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;
