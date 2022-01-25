@@ -104,7 +104,6 @@ const textboxFunc = (textboxEL: AstNode, ctx: GeneratorContext) => {
     else {
         labelOrder.push(`<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el, ctx))}>`);
     };
-    console.log(typeof el.labelAfter)
     if (typeof el.labeltext !== 'undefined' && !el.labelAfter) {
         labelOrder.unshift(`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`, NL);
     } 

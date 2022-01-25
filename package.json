@@ -42,6 +42,7 @@
     "scripts": {
         "vscode:prepublish": "npm run build && npm run lint",
         "build": "tsc",
+        "prebuild": "cp ./src/assets/* ./out/",
         "watch": "tsc -w",
         "lint": "eslint src --ext ts",
         "langium:generate": "langium generate",
