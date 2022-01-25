@@ -7,7 +7,7 @@ entry SimpleUi:
 
 HeadElement: Title | Icon;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Label | Topbar;
+BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar;
 
 JSModel:
     (jselements+=JSElements)*;
@@ -53,7 +53,7 @@ SymbolReference:
 // Implementation of the <div> container
 
 Div:
-    'div' '{' content=SimpleUi '}';
+    'div' classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? '{' content=SimpleUi '}';
 
 // Implementation of HTML Tags
 
@@ -64,7 +64,7 @@ Icon:
     'icon' imagepath=Expression;
 
 Topbar:
-    'topbar' value=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
+    'topbar' value=Expression (fixed?='fixed')? classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
     'paragraph' text=Expression classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
@@ -72,11 +72,8 @@ Paragraph:
 Heading:
     'heading' text=Expression 'level:' level=INT classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
-Label:
-    'label'  text=Expression classes=CSSClasses?  '{' 'for:' elementid=ID '}' ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
-
 Textbox:
-    'textbox' name=ID classes=CSSClasses?  ('{' 'placeholdertext:' placeholdertext=Expression '}')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
+    'textbox' name=ID classes=CSSClasses? ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
 
 Button:
     'button' buttontext=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
@@ -97,6 +94,7 @@ CSSProperties:
 
 CSSClasses:
     "classes" "[" (names+=CSSRule(',' names+=CSSRule)*)? "]";
+
 
 // JS implementation
 
@@ -122,7 +120,6 @@ Parameter:
 
 Type returns string:
     'string' | 'number';
-
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

@@ -10,26 +10,22 @@
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [
-            {
-                "id": "simple-ui",
-                "aliases": [
-                    "SimpleUI",
-                    "simple-ui"
-                ],
-                "extensions": [
-                    ".sui"
-                ],
-                "configuration": "./language-configuration.json"
-            }
-        ],
-        "grammars": [
-            {
-                "language": "simple-ui",
-                "scopeName": "source.simple-ui",
-                "path": "./syntaxes/simple-ui.tmLanguage.json"
-            }
-        ]
+        "languages": [{
+            "id": "simple-ui",
+            "aliases": [
+                "SimpleUI",
+                "simple-ui"
+            ],
+            "extensions": [
+                ".sui"
+            ],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "simple-ui",
+            "scopeName": "source.simple-ui",
+            "path": "./syntaxes/simple-ui.tmLanguage.json"
+        }]
     },
     "activationEvents": [
         "onLanguage:simple-ui"
@@ -46,7 +42,6 @@
     "scripts": {
         "vscode:prepublish": "npm run build && npm run lint",
         "build": "tsc",
-        "prebuild": "cp ./src/assets/* ./out/",
         "watch": "tsc -w",
         "lint": "eslint src --ext ts",
         "langium:generate": "langium generate",
