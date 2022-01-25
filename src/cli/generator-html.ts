@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSClasses, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Label, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { Button, Component, CSSClasses, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -95,22 +95,30 @@ const linkFunc = (linkEL: AstNode, ctx: GeneratorContext) => {
 
 const textboxFunc = (textboxEL: AstNode, ctx: GeneratorContext) => {
     const el = textboxEL as Textbox;
+    const fileNode = new CompositeGeneratorNode()
+    const labelOrder = []
+
     if (typeof el.placeholdertext === 'undefined') {
-        return `<input type='text' id='${el.name}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el, ctx))}>`;
+        labelOrder.push(`<input type='text' id='${el.name}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el, ctx))}>`);
     }
     else {
-        return `<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>`;
+        labelOrder.push(`<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el, ctx))}>`);
     };
+    console.log(typeof el.labelAfter)
+    if (typeof el.labeltext !== 'undefined' && !el.labelAfter) {
+        labelOrder.unshift(`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`, NL);
+    } 
+    else if (typeof el.labeltext !== 'undefined' && el.labelAfter){
+        labelOrder.push(NL,`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`);
+    }
+    labelOrder.map(el => {
+        fileNode.append(el)
+    })
+    return fileNode
 };
 
 const linebreakFunc = (linebreakEL: AstNode, ctx: GeneratorContext) => {
     return '<br>';
-};
-
-const labelFunc = (labelEL: AstNode, ctx: GeneratorContext) => {
-    const el = labelEL as Label;
-    return `<label for='${el.elementid}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</label>`;
-
 };
 
 const imageFunc = (imageEL: AstNode, ctx: GeneratorContext) => {
@@ -139,8 +147,18 @@ const useComponentFunc = (UseComponentEL: AstNode, ctx: GeneratorContext) => {
 
 const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
     const el = TopbarEl as Topbar;
-    const topbarNode = new CompositeGeneratorNode()
-    let classString = `class='${generateCSSClasses(el.classes)}'`;
+    const topbarNode = new CompositeGeneratorNode();
+    topbarNode.append(`<header class='topbar ${el.fixed?'topbar--fixed':''}' class='${generateCSSClasses(el.classes)}' style='${generateInlineCSS(el,ctx)}'>`,NL);
+    topbarNode.indent(topbarContent => {
+        topbarContent.append(`<nav>`,NL);
+        topbarContent.indent(navigationContent => {
+            navigationContent.append(`<a style='${generateInlineCSS(el,ctx)}' href='./'>${generateExpression(el.value, ctx)}</a>`,NL)
+        });
+        topbarContent.append(`</nav>`,NL);
+    })
+    topbarNode.append(`</header>`);
+  
+    /*previous way of generating html
     if (generateInlineCSS(el, ctx) === '') {
         topbarNode.append(`<div ${classString != '' ? classString : ''} style='background-color: #333; overflow: hidden;'>`, NL)
         topbarNode.indent(topbarContent => {
@@ -155,6 +173,7 @@ const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
         })
         topbarNode.append('</div>')
     }
+    */
     return topbarNode
 }
 
@@ -174,7 +193,6 @@ export const generateBodyFunctions: GenerateFunctions = {
     Link: linkFunc,
     Textbox: textboxFunc,
     Linebreak: linebreakFunc,
-    Label: labelFunc,
     Image: imageFunc,
     Heading: headingFunc,
     UseComponent: useComponentFunc,
