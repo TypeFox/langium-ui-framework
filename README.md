@@ -1,5 +1,5 @@
 <div id="logo" align="center">
-  <a href="https://github.com/langium/langium">
+  <a href="https://github.com/TypeFox/langium-ui-framework">
 		<img alt="Langium Logo" width="800" src="https://user-images.githubusercontent.com/68400102/150516517-7da9423e-7d0e-4605-91c7-d7693ccd3c28.png">
   </a>
   <h3>
