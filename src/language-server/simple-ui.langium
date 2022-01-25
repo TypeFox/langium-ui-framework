@@ -14,7 +14,7 @@ JSModel:
 
 JSElements: Popup;
 
-CSSElements: Paragraph | Heading | Topbar | Image | Label | Button | Link | Textbox;
+CSSElements: Paragraph | Heading | Topbar | Image | Button | Link | Textbox;
 
 // Expression
 Expression:
