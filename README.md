@@ -11,7 +11,7 @@
 </div>
 
 <hr>
-SimpleUI is a very simple UI Framework for generating web user interfaces. SimpleUI includes HTML, JavaScript and CSS
+SimpleUI is a easy UI Framework for building and generating web user interfaces. SimpleUI includes HTML, JavaScript and CSS
 
 ## About
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
