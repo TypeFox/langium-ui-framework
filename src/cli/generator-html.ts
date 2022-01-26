@@ -108,7 +108,6 @@ const textboxFunc = (textboxEL: AstNode, ctx:GeneratorContext) => {
     else {
         labelOrder.push(`<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}'>`);
     };
-    console.log(typeof el.labelAfter)
     if (typeof el.labeltext !== 'undefined' && !el.labelAfter) {
         labelOrder.unshift(`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`, NL);
     } 
@@ -149,21 +148,15 @@ const useComponentFunc = (UseComponentEL: AstNode, ctx:GeneratorContext) => {
     const el = UseComponentEL as UseComponent;
     const componentNode = new CompositeGeneratorNode()
     const refContent = el.component.ref?.content as SimpleUi
-    const refParameters = (refContent.$container as Component).parameters;
+    const refParameters = (refContent.$container as Component).parameters; 
     const argumentList = refParameters.map(function (refEl: Parameter, index:integer) {
         return ({name: refEl.name, type: refEl.type, value: generateExpression(el.arguments[index], ctx)})
     })
     ctx.argumentStack.push(argumentList);
-    console.log(refContent);
     generateComponent(refContent, componentNode, ctx);
     ctx.argumentStack.pop();
     return componentNode;
 }
-
-// const importFunc = (ImportEL: AstNode, ctx:GeneratorContext) => {
-//     const el = ImportEL as Import
-//     // TODO: Add Import
-// }
 
 const topbarFunc = (TopbarEl: AstNode, ctx:GeneratorContext) => {
     const el = TopbarEl as Topbar;
@@ -346,7 +339,7 @@ export function generateComponent(model: SimpleUi, bodyNode: CompositeGeneratorN
             if(isInstance) {
                 const func = generateBodyFunctions[t];
                 if(func) {
-                    const content = func(el, ctx);
+                    const content = func(el, ctx);               
                     bodyNode.append(content, NL);
                 }
             }

@@ -1,4 +1,5 @@
 import colors from 'colors';
+
 import { Command } from 'commander';
 import { SimpleUiLanguageMetaData } from '../language-server/generated/module';
 import { SimpleUi } from '../language-server/generated/ast';
@@ -20,15 +21,15 @@ program
     .option('-d, --destination <dir>', 'destination directory of generating')
     .description('generates HTML code based on the input')
     .action(async (fileName: string, opts: GenerateOptions) => {
-        const model = await extractAstNode<SimpleUi>(fileName, SimpleUiLanguageMetaData.fileExtensions, createSimpleUiServices().simpleUi);
+        let simpleUi = createSimpleUiServices().simpleUi;
+        await setRootFolder(fileName, simpleUi);
+        const model = await extractAstNode<SimpleUi>(fileName, SimpleUiLanguageMetaData.fileExtensions, simpleUi);
         const generatedHTMLFilePath = generateHTML(model, fileName, opts.destination);
         const generatedCSSFilePath = generateCSS(model, fileName, opts.destination);
         const generatedJSFilePath = generateJS(model, fileName, opts.destination);
         console.log(colors.green('HTML code generated successfully:'), colors.yellow(generatedHTMLFilePath));
         console.log(colors.green('CSS code generated successfully:'), colors.yellow(generatedCSSFilePath));
         console.log(colors.green('JS code generated successfully:'), colors.yellow(generatedJSFilePath));
-
-        await setRootFolder(fileName, createSimpleUiServices().simpleUi, opts.destination);
     });
 
 program.parse(process.argv);

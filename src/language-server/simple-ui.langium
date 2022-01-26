@@ -3,9 +3,7 @@ grammar SimpleUi
 // Initialization
 
 entry SimpleUi:
-    (keywords+=Keywords| bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
-
-Keywords: Import;
+    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
 
 HeadElement: Title | Icon;
 
@@ -51,11 +49,6 @@ NumberExpression:
 
 SymbolReference:
     symbol=[Parameter];
-
-// Implemention of Import
-
-Import:
-    'import' (filenames+=ID((',' filenames+=ID)?)*);
 
 // Implementation of the <div> container
 
