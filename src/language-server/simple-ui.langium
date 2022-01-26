@@ -14,7 +14,7 @@ JSModel:
 
 JSElements: Popup;
 
-CSSElements: Paragraph | Heading | Topbar | Image | Button | Link | Textbox;
+CSSElements: Paragraph | Heading | Topbar | Image | Button | Link | Textbox | Div;
 
 // Expression
 Expression:
@@ -73,7 +73,7 @@ Heading:
     'heading' text=Expression 'level:' level=INT classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Textbox:
-    'textbox' name=ID classes=CSSClasses? ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
+    'textbox' name=ID classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
 
 Button:
     'button' buttontext=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
