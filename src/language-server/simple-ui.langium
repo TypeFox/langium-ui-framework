@@ -3,7 +3,7 @@ grammar SimpleUi
 // Initialization
 
 entry SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | jsfunctions+=JSFunction)*;
 
 HeadElement: Title | Icon;
 
