@@ -96,7 +96,7 @@ export class SimpleUiValidator {
     }
     checkCSSClasses(classes: CSSClasses, accept: ValidationAcceptor): void {
         const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
-        let regex = /(?<=\.).*?(?=[\s]?{)/gm;
+        let regex = new RegExp('(?<=\\.)[a-zA-Z\\d\\-]*','gm');
         let cssClasses = fileContent.match(regex);
         classes.names.forEach(element => {
             if(!cssClasses?.includes(element))

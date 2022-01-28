@@ -51,12 +51,14 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
 }
 
 export function copyCSSClass(name: string) {
-    const regex = new RegExp(`\\.${name}[\\s]?\\\{[\\s\\S]*?\\\}`);
+    const regex = new RegExp(`\\.${name}[\\s\\S]+?\{[\\s\\S]*?\}`,'gm');
     const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
-    if(fileContent.includes(`.${name}`)) {
-        let result = '';
-        result += regex.exec(fileContent);
-        if(!copiedCSS.includes(result))
-            copiedCSS.push(result);
+    const regexResult = fileContent.match(regex);
+
+    if(regexResult){
+    const output = regexResult.join('\n');
+        if(!copiedCSS.includes(output)){
+            copiedCSS.push(output);
+        }
     }
 }
