@@ -53,7 +53,7 @@ SymbolReference:
 // Implementation of the <section> element
 
 Section: 
-    'section' name=ID description=STRING classes=CSSClasses? content+=BodyElement* 'end';
+    'section' name=ID? description=STRING? classes=CSSClasses? content+=BodyElement* 'end';
 
 // Implementation of the <div> container
 
