@@ -3,7 +3,7 @@ grammar SimpleUi
 // Initialization
 
 entry SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | parameters+=Parameter | jsfunctions+=JSFunction)*;
+    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | jsfunctions+=JSFunction)*;
 
 HeadElement: Title | Icon;
 
@@ -14,7 +14,7 @@ JSModel:
 
 JSElements: Popup;
 
-CSSElements: Paragraph | Heading | Topbar | Image | Footer;
+CSSElements: Paragraph | Heading | Topbar | Image | Button | Link | Textbox | Div;
 
 // Expression
 Expression:
@@ -53,7 +53,7 @@ SymbolReference:
 // Implementation of the <div> container
 
 Div:
-    'div' '{' content=SimpleUi '}';
+    'div' classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? '{' content=SimpleUi '}';
 
 // Implementation of HTML Tags
 
@@ -64,28 +64,28 @@ Icon:
     'icon' imagepath=Expression;
 
 Topbar:
-    'topbar' value=Expression (fixed?='fixed')? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'topbar' value=Expression (fixed?='fixed')? classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Footer:
     'footer' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
-    'paragraph' text=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'paragraph' text=Expression classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Heading:
-    'heading' text=Expression 'level:' level=INT ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'heading' text=Expression 'level:' level=INT classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Textbox:
-    'textbox' name=ID ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
+    'textbox' name=ID classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
 
 Button:
-    'button' buttontext=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
+    'button' buttontext=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
 
 Link:
-    'link' linkurl=Expression ('{' 'linktext:' linktext=Expression '}')?;
+    'link' linkurl=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' 'linktext:' linktext=Expression '}')?;
 
 Image:
-    'image' imagepath=Expression ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+    'image' imagepath=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -94,6 +94,10 @@ Linebreak:
 
 CSSProperties:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
+
+CSSClasses:
+    "classes" "[" (names+=CSSRule(',' names+=CSSRule)*)? "]";
+
 
 // JS implementation
 
@@ -110,6 +114,9 @@ Component:
 
 UseComponent:
     'usecomponent' component=[Component] ('('(arguments+=Expression(',' arguments+=Expression)*)?')')?;
+
+CSSRule returns string:
+    ID (('-')* ID)*;
 
 Parameter:
     name=ID ':' type=Type;

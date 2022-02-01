@@ -1,5 +1,7 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button, Heading } from './generated/ast';
+import path from 'path';
+import fs from 'fs';
+import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button, Heading, CSSClasses } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 
 /**
@@ -17,6 +19,7 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         const checks: SimpleUiChecks = {
             UseComponent: validator.checkUseComponent,
             Button: validator.checkButton,
+            CSSClasses: validator.checkCSSClasses,
             Heading: validator.checkHeadingLevel
         };
         this.register(checks, validator);
@@ -90,5 +93,14 @@ export class SimpleUiValidator {
         else {
             return
         }
+    }
+    checkCSSClasses(classes: CSSClasses, accept: ValidationAcceptor): void {
+        const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
+        let regex = new RegExp('(?<=\\.)[a-zA-Z\\d\\-]*','gm');
+        let cssClasses = fileContent.match(regex);
+        classes.names.forEach(element => {
+            if(!cssClasses?.includes(element))
+            accept('error', `Error: CSS Class ${element} does not exist.`, { node: classes.$container, property: 'css' })
+        });
     }
 }

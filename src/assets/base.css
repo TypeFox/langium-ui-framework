@@ -1,0 +1,64 @@
+.topbar {
+    width:100%;
+    background-color: #333;
+    overflow: hidden;
+    padding: 1rem 1%;
+}
+.topbar > nav > a:any-link {
+    color: #f2f2f2;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+.topbar--fixed {
+    position: fixed;
+    top: 0;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-container {
+    display: flex;
+    padding: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.smooth-scroll {
+    scroll-behavior: smooth;
+}
+
+.no-scrollbar {
+    overflow: hidden;
+}
+
+.scrollbar {
+    overflow: show;
+}
+
+.border--dotted {
+    border-style: dotted !important;
+}
+
+.border--dashed {
+    border-style: dashed !important;
+}
+
+.border--hidden {
+    border-style: hidden !important;
+}
+
+.border {
+    border-style: solid;
+    border-radius: 10px;
+    padding: 1.5%;
+}
+
+.shadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.18);
+}

@@ -5,6 +5,7 @@
 {
 	"version": "0.2.0",
     "configurations": [
+
         {
 			"name": "Bootstrap",
 			"request": "launch",
@@ -31,6 +32,21 @@
             "args": [
                 "--extensionDevelopmentPath=${workspaceFolder}"
             ]
-        }
+        },
+		{
+			"name": "Attach",
+			"port": 6009,
+			"request": "attach",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"sourceMaps": true,
+			"outFiles": [
+				"${workspaceFolder}/**/*.js",
+				"!**/node_modules/**"
+			],
+			"type": "pwa-node"
+
+		}
     ]
 }

@@ -1,5 +1,6 @@
 import { createDefaultModule, createDefaultSharedModule, DefaultSharedModuleContext, inject, LangiumServices, LangiumSharedServices, Module, PartialLangiumServices } from 'langium';
 import { SimpleUiGeneratedModule, SimpleUIGeneratedSharedModule } from './generated/module';
+import { SimpleUICompletionProvider } from './simple-ui-completion';
 import { SimpleUiValidationRegistry, SimpleUiValidator } from './simple-ui-validator';
 
 /**
@@ -26,6 +27,11 @@ export const SimpleUiModule: Module<SimpleUiServices, PartialLangiumServices & S
     validation: {
         ValidationRegistry: (injector) => new SimpleUiValidationRegistry(injector),
         SimpleUiValidator: () => new SimpleUiValidator()
+    },
+    lsp: {
+        completion: {
+            CompletionProvider: (services) => new SimpleUICompletionProvider(services),
+        },
     }
 };
 
