@@ -194,7 +194,7 @@ const footerFunc = (FooterEl: AstNode, ctx:GeneratorContext) => {
     const el = FooterEl as Footer;
     const footerNode = new CompositeGeneratorNode()
 
-    footerNode.append(`<div class='footer' style='${generateInlineCSS(el,ctx)}'>`, NL);
+    footerNode.append(`<footer class='footer' style='${generateInlineCSS(el,ctx)}'>`, NL);
     footerNode.indent(footerContent => {
         footerContent.append(`<p style='${generateInlineCSS(el,ctx)}'>${generateExpression(el.value, ctx)}</p>`,NL)
     })
