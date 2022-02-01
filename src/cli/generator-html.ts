@@ -198,7 +198,7 @@ const footerFunc = (FooterEl: AstNode, ctx:GeneratorContext) => {
     footerNode.indent(footerContent => {
         footerContent.append(`<p style='${generateInlineCSS(el,ctx)}'>${generateExpression(el.value, ctx)}</p>`,NL)
     })
-    footerNode.append(`</div>`);
+    footerNode.append(`</footer>`);
     return footerNode
 }
 
