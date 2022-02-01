@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, Component, CSSClasses, CSSElements, Div, Expression, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, Section, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, Component, CSSClasses, CSSElements, Div, Expression, Footer, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, Section, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -158,6 +158,7 @@ const useComponentFunc = (UseComponentEL: AstNode, ctx: GeneratorContext) => {
 const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
     const el = TopbarEl as Topbar;
     const topbarNode = new CompositeGeneratorNode();
+    copyCSSClass('topbar');
     topbarNode.append(`<header class='topbar ${el.fixed?'topbar--fixed':''}' class='${generateCSSClasses(el.classes)}' style='${generateInlineCSS(el,ctx)}'>`,NL);
     topbarNode.indent(topbarContent => {
         topbarContent.append(`<nav>`,NL);
@@ -168,6 +169,18 @@ const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
     })
     topbarNode.append(`</header>`);
     return topbarNode
+}
+
+const footerFunc = (FooterEl: AstNode, ctx:GeneratorContext) => {
+    const el = FooterEl as Footer;
+    const footerNode = new CompositeGeneratorNode()
+
+    footerNode.append(`<footer class='footer' style='${generateInlineCSS(el,ctx)}'>`, NL);
+    footerNode.indent(footerContent => {
+        footerContent.append(`<p style='${generateInlineCSS(el,ctx)}'>${generateExpression(el.value, ctx)}</p>`,NL)
+    })
+    footerNode.append(`</footer>`);
+    return footerNode
 }
 
 // Redirect to generator function by Type
@@ -190,7 +203,8 @@ export const generateBodyFunctions: GenerateFunctions = {
     Heading: headingFunc,
     UseComponent: useComponentFunc,
     Topbar: topbarFunc,
-    Section: sectionFunc
+    Section: sectionFunc,
+    Footer: footerFunc
 };
 
 function generateExpression(expression: Expression | SimpleExpression, ctx: GeneratorContext): string | number {
