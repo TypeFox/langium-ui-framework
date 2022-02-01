@@ -4,12 +4,12 @@
     overflow: hidden;
     padding: 1rem 1%;
 }
-.topbar > nav > a:any-link{
+.topbar > nav > a:any-link {
     color: #f2f2f2;
     font-size: 1.5rem;
     text-decoration: none;
 }
-.topbar--fixed{
+.topbar--fixed {
     position: fixed;
     top: 0;
 }
