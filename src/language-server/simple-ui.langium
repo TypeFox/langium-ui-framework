@@ -7,7 +7,7 @@ entry SimpleUi:
 
 HeadElement: Title | Icon;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar;
+BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
 
 JSModel:
     (jselements+=JSElements)*;
@@ -65,6 +65,9 @@ Icon:
 
 Topbar:
     'topbar' value=Expression (fixed?='fixed')? classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
+
+Footer:
+    'footer' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
 
 Paragraph:
     'paragraph' text=Expression classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;

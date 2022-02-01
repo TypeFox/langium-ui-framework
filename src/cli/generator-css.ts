@@ -21,6 +21,20 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
     // CSS from base.css (only classes used in the input file)
     fileNode.append(copiedCSS.join("\n"));
 
+    fileNode.append('.footer {', NL);
+    fileNode.indent(indentContent => {
+        indentContent.append('width: 100%;', NL);
+        indentContent.append('padding: 1rem 1%;', NL);
+        indentContent.append('background: #333;', NL);
+        indentContent.append('color: #f2f2f2;', NL);
+    });
+    fileNode.append('}',NL);
+    fileNode.append('.footer > p{',NL);
+    fileNode.indent(indentContent => {
+        indentContent.append('font-size: 1.5rem;',NL);
+    })
+    fileNode.append('}',NL);
+
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
