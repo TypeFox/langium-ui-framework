@@ -100,7 +100,7 @@ export class SimpleUiValidator {
         let cssClasses = fileContent.match(regex);
         classes.names.forEach(element => {
             if(!cssClasses?.includes(element))
-            accept('error', `Error: CSS Class ${element} does not exist.`, { node: classes.$container, property: 'css' })
+            accept('error', `Error: CSS Class ${element} does not exist.`, { node: classes.$container, property: 'classes' })
         });
     }
 }

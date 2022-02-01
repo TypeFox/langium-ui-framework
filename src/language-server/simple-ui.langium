@@ -7,7 +7,7 @@ entry SimpleUi:
 
 HeadElement: Title | Icon;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
+BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer | Section;
 
 JSModel:
     (jselements+=JSElements)*;
@@ -50,10 +50,15 @@ NumberExpression:
 SymbolReference:
     symbol=[Parameter];
 
+// Implementation of the <section> element
+
+Section: 
+    'section' name=ID? description=STRING? classes=CSSClasses? content+=BodyElement* 'end';
+
 // Implementation of the <div> container
 
 Div:
-    'div' classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? '{' content=SimpleUi '}';
+    'div' classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? '{' content+=BodyElement* '}';
 
 // Implementation of HTML Tags
 

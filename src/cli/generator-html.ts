@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { Button, Component, CSSClasses, CSSElements, Div, Expression, Footer, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, Component, CSSClasses, CSSElements, Div, Expression, Footer, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, Section, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -32,7 +32,7 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
     fileNode.indent(body => {
         body.append('<body>', NL);
         body.indent(bodycontent => {
-            generateBody(model, bodycontent, ctx);
+            generateBody(model.bodyelements, bodycontent, ctx);
         });
         body.append('</body>', NL);
     });
@@ -57,6 +57,17 @@ const iconFunc = (iconEL: AstNode, ctx:GeneratorContext) => {
 }
 
 // Body generate functions
+const sectionFunc = (sectionEl: AstNode, ctx: GeneratorContext) => {
+    const el = sectionEl as Section;
+    const fileNode = new CompositeGeneratorNode();
+    fileNode.append(`<section id="${el.name}" ${formatCSS(generateCSSClasses(el.classes),'')}>`,NL);
+    fileNode.indent(sectionContent => {
+        generateBody(el.content,sectionContent,ctx)
+    });
+    fileNode.append('</section>');
+    return fileNode;
+}
+
 const divFunc = (divEl: AstNode, ctx: GeneratorContext) => {
     const el = divEl as Div;
     const fileNode = new CompositeGeneratorNode()
@@ -192,6 +203,7 @@ export const generateBodyFunctions: GenerateFunctions = {
     Heading: headingFunc,
     UseComponent: useComponentFunc,
     Topbar: topbarFunc,
+    Section: sectionFunc,
     Footer: footerFunc
 };
 
@@ -320,9 +332,9 @@ export function generateHead(model: SimpleUi, bodyNode: CompositeGeneratorNode, 
 }
 
 // Check for Type and call body functions
-export function generateBody(model: SimpleUi, bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
+export function generateBody(elements: BodyElement[], bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
     const suiTypes = reflection.getAllTypes();
-    model.bodyelements.forEach(el => {
+    elements.forEach(el => {
         suiTypes.forEach(suiType => {
             const t = suiType as SimpleUIAstType;
             const isInstance = reflection.isInstance(el, t);
