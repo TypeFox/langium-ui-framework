@@ -9,10 +9,12 @@
 		<img alt="Langium Logo" width="256" src="https://user-images.githubusercontent.com/4377073/135283991-90ef7724-649d-440a-8720-df13c23bda82.png">
   </a>
 </div>
+<br>
 <div id="badges" align="center">
 	
    [![Build status](https://github.com/TypeFox/langium-ui-framework/actions/workflows/build.yml/badge.svg)](https://github.com/TypeFox/langium-ui-framework/actions/workflows/build.yml)
-	
+	  [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/TypeFox/langium-ui-framework)
+
 </div>
 
 <hr>
