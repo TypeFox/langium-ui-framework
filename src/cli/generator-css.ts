@@ -41,8 +41,6 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
 
     fileNode.append('.footer {', NL);
     fileNode.indent(indentContent => {
-        indentContent.append('position: absolute;', NL);
-        indentContent.append('bottom: 0;', NL);
         indentContent.append('width: 100%;', NL);
         indentContent.append('padding: 1rem 1%;', NL);
         indentContent.append('background: #333;', NL);
