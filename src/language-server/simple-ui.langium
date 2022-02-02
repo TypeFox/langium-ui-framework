@@ -11,10 +11,10 @@ BodyElement: SingleElement | NestingElement;
 // UseComponent;
 
 SingleElement: 
-    SingleHTMLElement CSSClasses InlineCSS?;
+    SingleHTMLElement CSSClasses InlineCSS;
 
 NestingElement:
-    NestingHTMLElement CSSClasses? InlineCSS? '{' content+=BodyElement* '}';
+    NestingHTMLElement CSSClasses InlineCSS '{' content+=BodyElement* '}';
 
 // List of single HTML Elements (HTML elements that do not contain other HTML elements). Add new ones here.
 SingleHTMLElement:  Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
@@ -23,13 +23,13 @@ NestingHTMLElement: Div | Section;
 
 // CSS
 fragment CSSClasses:
-    ("classes" "[" (classes+=CSSClass(',' classes+=CSSClass)*)? "]")?;
+    ('classes' '[' (classes+=CSSClass(',' classes+=CSSClass)*)? ']')?;
 
 CSSClass returns string:
     ID (('-')* ID)*;
 
 fragment InlineCSS:
-    'styles' '[' (styles+=CSSProperty(',' styles+=CSSProperty)*)? ']';
+   ('styles' '[' (styles+=CSSProperty(',' styles+=CSSProperty)*)? ']')?;
 
 CSSProperty:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
