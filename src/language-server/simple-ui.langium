@@ -3,18 +3,80 @@ grammar SimpleUi
 // Initialization
 
 entry SimpleUi:
-    (bodyelements+=BodyElement | headelements+=HeadElement | CSSProperties+=CSSProperties | jsfunctions+=JSFunction)*;
+    (headElements+=HeadElement | bodyElements+=BodyElement)*; 
 
 HeadElement: Title | Icon;
 
-BodyElement: UseComponent | Component | Div | Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer | Section;
+BodyElement: SingleElement | NestingElement;
+// UseComponent;
 
-JSModel:
-    (jselements+=JSElements)*;
+SingleElement: 
+    SingleHTMLElement CSSClasses InlineCSS?;
 
-JSElements: Popup;
+NestingElement:
+    NestingHTMLElement CSSClasses? InlineCSS? '{' content+=BodyElement* '}';
 
-CSSElements: Paragraph | Heading | Topbar | Image | Button | Link | Textbox | Div | Footer;
+// List of single HTML Elements (HTML elements that do not contain other HTML elements). Add new ones here.
+SingleHTMLElement:  Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
+// List of nesting HTML Elements. Add new ones here.
+NestingHTMLElement: Div | Section;
+
+// CSS
+fragment CSSClasses:
+    ("classes" "[" (classes+=CSSClass(',' classes+=CSSClass)*)? "]")?;
+
+CSSClass returns string:
+    ID (('-')* ID)*;
+
+fragment InlineCSS:
+    'styles' '[' (styles+=CSSProperty(',' styles+=CSSProperty)*)? ']';
+
+CSSProperty:
+    property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
+
+// NESTING HTML ELEMENTS
+Div: 
+    'div' name=ID?;  
+
+Section: 
+    'section' name=ID? description=STRING?;
+
+// SINGLE HTML ELEMENTS
+Paragraph:
+    'paragraph' name=ID? text=Expression;
+
+Heading:
+    'heading' name=ID? 'level:'level=INT text=Expression;
+
+Image:
+    'image' name=ID? imagePath=Expression ('alt:' altText=STRING)?;
+
+Textbox:
+    'textbox' name=ID ('placeholder:' placeholderText=Expression)? ('label:' labelText=Expression (labelAfter?='labelafter')?)?;
+
+Button:
+    'button' name=ID? buttonText=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
+
+Link:
+    'link' name=ID? linkUrl=Expression 'text:' (linkText=Expression)?;
+
+Linebreak:    
+    {Linebreak} 'linebreak';
+
+Topbar:
+    'topbar' value=Expression (fixed?='fixed')?;
+
+Footer:
+    'footer' value=Expression;
+
+// HEAD ELEMENTS
+Title:
+    'title' text=Expression; 
+
+Icon:
+    'icon' iconPath=Expression;
+
+// CSSElements: Paragraph | Heading | Topbar | Image | Button | Link | Textbox | Div | Footer;
 
 // Expression
 Expression:
@@ -50,61 +112,12 @@ NumberExpression:
 SymbolReference:
     symbol=[Parameter];
 
-// Implementation of the <section> element
-
-Section: 
-    'section' name=ID? description=STRING? classes=CSSClasses? content+=BodyElement* 'end';
-
-// Implementation of the <div> container
-
-Div:
-    'div' classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? '{' content+=BodyElement* '}';
-
-// Implementation of HTML Tags
-
-Title:
-    'title' text=Expression; 
-
-Icon:
-    'icon' imagepath=Expression;
-
-Topbar:
-    'topbar' value=Expression (fixed?='fixed')? classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
-
-Footer:
-    'footer' value=Expression ('{' (css+=CSSProperties(',' css+=CSSProperties)*) '}')?;
-
-Paragraph:
-    'paragraph' text=Expression classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
-
-Heading:
-    'heading' text=Expression 'level:' level=INT classes=CSSClasses?  ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
-
-Textbox:
-    'textbox' name=ID classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' (('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter')(',' ('placeholdertext:' placeholdertext=Expression|'labeltext:' labeltext=Expression|labelAfter?='labelAfter'))*) '}')?;
-
-Button:
-    'button' buttontext=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
-
-Link:
-    'link' linkurl=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('{' 'linktext:' linktext=Expression '}')?;
-
-Image:
-    'image' imagepath=Expression classes=CSSClasses? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')? ('alt:' altText=STRING)? ('{' (css+=CSSProperties(',' css+=CSSProperties)*)?'}')?;
-
-Linebreak:    
-    {Linebreak} 'linebreak';
-
-// CSS implementation
-
-CSSProperties:
-    property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
-
-CSSClasses:
-    "classes" "[" (names+=CSSRule(',' names+=CSSRule)*)? "]";
-
 
 // JS implementation
+JSModel:
+    (jselements+=JSElements)*;
+
+JSElements: Popup;
 
 Popup:
     'popup' text=Expression;
@@ -119,9 +132,6 @@ Component:
 
 UseComponent:
     'usecomponent' component=[Component] ('('(arguments+=Expression(',' arguments+=Expression)*)?')')?;
-
-CSSRule returns string:
-    ID (('-')* ID)*;
 
 Parameter:
     name=ID ':' type=Type;
