@@ -18,7 +18,7 @@
 </div>
 
 <hr>
-SimpleUI is a easy UI Framework for building and generating web user interfaces. SimpleUI includes HTML, JavaScript and CSS
+SimpleUI is a easy UI Framework for building and generating web user interfaces. SimpleUI includes HTML, JavaScript and CSS.
 
 ## Getting started
 - Clone the repository using `git clone https://github.com/TypeFox/langium-ui-framework.git`
@@ -27,3 +27,36 @@ SimpleUI is a easy UI Framework for building and generating web user interfaces.
 - `npm run langium:generate && npm run build` to generate the infrastructure and build the project
 
 To run booth watches use `npm run watch && npm run langium:watch`.
+
+## Example
+
+### Code
+```ruby
+div classes[flex-container, center] {
+    div classes[border, border--hidden, shadow]{
+        heading "Hello World" level: 4
+        paragraph 
+        "
+        Lorem ipsum dolor sit amet, 
+        consetetur sadipscing elitr, 
+        sed diam nonumy eirmod tempor invidunt ut labore, 
+        et dolore magna aliquyam
+        "
+        { width: "50%" }
+    }
+}
+```
+### Result
+HTML (Formatted)
+```html
+<div class='border border--hidden shadow' >
+    <h4 >Hello World</h4>
+    <p style='width:50%; '>
+        <br>Lorem ipsum dolor sit amet, <br>consetetur sadipscing elitr, 
+        <br>sed diam nonumy eirmod tempor invidunt ut labore, <br>et dolore magna aliquyam<br>
+    </p>
+</div>
+```
+**Image**
+
+![Result ](https://user-images.githubusercontent.com/68400102/152212391-5d2ececa-a91d-47a4-ad17-1e007d03ebf9.png)
