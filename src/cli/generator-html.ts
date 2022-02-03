@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -133,7 +133,7 @@ function divFunc(element: Div, ctx: GeneratorContext) : CompositeGeneratorNode {
     
     fileNode.append(`<div`,
     element.name?` id="${element.name}"`:'',
-    formatCSS(generateCSSClasses(element.classes), generateInlineCSS(element.styles, ctx)),
+    formatCSS(element, ctx),
     '>',
      NL);
 
@@ -148,7 +148,7 @@ function sectionFunc(element: Section, ctx: GeneratorContext) : CompositeGenerat
     const fileNode = new CompositeGeneratorNode();
     fileNode.append(`<section`,
     element.name ? ` id="${element.name}"` : '',
-    formatCSS(generateCSSClasses(element.classes), generateInlineCSS(element.styles, ctx)),
+    formatCSS(element, ctx),
     `>`, NL);
 
     fileNode.indent(sectionContent => {
@@ -163,7 +163,7 @@ function sectionFunc(element: Section, ctx: GeneratorContext) : CompositeGenerat
 function paragraphFunc(element: Paragraph, ctx: GeneratorContext) : string { 
     return `<p` + 
     (element.name ? ` id="${element.name}"` : '') + 
-    formatCSS(generateCSSClasses(element.classes), generateInlineCSS(element.styles, ctx)) +
+    formatCSS(element, ctx) +
     '>' + 
     generateExpression(element.text, ctx) + '</p>';
 ;}
@@ -171,7 +171,7 @@ function paragraphFunc(element: Paragraph, ctx: GeneratorContext) : string {
 function buttonFunc(element: Button, ctx: GeneratorContext) : string {
     return `<button` + 
     (element.name ? ` id="${element.name}"` : '' ) +
-    formatCSS(generateCSSClasses(element.classes),generateInlineCSS(element.styles, ctx)) + 
+    formatCSS(element, ctx) + 
     (element.onclickaction ? ` onclick="${generateParameters(element.arguments, ctx)}"` : '') + 
     `>` + 
     generateExpression(element.buttonText, ctx) +
@@ -180,7 +180,7 @@ function buttonFunc(element: Button, ctx: GeneratorContext) : string {
 
 function linkFunc(element: Link, ctx: GeneratorContext) : string{
     return `<a href="${generateExpression(element.linkUrl, ctx)}"` + 
-    formatCSS(generateCSSClasses(element.classes), generateInlineCSS(element.styles, ctx)) + 
+    formatCSS(element, ctx) + 
     `>` + 
     (element.linkText ? generateExpression(element.linkText,ctx) : generateExpression(element.linkUrl,ctx)) + 
     `</a>`;
@@ -188,7 +188,6 @@ function linkFunc(element: Link, ctx: GeneratorContext) : string{
 
 function textboxFunc(element: Textbox, ctx: GeneratorContext) {
     const fileNode = new CompositeGeneratorNode();
-    const labelOrder = [];
 
     const label = `<label for="${element.name}">` + 
     (element.labelText ? generateExpression(element.labelText, ctx) : '') +
@@ -200,7 +199,7 @@ function textboxFunc(element: Textbox, ctx: GeneratorContext) {
     fileNode.append(
         `<input type="text" id="${element.name}"`,
         element.placeholderText ? ` placeholder="${generateExpression(element.placeholderText, ctx)}"` : '',
-        formatCSS(generateCSSClasses(element.classes), generateInlineCSS(element.styles, ctx)),
+        formatCSS(element, ctx),
         `>`, NL
     );
     if(element.labelAfter){
@@ -220,14 +219,14 @@ function imageFunc(element: Image, ctx: GeneratorContext) {
     ` src="${generateExpression(element.imagePath, ctx)}"` + 
     ` alt=` + 
     (element.altText ? `"${generateExpression(element.altText, ctx)}"` : '""') +
-    formatCSS(generateCSSClasses(element.classes),generateInlineCSS(element.styles, ctx)) + 
+    formatCSS(element, ctx) + 
     `>`;
 }
 
 function headingFunc(element: Heading, ctx: GeneratorContext) {
     return `<h${element.level}` + 
     (element.name ? ` id="${element.name}"` : '') + 
-    formatCSS(generateCSSClasses(element.classes),generateInlineCSS(element.styles, ctx)) + 
+    formatCSS(element, ctx) + 
     `>` + 
     generateExpression(element.text, ctx) + 
     `</h${element.level}>`;
@@ -261,8 +260,8 @@ const topbarFunc = (element: Topbar, ctx: GeneratorContext) => {
     if(element.fixed){
         element.classes.push('topbar--fixed');
     }
-    topbarNode.append(`<header `, 
-    formatCSS(generateCSSClasses(element.classes),generateInlineCSS(element.styles,ctx)),
+    topbarNode.append(`<header`, 
+    formatCSS(element, ctx),
     `>`, 
     NL);
     topbarNode.indent(topbarContent => {
@@ -281,7 +280,7 @@ const footerFunc = (element: Footer, ctx:GeneratorContext) => {
     element.classes.push('footer');
 
     footerNode.append(`<footer `,
-    formatCSS(generateCSSClasses(element.classes), generateInlineCSS(element.styles,ctx)),
+    formatCSS(element, ctx),
     `>`, 
     NL);
     footerNode.indent(footerContent => {
@@ -362,17 +361,19 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
     return result
 }
 
-function formatCSS(classes: string, inline: string): string {
-    let classString = classes ? `class='${classes}' ` : '';
-    let inlineString = inline ? `style='${inline}'` : '';
-    return classString + inlineString;
+function formatCSS(element: SingleElement | NestingElement, ctx: GeneratorContext): string {
+    const classes = generateCSSClasses(element.classes);
+    const classesString = classes ? ` class="${classes}"` : '';
+    const styles = generateInlineCSS(element.styles,ctx);
+    const stylesString = styles ? ` style="${styles}"` : '';
+    return classesString + stylesString;
 }
-function generateCSSClasses(element: string[]): string {
-    if(element == undefined) return '';
-    element.forEach(el => {
+function generateCSSClasses(classes: string[]): string {
+    if(classes == undefined) return '';
+    classes.forEach(el => {
         copyCSSClass(el);
     });
-    return element.join(" ");;
+    return classes.join(" ");;
 }
 function generateInlineCSS(element: CSSProperty[], ctx: GeneratorContext): string {
     let cssString = ''
