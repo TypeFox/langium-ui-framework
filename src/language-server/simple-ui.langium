@@ -18,9 +18,12 @@ NestingElement:
 
 
 // List of single HTML Elements (HTML elements that do not contain other HTML elements). Add new ones here.
-SingleHTMLElement:  Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
+SingleHTMLElement returns SingleElement:  
+    Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
+
 // List of nesting HTML Elements. Add new ones here.
-NestingHTMLElement: Div | Section;
+NestingHTMLElement returns NestingElement: 
+    Div | Section;
 
 // CSS
 fragment CSSClasses:
