@@ -3,12 +3,11 @@ grammar SimpleUi
 // Initialization
 
 entry SimpleUi:
-    (headElements+=HeadElement | bodyElements+=BodyElement)*; 
+    (headElements+=HeadElement | bodyElements+=BodyElement | jsFunctions+=JSFunction | parameters+=Parameter)*; 
 
 HeadElement: Title | Icon;
 
-BodyElement: SingleElement | NestingElement;
-// UseComponent;
+BodyElement: SingleElement | NestingElement | UseComponent | Component;
 
 SingleElement: 
     SingleHTMLElement CSSClasses InlineCSS;
@@ -53,7 +52,7 @@ Heading:
     'heading' name=ID? 'level:'level=INT text=Expression;
 
 Image:
-    'image' name=ID? imagePath=Expression ('alt:' altText=STRING)?;
+    'image' name=ID? imagePath=Expression ('alt:' altText=Expression)?;
 
 Textbox:
     'textbox' name=ID ('placeholder:' placeholderText=Expression)? ('label:' labelText=Expression (labelAfter?='labelafter')?)?;
@@ -62,7 +61,7 @@ Button:
     'button' name=ID? buttonText=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
 
 Link:
-    'link' name=ID? linkUrl=Expression 'text:' (linkText=Expression)?;
+    'link' name=ID? linkUrl=Expression ('text:' linkText=Expression)?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -132,7 +131,7 @@ JSFunction:
 // Implementation of components
 
 Component:
-    'component' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content=SimpleUi '}';
+    'component' name=ID ('('(parameters+=Parameter(',' parameters+=Parameter)*)?')')? '{' content+=BodyElement* '}';
 
 UseComponent:
     'usecomponent' component=[Component] ('('(arguments+=Expression(',' arguments+=Expression)*)?')')?;
