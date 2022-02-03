@@ -2,8 +2,8 @@ import { AbstractElement, AstNode, CompletionAcceptor, DefaultCompletionProvider
 import fs from "fs"
 import path from "path"
 import { CompletionItem, CompletionItemKind, CompletionList } from "vscode-languageserver-types";
-import { isCSSClasses } from "./generated/ast";
 import { CompletionParams } from "vscode-languageclient";
+import { isNestingElement, isSingleElement, NestingElement, SingleElement } from "./generated/ast";
 
 export class SimpleUICompletionProvider extends DefaultCompletionProvider{
     protected readonly nameProvider: NameProvider;
@@ -75,8 +75,10 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider{
             this.completionForKeyword(feature, astNode, acceptor);                    
         } 
         else if (isRuleCall(feature) && feature.rule.ref) {
-            if(isCSSClasses(astNode)){
-                this.completionForCSSClasses(astNode, acceptor);
+            if(isNestingElement(astNode) || isSingleElement(astNode)){
+                if(this.nameProvider.getName(feature.$container.$container.$container as AstNode)){
+                    this.completionForCSSClasses(astNode, acceptor);
+                }
             }
             else {
                 return this.completionForRule(astNode, feature.rule.ref, acceptor);
@@ -86,8 +88,9 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider{
             this.completionForCrossReference(feature, astNode, acceptor);
         }
     }
-    completionForCSSClasses(astNode: AstNode, acceptor: CompletionAcceptor){
+    completionForCSSClasses(astNode: NestingElement | SingleElement, acceptor: CompletionAcceptor){
         let cssClasses = this.getCSSClasses();
+        
         cssClasses.forEach(element => {
                 acceptor(element, {kind: CompletionItemKind.Value, detail: 'CSS Class'});
         
