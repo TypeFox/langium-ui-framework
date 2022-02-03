@@ -17,7 +17,7 @@ export function generateJS(model: SimpleUi, filePath: string, destination: strin
     const ctx:GeneratorContext = {argumentStack:[]}
 
     const fileNode = new CompositeGeneratorNode();
-    model.jsfunctions.forEach(el => {
+    model.jsFunctions.forEach(el => {
         let argumentList = ''
         const parameters = el.parameters;
         parameters.forEach(el => {
