@@ -3,7 +3,7 @@ grammar SimpleUi
 // Initialization
 
 entry SimpleUi:
-    (headElements+=HeadElement | bodyElements+=BodyElement | jsFunctions+=JSFunction | parameters+=Parameter | jsModels+=JSModel) *; 
+    (headElements+=HeadElement | bodyElements+=BodyElement | jsFunctions+=JSFunction | parameters+=Parameter) *; 
 
 HeadElement: Title | Icon;
 
@@ -118,7 +118,7 @@ SymbolReference:
 
 // JS implementation
 JSModel:
-    (jselements+=JSElements)*;
+    (jsElements+=JSElements)*;
 
 JSElements: Popup;
 
