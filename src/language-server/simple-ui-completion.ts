@@ -98,7 +98,7 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider{
     getCSSClasses(): string[] {
         
         const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
-        let regex = /(?<=\.).*?(?=[\s]?{)/gm;
+        let regex = /(?<=\.)([a-zA-Z0-9]*([-]*[a-zA-Z0-9]*)*)/gm;
         let cssClasses = fileContent.match(regex);
         
         console.error(cssClasses);
