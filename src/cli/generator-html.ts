@@ -256,9 +256,9 @@ export function generateComponent(model: BodyElement[], bodyNode: CompositeGener
 
 const topbarFunc = (element: Topbar, ctx: GeneratorContext) => {
     const topbarNode = new CompositeGeneratorNode();
-    element.classes.push('topbar');
+    element.classes.classesNames.push('topbar');
     if(element.fixed){
-        element.classes.push('topbar--fixed');
+        element.classes.classesNames.push('topbar--fixed');
     }
     topbarNode.append(`<header`, 
     formatCSS(element, ctx),
@@ -277,7 +277,7 @@ const topbarFunc = (element: Topbar, ctx: GeneratorContext) => {
 
 const footerFunc = (element: Footer, ctx:GeneratorContext) => {
     const footerNode = new CompositeGeneratorNode();
-    element.classes.push('footer');
+    element.classes.classesNames.push('footer');
 
     footerNode.append(`<footer `,
     formatCSS(element, ctx),
@@ -362,9 +362,9 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
 }
 
 function formatCSS(element: SingleElement | NestingElement, ctx: GeneratorContext): string {
-    const classes = generateCSSClasses(element.classes);
+    const classes = generateCSSClasses(element.classes.classesNames);
     const classesString = classes ? ` class="${classes}"` : '';
-    const styles = generateInlineCSS(element.styles,ctx);
+    const styles = generateInlineCSS(element.styles.properties,ctx);
     const stylesString = styles ? ` style="${styles}"` : '';
     return classesString + stylesString;
 }

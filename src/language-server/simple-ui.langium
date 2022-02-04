@@ -3,17 +3,17 @@ grammar SimpleUi
 // Initialization
 
 entry SimpleUi:
-    (headElements+=HeadElement | bodyElements+=BodyElement | jsFunctions+=JSFunction | parameters+=Parameter)*; 
+    (headElements+=HeadElement | bodyElements+=BodyElement | jsFunctions+=JSFunction | parameters+=Parameter | jsModels+=JSModel) *; 
 
 HeadElement: Title | Icon;
 
 BodyElement: SingleElement | NestingElement | UseComponent | Component;
 
 SingleElement: 
-    SingleHTMLElement CSSClasses InlineCSS;
+    SingleHTMLElement classes=CSSClasses styles=InlineCSS;
 
 NestingElement:
-    NestingHTMLElement CSSClasses InlineCSS '{' content+=BodyElement* '}';
+    NestingHTMLElement classes=CSSClasses styles=InlineCSS '{' content+=BodyElement* '}';
 
 
 // List of single HTML Elements (HTML elements that do not contain other HTML elements). Add new ones here.
@@ -25,14 +25,14 @@ NestingHTMLElement returns NestingElement:
     Div | Section;
 
 // CSS
-fragment CSSClasses:
-    ('classes' '[' (classes+=CSSClass(',' classes+=CSSClass)*)? ']')?;
+CSSClasses:
+    ('classes' '[' (classesNames+=CSSClass(',' classesNames+=CSSClass)*)? ']')?;
 
 CSSClass returns string:
     ID (('-')* ID)*;
 
-fragment InlineCSS:
-   ('styles' '[' (styles+=CSSProperty(',' styles+=CSSProperty)*)? ']')?;
+InlineCSS:
+   ('styles' '[' (properties+=CSSProperty(',' properties+=CSSProperty)*)? ']')?;
 
 CSSProperty:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
