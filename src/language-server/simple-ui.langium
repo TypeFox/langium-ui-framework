@@ -120,7 +120,10 @@ SymbolReference:
 JSModel:
     (jsElements+=JSElements)*;
 
-JSElements: Popup;
+JSElements: Popup | ChangeColor;
+
+ChangeColor:
+    'changeColor' name=ID color=Expression;
 
 Popup:
     'popup' text=Expression;

@@ -172,7 +172,7 @@ function buttonFunc(element: Button, ctx: GeneratorContext) : string {
     return `<button` + 
     (element.name ? ` id="${element.name}"` : '' ) +
     formatCSS(element, ctx) + 
-    (element.onclickaction ? ` onclick="${generateParameters(element.arguments, ctx)}"` : '') + 
+    (element.onclickaction ? ` onclick="${element.onclickaction.ref?.name}(${generateParameters(element.arguments, ctx)})"` : '') + 
     `>` + 
     generateExpression(element.buttonText, ctx) +
     `</button>`;

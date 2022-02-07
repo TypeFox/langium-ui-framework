@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { SimpleUIAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup } from '../language-server/generated/ast';
+import { SimpleUIAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup, ChangeColor } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -51,8 +51,14 @@ const popupFunc = (popupEL: AstNode, ctx:GeneratorContext) => {
     }
 }
 
+const changeColorFunc = (changeColorEl: AstNode, ctx:GeneratorContext) => {
+    const el = changeColorEl as ChangeColor;
+    return `document.getElementById('${el.name}').style.color = '${generateExpression(el.color, ctx)}'`
+}
+
 const generateJSFunctions: GenerateFunctions = {
     Popup: popupFunc,
+    ChangeColor: changeColorFunc
 }
 
 function generateExpression(expression: Expression, ctx:GeneratorContext):string {
