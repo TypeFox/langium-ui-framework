@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { Popup, SimpleUIAstType, reflection, isStringExpression, isNumberExpression, isSymbolReference, Expression, SimpleUi, JSModel, isTextboxExpression } from '../language-server/generated/ast';
+import { SimpleUIAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -17,7 +17,7 @@ export function generateJS(model: SimpleUi, filePath: string, destination: strin
     const ctx:GeneratorContext = {argumentStack:[]}
 
     const fileNode = new CompositeGeneratorNode();
-    model.jsfunctions.forEach(el => {
+    model.jsFunctions.forEach(el => {
         let argumentList = ''
         const parameters = el.parameters;
         parameters.forEach(el => {
@@ -75,17 +75,20 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
 
 export function generateJSFunc(model: JSModel, bodyNode: CompositeGeneratorNode, ctx:GeneratorContext) {
     const suiTypes = reflection.getAllTypes();
-    model.jselements.forEach(el => {
-        suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUIAstType;
-            const isInstance = reflection.isInstance(el, t);
-            if (isInstance) {
-                const func = generateJSFunctions[t];
-                if (func) {
-                    const content = func(el, ctx);
-                    bodyNode.append(content, NL);
+    if(model.jsElements)
+    {
+        model.jsElements.forEach(el => {
+            suiTypes.forEach(suiType => {
+                const t = suiType as SimpleUIAstType;
+                const isInstance = reflection.isInstance(el, t);
+                if (isInstance) {
+                    const func = generateJSFunctions[t];
+                    if (func) {
+                        const content = func(el, ctx);
+                        bodyNode.append(content, NL);
+                    }
                 }
-            }
+            })
         })
-    })
+    }
 }

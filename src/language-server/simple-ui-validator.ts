@@ -1,8 +1,8 @@
 import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import path from 'path';
-import fs from 'fs';
-import { SimpleUi, SimpleUIAstType, UseComponent, Component, isStringExpression, isNumberExpression, Button, Heading, CSSClasses } from './generated/ast';
+import { SimpleUIAstType, UseComponent, isStringExpression, isNumberExpression, Button, Heading, Parameter, CSSClasses } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
+import fs from 'fs';
+import path from 'path';
 
 /**
  * Map AST node types to validation checks.
@@ -19,8 +19,8 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
         const checks: SimpleUiChecks = {
             UseComponent: validator.checkUseComponent,
             Button: validator.checkButton,
-            CSSClasses: validator.checkCSSClasses,
-            Heading: validator.checkHeadingLevel
+            Heading: validator.checkHeadingLevel,
+            CSSClasses: validator.checkCSSClasses
         };
         this.register(checks, validator);
     }
@@ -31,8 +31,8 @@ export class SimpleUiValidationRegistry extends ValidationRegistry {
  */
 export class SimpleUiValidator {
     checkUseComponent(el: UseComponent, accept: ValidationAcceptor): void {
-        const refContent = el.component.ref?.content as SimpleUi
-        const refParameters = (refContent.$container as Component).parameters;
+        //const refContent = el.component.ref?.content as BodyElement[];
+        const refParameters = el.component.ref?.parameters as Parameter[];
         if (el.arguments.length !== refParameters?.length) {
             accept('error', `Number of parameters not matching (${el.arguments.length}), expected (${refParameters?.length}).`, {node: el, property: 'arguments'})
         } else {
@@ -94,13 +94,15 @@ export class SimpleUiValidator {
             return
         }
     }
+
     checkCSSClasses(classes: CSSClasses, accept: ValidationAcceptor): void {
         const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
         let regex = new RegExp('(?<=\\.)[a-zA-Z\\d\\-]*','gm');
         let cssClasses = fileContent.match(regex);
-        classes.names.forEach(element => {
-            if(!cssClasses?.includes(element))
-            accept('error', `Error: CSS Class ${element} does not exist.`, { node: classes.$container, property: 'classes' })
+        classes.classesNames.forEach(element => {
+            if(!cssClasses?.includes(element) && element.trim().length > 0 )
+            accept('error', `Error: CSS Class ${element} does not exist.`, { node: classes, property: 'classesNames', index: classes.classesNames.indexOf(element) })
         });
     }
+
 }

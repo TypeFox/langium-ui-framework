@@ -2,8 +2,8 @@ import { AbstractElement, AstNode, CompletionAcceptor, DefaultCompletionProvider
 import fs from "fs"
 import path from "path"
 import { CompletionItem, CompletionItemKind, CompletionList } from "vscode-languageserver-types";
-import { isCSSClasses } from "./generated/ast";
 import { CompletionParams } from "vscode-languageclient";
+import { CSSClasses, isCSSClasses } from "./generated/ast";
 
 export class SimpleUICompletionProvider extends DefaultCompletionProvider{
     protected readonly nameProvider: NameProvider;
@@ -86,8 +86,9 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider{
             this.completionForCrossReference(feature, astNode, acceptor);
         }
     }
-    completionForCSSClasses(astNode: AstNode, acceptor: CompletionAcceptor){
+    completionForCSSClasses(astNode: CSSClasses, acceptor: CompletionAcceptor){
         let cssClasses = this.getCSSClasses();
+        
         cssClasses.forEach(element => {
                 acceptor(element, {kind: CompletionItemKind.Value, detail: 'CSS Class'});
         
@@ -97,7 +98,7 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider{
     getCSSClasses(): string[] {
         
         const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
-        let regex = /(?<=\.).*?(?=[\s]?{)/gm;
+        let regex = /(?<=\.)([a-zA-Z0-9]*([-]*[a-zA-Z0-9]*)*)/gm;
         let cssClasses = fileContent.match(regex);
         
         console.error(cssClasses);

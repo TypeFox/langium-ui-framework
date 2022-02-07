@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, Component, CSSClasses, CSSElements, Div, Expression, Footer, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, Paragraph, Parameter, reflection, Section, SimpleExpression, SimpleUi, SimpleUIAstType, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -22,17 +22,17 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
     fileNode.append('<html>', NL);
     fileNode.indent(head => {
         head.append('<head>', NL);
-        head.indent(headcontent => {
-            generateHead(model, headcontent, ctx);
-            headcontent.append('<link rel="stylesheet" href="stylesheet.css">', NL);
-            headcontent.append('<script src="script.js"></script>', NL)
+        head.indent(headContent => {
+            generateHead(model.headElements, headContent, ctx);
+            headContent.append('<link rel="stylesheet" href="stylesheet.css">', NL);
+            headContent.append('<script src="script.js"></script>', NL)
         });
         head.append('</head>', NL);
     });
     fileNode.indent(body => {
         body.append('<body>', NL);
-        body.indent(bodycontent => {
-            generateBody(model.bodyelements, bodycontent, ctx);
+        body.indent(bodyContent => {
+            generateBody(model.bodyElements, bodyContent, ctx);
         });
         body.append('</body>', NL);
     });
@@ -45,125 +45,229 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
     return generatedFilePath;
 }
 
-// Head generate functions
-const titleFunc = (titleEL: AstNode, ctx: GeneratorContext) => {
-    const el = titleEL as Title;
-    return `<title>${generateExpression(el.text, ctx)}</title>`
+//#region Head Generation
+
+// Check for Type and call head functions
+function generateHead(elements: HeadElement[], bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
+    elements.forEach(el => {
+        const content = generateHeadFunctions(el, ctx);
+        if(content)
+        {
+            bodyNode.append(content, NL);
+        }
+    })
 }
 
-const iconFunc = (iconEL: AstNode, ctx:GeneratorContext) => {
-    const el = iconEL as Icon;
-    return `<link rel="icon" href="${generateExpression(el.imagepath, ctx)}">`;
+// Head functions
+function generateHeadFunctions(element: HeadElement, ctx: GeneratorContext): string {
+    switch(element.$type){
+        case 'Title':
+            return titleFunc(element as Title, ctx);
+        case 'Icon':
+            return iconFunc(element as Icon, ctx);
+        default:
+            return '';
+    }
+};
+
+function titleFunc(element: Title, ctx: GeneratorContext) {
+    return `<title>${generateExpression(element.text, ctx)}</title>`;
 }
 
-// Body generate functions
-const sectionFunc = (sectionEl: AstNode, ctx: GeneratorContext) => {
-    const el = sectionEl as Section;
+function iconFunc(element: Icon, ctx: GeneratorContext) {
+    return `<link rel="icon" href="${generateExpression(element.iconPath, ctx)}">`;
+}
+
+//#endregion
+
+//#region Body Generation
+
+// Check for Type and call body functions
+function generateBody(elements: BodyElement[], bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
+    elements.forEach(el => {
+        const content = generateBodyFunctions(el, ctx);
+        if(content){
+            bodyNode.append(content, NL);
+        }
+    })
+}
+
+// Body functions
+function generateBodyFunctions(element: BodyElement, ctx: GeneratorContext): string | CompositeGeneratorNode {
+    // Footer: footerFunc
+
+    switch(element.$type){
+        case "Div":
+            return divFunc(element as Div, ctx);
+        case "Section":
+            return sectionFunc(element as Section, ctx);
+        case "Paragraph":
+            return paragraphFunc(element as Paragraph, ctx);
+        case "Button":
+            return buttonFunc(element as Button, ctx);
+        case "Link":
+            return linkFunc(element as Link, ctx);
+        case "Textbox":
+            return textboxFunc(element as Textbox, ctx);
+        case "Linebreak":
+            return linebreakFunc();
+        case "Image":
+            return imageFunc(element as Image,ctx);
+        case "Heading":
+            return headingFunc(element as Heading,ctx);
+        case "UseComponent":
+            return useComponentFunc(element as UseComponent, ctx);
+        case "Topbar":
+            return topbarFunc(element as Topbar, ctx);
+        case "Footer":
+            return footerFunc(element as Footer, ctx);
+        default:
+            return '';
+    }
+};
+
+// Body functions
+
+function divFunc(element: Div, ctx: GeneratorContext) : CompositeGeneratorNode {
     const fileNode = new CompositeGeneratorNode();
-    fileNode.append(`<section id="${el.name}" ${formatCSS(generateCSSClasses(el.classes),'')}>`,NL);
-    fileNode.indent(sectionContent => {
-        generateBody(el.content,sectionContent,ctx)
+    
+    fileNode.append(`<div`,
+    element.name?` id="${element.name}"`:'',
+    formatCSS(element, ctx),
+    '>',
+     NL);
+
+    fileNode.indent(divContent => {
+        generateBody(element.content, divContent, ctx);
     });
-    fileNode.append('</section>');
+    fileNode.append('</div>');
     return fileNode;
 }
 
-const divFunc = (divEl: AstNode, ctx: GeneratorContext) => {
-    const el = divEl as Div;
-    const fileNode = new CompositeGeneratorNode()
-    fileNode.append(`<div ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>`, NL)
-    fileNode.indent(divcontent => {
-        generateBody(el.content, divcontent, ctx)
+function sectionFunc(element: Section, ctx: GeneratorContext) : CompositeGeneratorNode {
+    const fileNode = new CompositeGeneratorNode();
+    fileNode.append(`<section`,
+    element.name ? ` id="${element.name}"` : '',
+    formatCSS(element, ctx),
+    `>`, NL);
+
+    fileNode.indent(sectionContent => {
+        generateBody(element.content, sectionContent, ctx);
     });
-    fileNode.append('</div>')
-    return fileNode
-};
 
-const paragraphFunc = (paragraphEl: AstNode, ctx: GeneratorContext) => {
-    const el = paragraphEl as Paragraph;
-    return `<p ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</p>`;
-};
+    fileNode.append('</section>');
 
-const buttonFunc = (buttonEL: AstNode, ctx: GeneratorContext) => {
-    const el = buttonEL as Button;
-    if (typeof el.onclickaction === 'undefined') {
-        return `<button ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.buttontext, ctx)}</button>`;
+    return fileNode;
+}
+
+function paragraphFunc(element: Paragraph, ctx: GeneratorContext) : string { 
+    return `<p` + 
+    (element.name ? ` id="${element.name}"` : '') + 
+    formatCSS(element, ctx) +
+    '>' + 
+    generateExpression(element.text, ctx) + '</p>';
+;}
+
+function buttonFunc(element: Button, ctx: GeneratorContext) : string {
+    return `<button` + 
+    (element.name ? ` id="${element.name}"` : '' ) +
+    formatCSS(element, ctx) + 
+    (element.onclickaction ? ` onclick="${generateParameters(element.arguments, ctx)}"` : '') + 
+    `>` + 
+    generateExpression(element.buttonText, ctx) +
+    `</button>`;
+}
+
+function linkFunc(element: Link, ctx: GeneratorContext) : string{
+    return `<a href="${generateExpression(element.linkUrl, ctx)}"` + 
+    formatCSS(element, ctx) + 
+    `>` + 
+    (element.linkText ? generateExpression(element.linkText,ctx) : generateExpression(element.linkUrl,ctx)) + 
+    `</a>`;
+}
+
+function textboxFunc(element: Textbox, ctx: GeneratorContext) {
+    const fileNode = new CompositeGeneratorNode();
+
+    const label = `<label for="${element.name}">` + 
+    (element.labelText ? generateExpression(element.labelText, ctx) : '') +
+    `</label>`;
+
+    if(!element.labelAfter){
+        fileNode.append(label,NL);
     }
-    else {
-        return `<button onclick='${el.onclickaction.ref?.name}(${generateParameters(el.arguments, ctx)})' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.buttontext, ctx)}</button>`;
-    };
-};
-
-const linkFunc = (linkEL: AstNode, ctx: GeneratorContext) => {
-    const el = linkEL as Link;
-    if (typeof el.linktext === 'undefined') {
-        return `<a href='${generateExpression(el.linkurl, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.linkurl, ctx)}</a>`;
+    fileNode.append(
+        `<input type="text" id="${element.name}"`,
+        element.placeholderText ? ` placeholder="${generateExpression(element.placeholderText, ctx)}"` : '',
+        formatCSS(element, ctx),
+        `>`, NL
+    );
+    if(element.labelAfter){
+        fileNode.append(label)
     }
-    else {
-        return `<a href='${generateExpression(el.linkurl, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.linktext, ctx)}</a>`;
-    };
-};
+    
+    return fileNode;
+}
 
-const textboxFunc = (textboxEL: AstNode, ctx: GeneratorContext) => {
-    const el = textboxEL as Textbox;
-    const fileNode = new CompositeGeneratorNode()
-    const labelOrder = []
-
-    if (typeof el.placeholdertext === 'undefined') {
-        labelOrder.push(`<input type='text' id='${el.name}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el, ctx))}>`);
-    }
-    else {
-        labelOrder.push(`<input type='text' id='${el.name}' placeholder='${generateExpression(el.placeholdertext, ctx)}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el, ctx))}>`);
-    };
-    if (typeof el.labeltext !== 'undefined' && !el.labelAfter) {
-        labelOrder.unshift(`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`, NL);
-    } 
-    else if (typeof el.labeltext !== 'undefined' && el.labelAfter){
-        labelOrder.push(NL,`<label for='${el.name}'>${generateExpression(el.labeltext, ctx)}</label>`);
-    }
-    labelOrder.map(el => {
-        fileNode.append(el)
-    })
-    return fileNode
-};
-
-const linebreakFunc = (linebreakEL: AstNode, ctx: GeneratorContext) => {
+function linebreakFunc() {
     return '<br>';
-};
-
-const imageFunc = (imageEL: AstNode, ctx: GeneratorContext) => {
-    const el = imageEL as Image;
-    return `<img src='${generateExpression(el.imagepath, ctx)}' alt='${el.altText !== undefined ? el.altText : ''}' ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>`
 }
 
-const headingFunc = (headingEL: AstNode, ctx: GeneratorContext) => {
-    const el = headingEL as Heading;
-    return `<h${el.level} ${formatCSS(generateCSSClasses(el.classes), generateInlineCSS(el,ctx))}>${generateExpression(el.text, ctx)}</h${el.level}>`
+function imageFunc(element: Image, ctx: GeneratorContext) {
+    return `<img`+
+    (element.name ? ` id="${element.name}"` : '') + 
+    ` src="${generateExpression(element.imagePath, ctx)}"` + 
+    ` alt=` + 
+    (element.altText ? `"${generateExpression(element.altText, ctx)}"` : '""') +
+    formatCSS(element, ctx) + 
+    `>`;
 }
 
-const useComponentFunc = (UseComponentEL: AstNode, ctx: GeneratorContext) => {
-    const el = UseComponentEL as UseComponent;
-    const componentNode = new CompositeGeneratorNode()
-    const refContent = el.component.ref?.content as SimpleUi
-    const refParameters = (refContent.$container as Component).parameters;
+function headingFunc(element: Heading, ctx: GeneratorContext) {
+    return `<h${element.level}` + 
+    (element.name ? ` id="${element.name}"` : '') + 
+    formatCSS(element, ctx) + 
+    `>` + 
+    generateExpression(element.text, ctx) + 
+    `</h${element.level}>`;
+}
+
+function useComponentFunc(element: UseComponent, ctx: GeneratorContext) {
+    const componentNode = new CompositeGeneratorNode();
+    const refContent = element.component.ref?.content as BodyElement[];
+    const refParameters = element.component.ref?.parameters as Parameter[];
     const argumentList = refParameters.map(function (refEl: Parameter, index: integer) {
-        return ({ name: refEl.name, type: refEl.type, value: generateExpression(el.arguments[index], ctx) })
-    })
-    ctx.argumentStack.push(argumentList)
-    generateComponent(refContent, componentNode, ctx)
-    ctx.argumentStack.pop()
-    return componentNode
+        return ({ name: refEl.name, type: refEl.type, value: generateExpression(element.arguments[index], ctx) });
+    });
+    ctx.argumentStack.push(argumentList);
+    generateComponent(refContent, componentNode, ctx);
+    ctx.argumentStack.pop();
+    return componentNode;
 }
 
-const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
-    const el = TopbarEl as Topbar;
+export function generateComponent(model: BodyElement[], bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
+    model.forEach(el => {
+        const content = generateBodyFunctions(el, ctx);
+        if(content){
+            bodyNode.append(content, NL);
+        }
+    })
+}
+
+const topbarFunc = (element: Topbar, ctx: GeneratorContext) => {
     const topbarNode = new CompositeGeneratorNode();
-    copyCSSClass('topbar');
-    topbarNode.append(`<header class='topbar ${el.fixed?'topbar--fixed':''}' class='${generateCSSClasses(el.classes)}' style='${generateInlineCSS(el,ctx)}'>`,NL);
+    element.classes.classesNames.push('topbar');
+    if(element.fixed){
+        element.classes.classesNames.push('topbar--fixed');
+    }
+    topbarNode.append(`<header`, 
+    formatCSS(element, ctx),
+    `>`, 
+    NL);
     topbarNode.indent(topbarContent => {
         topbarContent.append(`<nav>`,NL);
         topbarContent.indent(navigationContent => {
-            navigationContent.append(`<a style='${generateInlineCSS(el,ctx)}' href='./'>${generateExpression(el.value, ctx)}</a>`,NL)
+            navigationContent.append(`<a href='./'>${generateExpression(element.value, ctx)}</a>`,NL)
         });
         topbarContent.append(`</nav>`,NL);
     })
@@ -171,41 +275,21 @@ const topbarFunc = (TopbarEl: AstNode, ctx: GeneratorContext) => {
     return topbarNode
 }
 
-const footerFunc = (FooterEl: AstNode, ctx:GeneratorContext) => {
-    const el = FooterEl as Footer;
-    const footerNode = new CompositeGeneratorNode()
+const footerFunc = (element: Footer, ctx:GeneratorContext) => {
+    const footerNode = new CompositeGeneratorNode();
+    element.classes.classesNames.push('footer');
 
-    footerNode.append(`<footer class='footer' style='${generateInlineCSS(el,ctx)}'>`, NL);
+    footerNode.append(`<footer `,
+    formatCSS(element, ctx),
+    `>`, 
+    NL);
     footerNode.indent(footerContent => {
-        footerContent.append(`<p style='${generateInlineCSS(el,ctx)}'>${generateExpression(el.value, ctx)}</p>`,NL)
+        footerContent.append(`<p>${generateExpression(element.value, ctx)}</p>`,NL)
     })
     footerNode.append(`</footer>`);
     return footerNode
 }
-
-// Redirect to generator function by Type
-
-// Head functions
-export const generateHeadFunctions: GenerateFunctions = {
-    Title: titleFunc,
-    Icon: iconFunc
-};
-
-// Body functions
-export const generateBodyFunctions: GenerateFunctions = {
-    Div: divFunc,
-    Paragraph: paragraphFunc,
-    Button: buttonFunc,
-    Link: linkFunc,
-    Textbox: textboxFunc,
-    Linebreak: linebreakFunc,
-    Image: imageFunc,
-    Heading: headingFunc,
-    UseComponent: useComponentFunc,
-    Topbar: topbarFunc,
-    Section: sectionFunc,
-    Footer: footerFunc
-};
+//#endregion
 
 function generateExpression(expression: Expression | SimpleExpression, ctx: GeneratorContext): string | number {
     if (isStringExpression(expression)) {
@@ -239,7 +323,7 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
             throw new Error(`Invalid Operation: (${left} ${expression.operator} ${right})`)
         } else {
             result = eval(left + expression.operator + right)
-            return encodeHtml(result)
+            return (result)
         }
     }
     else {
@@ -264,9 +348,9 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
     expression.forEach(el => {
         let currentExpression = ''
         if (isNumberExpression(el) === true) {
-            currentExpression = `${generateExpression(el, ctx)}`
+            currentExpression = `${generateExpression(el,ctx)}`
         } else {
-            currentExpression = `"${generateExpression(el, ctx)}"`
+            currentExpression = `"${generateExpression(el,ctx)}"`
         }
         if (result === '') {
             result = currentExpression
@@ -277,21 +361,23 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
     return result
 }
 
-function formatCSS(classes: string, inline: string): string {
-    let classString = classes ? `class='${classes}' ` : '';
-    let inlineString = inline ? `style='${inline}'` : '';
-    return classString + inlineString;
+function formatCSS(element: SingleElement | NestingElement, ctx: GeneratorContext): string {
+    const classes = generateCSSClasses(element.classes.classesNames);
+    const classesString = classes ? ` class="${classes}"` : '';
+    const styles = generateInlineCSS(element.styles.properties,ctx);
+    const stylesString = styles ? ` style="${styles}"` : '';
+    return classesString + stylesString;
 }
-function generateCSSClasses(element: CSSClasses): string {
-    if(element == undefined) return '';
-    element.names.forEach(el => {
+function generateCSSClasses(classes: string[]): string {
+    if(classes == undefined) return '';
+    classes.forEach(el => {
         copyCSSClass(el);
     });
-    return element.names.join(" ");;
+    return classes.join(" ");;
 }
-function generateInlineCSS(element: CSSElements, ctx: GeneratorContext): string {
+function generateInlineCSS(element: CSSProperty[], ctx: GeneratorContext): string {
     let cssString = ''
-    element.css.forEach(cssel => {
+    element.forEach(cssel => {
         switch (cssel.property){
             case 'text-color':
                 cssString += `color:${generateExpression(cssel.value, ctx)}; `
@@ -311,58 +397,4 @@ function generateInlineCSS(element: CSSElements, ctx: GeneratorContext): string 
         }
     })
     return cssString;
-}
-
-// Check for Type and call head functions
-export function generateHead(model: SimpleUi, bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
-    const suiTypes = reflection.getAllTypes();
-    model.headelements.forEach(el => {
-        suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUIAstType;
-            const isInstance = reflection.isInstance(el, t);
-            if (isInstance) {
-                const func = generateHeadFunctions[t];
-                if (func) {
-                    const content = func(el, ctx);
-                    bodyNode.append(content, NL);
-                }
-            }
-        })
-    })
-}
-
-// Check for Type and call body functions
-export function generateBody(elements: BodyElement[], bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
-    const suiTypes = reflection.getAllTypes();
-    elements.forEach(el => {
-        suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUIAstType;
-            const isInstance = reflection.isInstance(el, t);
-            if (isInstance) {
-                const func = generateBodyFunctions[t];
-                if (func) {
-                    const content = func(el, ctx);
-                    bodyNode.append(content, NL);
-                }
-            }
-        })
-    })
-}
-
-// Check for Type and call body functions
-export function generateComponent(model: SimpleUi, bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
-    const suiTypes = reflection.getAllTypes();
-    model.bodyelements.forEach(el => {
-        suiTypes.forEach(suiType => {
-            const t = suiType as SimpleUIAstType;
-            const isInstance = reflection.isInstance(el, t);
-            if (isInstance) {
-                const func = generateBodyFunctions[t];
-                if (func) {
-                    const content = func(el, ctx);
-                    bodyNode.append(content, NL);
-                }
-            }
-        })
-    })
 }
