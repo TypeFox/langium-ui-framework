@@ -32,36 +32,36 @@ CSSClass returns string:
     ID (('-')* ID)*;
 
 InlineCSS:
-   ('styles' '[' (properties+=CSSProperty(',' properties+=CSSProperty)*)? ']')?;
+    ('styles' '[' (properties+=CSSProperty(',' properties+=CSSProperty)*)? ']')?;
 
 CSSProperty:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
 
 // NESTING HTML ELEMENTS
 Div: 
-    'div' name=ID?;  
+    'div' name=ElementId?;  
 
 Section: 
-    'section' name=ID? description=STRING?;
+    'section' name=ElementId? description=STRING?;
 
 // SINGLE HTML ELEMENTS
 Paragraph:
-    'paragraph' name=ID? text=Expression;
+    'paragraph' name=ElementId? text=Expression;
 
 Heading:
-    'heading' name=ID? 'level:'level=INT text=Expression;
+    'heading' name=ElementId? 'level:'level=INT text=Expression;
 
 Image:
-    'image' name=ID? imagePath=Expression ('alt:' altText=Expression)?;
+    'image' name=ElementId? imagePath=Expression ('alt:' altText=Expression)?;
 
 Textbox:
-    'textbox' name=ID ('placeholder:' placeholderText=Expression)? ('label:' labelText=Expression (labelAfter?='labelafter')?)?;
+    'textbox' ElementId ('placeholder:' placeholderText=Expression)? ('label:' labelText=Expression (labelAfter?='labelafter')?)?;
 
 Button:
-    'button' name=ID? buttonText=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
+    'button' name=ElementId? buttonText=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
 
 Link:
-    'link' name=ID? linkUrl=Expression ('text:' linkText=Expression)?;
+    'link' name=ElementId? linkUrl=Expression ('text:' linkText=Expression)?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -114,6 +114,9 @@ NumberExpression:
 
 SymbolReference:
     symbol=[Parameter];
+
+ElementId:
+    'id:' name=ID;
 
 
 // JS implementation
