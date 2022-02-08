@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -13,7 +13,14 @@ type GeneratorContext = {
     argumentStack: Object[][]
 }
 
+const sections = new Array<Section>();
+
 export function generateHTML(model: SimpleUi, filePath: string, destination: string | undefined): string {
+
+    getSections(model.bodyElements);
+
+    console.log(`Found sections: ${sections.length}`);
+
     const data = extractDestinationAndName(filePath, destination);
     const generatedFilePath = `${data.destination}index.html`;
     const ctx: GeneratorContext = { argumentStack: [] }
@@ -254,40 +261,69 @@ export function generateComponent(model: BodyElement[], bodyNode: CompositeGener
     })
 }
 
-const topbarFunc = (element: Topbar, ctx: GeneratorContext) => {
+function topbarFunc(element: Topbar, ctx: GeneratorContext) {
     const topbarNode = new CompositeGeneratorNode();
+
+    let navLinks: Section[];
+
+    if(element.autoNavLinks){
+        navLinks = sections;
+    }
+    else if(element.sectionsList.length != 0){
+        navLinks = new Array<Section>();
+        element.sectionsList.forEach(ref => {
+            navLinks.push(ref.ref as Section);
+        })
+    } else {
+        navLinks = new Array<Section>();
+    }
+
     element.classes.classesNames.push('topbar');
-    if(element.fixed){
+    if (element.fixed) {
         element.classes.classesNames.push('topbar--fixed');
     }
-    topbarNode.append(`<header`, 
-    formatCSS(element, ctx),
-    `>`, 
-    NL);
+    topbarNode.append(`<header`,
+        formatCSS(element, ctx),
+        `>`,
+        NL);
     topbarNode.indent(topbarContent => {
-        topbarContent.append(`<nav>`,NL);
+        topbarContent.append(`<a href='./'>${generateExpression(element.value, ctx)}</a>`, NL);
+
+        if(navLinks.length > 0)
+
+        topbarContent.append(`<nav>`, NL);
         topbarContent.indent(navigationContent => {
-            navigationContent.append(`<a href='./'>${generateExpression(element.value, ctx)}</a>`,NL)
-        });
-        topbarContent.append(`</nav>`,NL);
-    })
+            navigationContent.append('<ul>', NL);
+            navigationContent.indent( navigationLinks =>
+                {
+                    navLinks.forEach(link => {
+                        if(link.name){
+                            navigationLinks.append('<li>',`<a href='#${link.name}'>${link.description? link.description : link.name}</a></li>`,NL);
+                        }
+                    })
+                })
+            navigationContent.append('<ul>',NL);
+            })
+        
+        topbarContent.append(`</nav>`, NL);
+    });
     topbarNode.append(`</header>`);
-    return topbarNode
+    return topbarNode;
 }
 
-const footerFunc = (element: Footer, ctx:GeneratorContext) => {
+function footerFunc(element: Footer, ctx: GeneratorContext) {
     const footerNode = new CompositeGeneratorNode();
     element.classes.classesNames.push('footer');
 
     footerNode.append(`<footer `,
-    formatCSS(element, ctx),
-    `>`, 
-    NL);
+        formatCSS(element, ctx),
+        `>`,
+        NL);
     footerNode.indent(footerContent => {
-        footerContent.append(`<p>${generateExpression(element.value, ctx)}</p>`,NL)
-    })
+        footerContent.append(`<p>${generateExpression(element.value, ctx)}</p>`, NL);
+    });
     footerNode.append(`</footer>`);
-    return footerNode
+    return footerNode;
 }
 //#endregion
 
@@ -343,6 +379,7 @@ function encodeHtml(input: string): string {
     });
     return encodedString.replace(/(\r\n|\n|\r)/gm, '<br>');
 }
+
 function generateParameters(expression: Expression[], ctx: GeneratorContext): string {
     let result = ''
     expression.forEach(el => {
@@ -368,6 +405,7 @@ function formatCSS(element: SingleElement | NestingElement, ctx: GeneratorContex
     const stylesString = styles ? ` style="${styles}"` : '';
     return classesString + stylesString;
 }
+
 function generateCSSClasses(classes: string[]): string {
     if(classes == undefined) return '';
     classes.forEach(el => {
@@ -375,6 +413,7 @@ function generateCSSClasses(classes: string[]): string {
     });
     return classes.join(" ");;
 }
+
 function generateInlineCSS(element: CSSProperty[], ctx: GeneratorContext): string {
     let cssString = ''
     element.forEach(cssel => {
@@ -398,3 +437,11 @@ function generateInlineCSS(element: CSSProperty[], ctx: GeneratorContext): strin
     })
     return cssString;
 }
+function getSections(bodyElements: BodyElement[]) {
+    bodyElements.forEach(element => {
+        if(isSection(element)){
+            sections.push(element);
+        }
+    })
+}
+
