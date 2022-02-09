@@ -113,7 +113,7 @@ NumberExpression:
     value=INT;
 
 SymbolReference:
-    symbol=[Parameter];
+    '$[' symbol=[Parameter] ']';
 
 
 // JS implementation
