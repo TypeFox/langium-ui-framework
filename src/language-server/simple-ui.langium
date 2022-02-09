@@ -115,7 +115,7 @@ NumberExpression:
 SymbolReference:
     symbol=[Parameter];
 
-ElementId:
+ElementId returns STRING:
     'id:' name=ID;
 
 

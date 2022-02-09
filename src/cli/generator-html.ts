@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isElementId, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -132,7 +132,7 @@ function divFunc(element: Div, ctx: GeneratorContext) : CompositeGeneratorNode {
     const fileNode = new CompositeGeneratorNode();
     
     fileNode.append(`<div`,
-    generateExpression(element.name, ctx)?` id="${generateExpression(element.name, ctx)}"`:'',
+    element.name?` id="${element.name}"`:'',
     formatCSS(element, ctx),
     '>',
      NL);
@@ -147,7 +147,7 @@ function divFunc(element: Div, ctx: GeneratorContext) : CompositeGeneratorNode {
 function sectionFunc(element: Section, ctx: GeneratorContext) : CompositeGeneratorNode {
     const fileNode = new CompositeGeneratorNode();
     fileNode.append(`<section`,
-    generateExpression(element.name, ctx) ? ` id="${generateExpression(element.name, ctx)}"` : '',
+    element.name ? ` id="${element.name}"` : '',
     formatCSS(element, ctx),
     `>`, NL);
 
@@ -162,7 +162,7 @@ function sectionFunc(element: Section, ctx: GeneratorContext) : CompositeGenerat
 
 function paragraphFunc(element: Paragraph, ctx: GeneratorContext) : string { 
     return `<p` + 
-    (generateExpression(element.name, ctx) ? ` id="${generateExpression(element.name, ctx)}"` : '') + 
+    (element.name ? ` id="${element.name}"` : '') + 
     formatCSS(element, ctx) +
     '>' + 
     generateExpression(element.text, ctx) + '</p>';
@@ -170,7 +170,7 @@ function paragraphFunc(element: Paragraph, ctx: GeneratorContext) : string {
 
 function buttonFunc(element: Button, ctx: GeneratorContext) : string {
     return `<button` + 
-    (generateExpression(element.name, ctx) ? ` id="${generateExpression(element.name, ctx)}"` : '' ) +
+    (element.name ? ` id="${element.name}"` : '' ) +
     formatCSS(element, ctx) + 
     (element.onclickaction ? ` onclick="${generateParameters(element.arguments, ctx)}"` : '') + 
     `>` + 
@@ -215,7 +215,7 @@ function linebreakFunc() {
 
 function imageFunc(element: Image, ctx: GeneratorContext) {
     return `<img`+
-    (generateExpression(element.name, ctx) ? ` id="${generateExpression(element.name, ctx)}"` : '') + 
+    (element.name ? ` id="${element.name}"` : '') + 
     ` src="${generateExpression(element.imagePath, ctx)}"` + 
     ` alt=` + 
     (element.altText ? `"${generateExpression(element.altText, ctx)}"` : '""') +
@@ -225,7 +225,7 @@ function imageFunc(element: Image, ctx: GeneratorContext) {
 
 function headingFunc(element: Heading, ctx: GeneratorContext) {
     return `<h${element.level}` + 
-    (generateExpression(element.name, ctx) ? ` id="${generateExpression(element.name, ctx)}"` : '') + 
+    (element.name ? ` id="${element.name}"` : '') + 
     formatCSS(element, ctx) + 
     `>` + 
     generateExpression(element.text, ctx) + 
@@ -325,12 +325,6 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
             result = eval(left + expression.operator + right)
             return (result)
         }
-    }
-    else if (isElementId(expression)) {
-        return expression.name
-    }
-    else if (typeof(expression) === 'undefined') {
-        return ''
     }
     else {
         throw new Error('Unhandled Expression type: ' + expression.$type)
