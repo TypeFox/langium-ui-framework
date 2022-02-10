@@ -39,29 +39,29 @@ CSSProperty:
 
 // NESTING HTML ELEMENTS
 Div: 
-    'div' name=ElementName?;  
+    'div' ElementName?;  
 
 Section: 
-    'section' name=ElementName? description=STRING?;
+    'section' ElementName? description=STRING?;
 
 // SINGLE HTML ELEMENTS
 Paragraph:
-    'paragraph' name=ElementName? text=Expression;
+    'paragraph' ElementName? text=Expression;
 
 Heading:
-    'heading' name=ElementName? 'level:'level=INT text=Expression;
+    'heading' ElementName? 'level:'level=INT text=Expression;
 
 Image:
-    'image' name=ElementName? imagePath=Expression ('alt:' altText=Expression)?;
+    'image' ElementName? imagePath=Expression ('alt:' altText=Expression)?;
 
 Textbox:
-    'textbox' name=ElementName ('placeholder:' placeholderText=Expression)? ('label:' labelText=Expression (labelAfter?='labelafter')?)?;
+    'textbox' ElementName ('placeholder:' placeholderText=Expression)? ('label:' labelText=Expression (labelAfter?='labelafter')?)?;
 
 Button:
-    'button' name=ElementName? buttonText=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
+    'button' ElementName? buttonText=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
 
 Link:
-    'link' name=ElementName? linkUrl=Expression ('text:' linkText=Expression)?;
+    'link' ElementName? linkUrl=Expression ('text:' linkText=Expression)?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -72,8 +72,8 @@ Topbar:
 Footer:
     'footer' value=Expression;
 
-ElementName returns string:
-    ID;
+fragment ElementName:
+    name=ID;
 
 // HEAD ELEMENTS
 Title:
