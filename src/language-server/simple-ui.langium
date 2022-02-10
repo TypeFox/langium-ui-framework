@@ -67,7 +67,7 @@ Linebreak:
     {Linebreak} 'linebreak';
 
 Topbar:
-    'topbar' value=Expression (fixed?='fixed')?;
+    'topbar' value=Expression (fixed?='fixed')? ('navlinks:' ((autoNavLinks?='auto')|('['sectionsList+=[Section:ID](','sectionsList+=[Section:ID])*']')))?;
 
 Footer:
     'footer' value=Expression;
