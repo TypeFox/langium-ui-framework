@@ -24,14 +24,15 @@ SimpleUI is a easy UI Framework for building and generating web user interfaces.
 - Clone the repository using `git clone https://github.com/TypeFox/langium-ui-framework.git`
 - `npm i` to install all required dependencies
 - `npm i -g` to install it globally
-- `npm run langium:generate && npm run build` to generate the infrastructure and build the project
+- `npm run langium:generate` to generate project
+- `npm run build` to build the project
 
 To run booth watchers use `npm run watch && npm run langium:watch`.
 
 ## Example
 Generate your code using
-- `simple-ui-cli.cmd generate <filename>` on Windows
-- `simple-ui-cli generate <filename>` on MacOS
+- `node ./bin/cli generate generate <filename>` on Windows
+- `./bin/cli generate <filename>` on MacOS
 
 add `-w` or `--watch` to run watcher.
 
