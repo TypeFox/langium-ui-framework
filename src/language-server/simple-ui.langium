@@ -32,36 +32,36 @@ CSSClass returns string:
     ID (('-')* ID)*;
 
 InlineCSS:
-   ('styles' '[' (properties+=CSSProperty(',' properties+=CSSProperty)*)? ']')?;
+    ('styles' '[' (properties+=CSSProperty(',' properties+=CSSProperty)*)? ']')?;
 
 CSSProperty:
     property=('text-color'|'font-size'|'width'|'height'|'background-color')':' value=Expression;
 
 // NESTING HTML ELEMENTS
 Div: 
-    'div' name=ID?;  
+    'div' ElementName?;  
 
 Section: 
-    'section' name=ID? description=STRING?;
+    'section' ElementName? description=STRING?;
 
 // SINGLE HTML ELEMENTS
 Paragraph:
-    'paragraph' name=ID? text=Expression;
+    'paragraph' ElementName? text=Expression;
 
 Heading:
-    'heading' name=ID? 'level:'level=INT text=Expression;
+    'heading' ElementName? 'level:'level=INT text=Expression;
 
 Image:
-    'image' name=ID? imagePath=Expression ('alt:' altText=Expression)?;
+    'image' ElementName? imagePath=Expression ('alt:' altText=Expression)?;
 
 Textbox:
-    'textbox' name=ID ('placeholder:' placeholderText=Expression)? ('label:' labelText=Expression (labelAfter?='labelafter')?)?;
+    'textbox' ElementName ('placeholder:' placeholderText=Expression)? ('label:' labelText=Expression (labelAfter?='labelafter')?)?;
 
 Button:
-    'button' name=ID? buttonText=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
+    'button' ElementName? buttonText=Expression ('{' 'onClick:' onclickaction=[JSFunction:ID]('('(arguments+=Expression(',' arguments+=Expression)*)?')') '}')?;
 
 Link:
-    'link' name=ID? linkUrl=Expression ('text:' linkText=Expression)?;
+    'link' ElementName? linkUrl=Expression ('text:' linkText=Expression)?;
 
 Linebreak:    
     {Linebreak} 'linebreak';
@@ -71,6 +71,9 @@ Topbar:
 
 Footer:
     'footer' value=Expression;
+
+fragment ElementName:
+    name=ID;
 
 // HEAD ELEMENTS
 Title:
@@ -113,7 +116,7 @@ NumberExpression:
     value=INT;
 
 SymbolReference:
-    symbol=[Parameter];
+    '$[' symbol=[Parameter] ']';
 
 
 // JS implementation
