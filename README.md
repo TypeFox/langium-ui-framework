@@ -31,7 +31,7 @@ To run booth watchers use `npm run watch && npm run langium:watch`.
 ## Example
 Generate your code using
 - `node ./bin/cli generate <filename>` on Windows
-- `./bin/cli generate <filename>` on MacOS
+- `./bin/cli generate <filename>` on MacOS and Linux
 
 add `-w` or `--watch` to run watcher.
 
