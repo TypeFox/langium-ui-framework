@@ -72,8 +72,8 @@ function calculate(numberOne: number, numberTwo: number){
 component card (header: string, content: string){
     div classes[flex-container, center] {
         div classes[border, border--hidden, shadow] styles[width: '30%'] {
-            heading level: 4 header
-            paragraph content
+            heading level: 4 $[header]
+            paragraph $[content]
         }
     }
 }
