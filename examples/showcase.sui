@@ -1,0 +1,79 @@
+title 'Langium UI Framework Demo'
+icon 'https://langium.org/assets/nib.svg'
+topbar 'Langium UI Framwork Demo' styles[background-color: '#d34af3', font-size: '17px', text-color: '#f2f2f2']
+
+linebreak
+
+div classes[flex-container, center]  {
+    div classes[border, border--hidden] {
+        div classes[center] {
+            heading level: 1 'Welcome to the Demo Page made with' styles[text-color: 'grey']
+           
+        } 
+        div classes[center]{        
+             image 'https://user-images.githubusercontent.com/68400102/150516517-7da9423e-7d0e-4605-91c7-d7693ccd3c28.png' styles[width: '20%', height: "20%"] 
+        }     
+    }
+}
+
+linebreak
+
+usecomponent card("Welcome", 
+"      
+This is the example page of SimpleUI a DSL build with Langium. 
+This DSL includes HTML, CSS and JavaScript all in one language.
+")
+
+div classes[flex-container, center] {
+    div classes[border, border--hidden, shadow] styles[width: '30%'] {
+
+        heading level: 4 "Showcase"
+        linebreak
+        section {
+            paragraph "A simple calculator"
+            textbox textBoxOne placeholder: "1" 
+            paragraph "+"
+            textbox textBoxTwo placeholder: "2" 
+            linebreak
+            button  'Calculate' { onClick: buttonClick() } /* { onClick: calculate(textBoxOne, textBoxTwo) } */ classes[border] 
+        }
+
+        linebreak
+
+        section {
+            paragraph "I can also add images with alt"
+            image "https://langium.org/assets/langium_logo_w_nib.svg" alt: "Langium Logo" styles[width: '40%', height: "40%"] 
+        }
+        section {
+            paragraph "Links are also supported"
+            link "https://langium.org/" text: "Langium"
+        }
+        
+    }
+}
+
+linebreak
+
+paragraph "Build with ❤️ and" classes[center] styles[text-color: "rgba(38,136,140)", font-size: '24px'] 
+div classes[center]{        
+    image 'https://langium.org/assets/langium_logo_w_nib.svg' alt: "Langium Logo" styles[width: '10%', height: "10%"] 
+}
+
+function buttonClick() {
+    popup 'and Popups to view '
+    popup 'also more things in one Function!'
+}
+
+function calculate(numberOne: number, numberTwo: number){
+    // popup  "Result: " + numberOne + numberTwo
+}
+
+
+component card (header: string, content: string){
+    div classes[flex-container, center] {
+        div classes[border, border--hidden, shadow] styles[width: '30%'] {
+            heading level: 4 header
+            paragraph content
+        }
+    }
+}
