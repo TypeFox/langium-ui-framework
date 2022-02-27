@@ -19,8 +19,6 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
 
     getSections(model.bodyElements);
 
-    console.log(`Found sections: ${sections.length}`);
-
     const data = extractDestinationAndName(filePath, destination);
     const generatedFilePath = `${data.destination}index.html`;
     const ctx: GeneratorContext = { argumentStack: [] }
