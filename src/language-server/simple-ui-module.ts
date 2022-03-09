@@ -1,32 +1,22 @@
 import { createDefaultModule, createDefaultSharedModule, DefaultSharedModuleContext, inject, LangiumServices, LangiumSharedServices, Module, PartialLangiumServices } from 'langium';
 import { SimpleUiGeneratedModule, SimpleUIGeneratedSharedModule } from './generated/module';
 import { SimpleUICompletionProvider } from './simple-ui-completion';
-import { SimpleUiValidationRegistry, SimpleUiValidator } from './simple-ui-validator';
-
-/**
- * Declaration of custom services - add your own service classes here.
- */
-export type SimpleUiAddedServices = {
-    validation: {
-        SimpleUiValidator: SimpleUiValidator
-    }
-}
+import { SimpleUiValidationRegistry } from './simple-ui-validator';
 
 /**
  * Union of Langium default services and your custom services - use this as constructor parameter
  * of custom service classes.
  */
-export type SimpleUiServices = LangiumServices & SimpleUiAddedServices
+export type SimpleUiServices = LangiumServices
 
 /**
  * Dependency injection module that overrides Langium default services and contributes the
  * declared custom services. The Langium defaults can be partially specified to override only
  * selected services, while the custom services must be fully specified.
  */
-export const SimpleUiModule: Module<SimpleUiServices, PartialLangiumServices & SimpleUiAddedServices> = {
+export const SimpleUiModule: Module<SimpleUiServices, PartialLangiumServices> = {
     validation: {
-        ValidationRegistry: (injector) => new SimpleUiValidationRegistry(injector),
-        SimpleUiValidator: () => new SimpleUiValidator()
+        ValidationRegistry: (injector) => new SimpleUiValidationRegistry(injector)
     },
     lsp: {
         completion: {

@@ -241,9 +241,9 @@ function useComponentFunc(element: UseComponent, ctx: GeneratorContext) {
     const componentNode = new CompositeGeneratorNode();
     const refContent = element.component.ref?.content as BodyElement[];
     const refParameters = element.component.ref?.parameters as Parameter[];
-    const argumentList = refParameters.map(function (refEl: Parameter, index: integer) {
-        return ({ name: refEl.name, type: refEl.type, value: generateExpression(element.arguments[index], ctx) });
-    });
+    const argumentList = refParameters.map((refEl: Parameter, index: integer) =>
+        ({ name: refEl.name, type: refEl.type, value: generateExpression(element.arguments[index], ctx) })
+    );
     ctx.argumentStack.push(argumentList);
     generateComponent(refContent, componentNode, ctx);
     ctx.argumentStack.pop();
@@ -333,23 +333,20 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
         return expression.value
     }
     else if (isSymbolReference(expression)) {
-        let value = ''
-        ctx.argumentStack[0].forEach(function (el) {
-            if ((el as any).name === expression.symbol.ref?.name) {
-                value = (el as any).value
-            }
-        })
-        return value
+        const values = ctx.argumentStack[0];
+        const lastIndex = values
+            .reduce<number>((maxIndex, el, currentIndex) => (el as any).name === expression.symbol.ref?.name ? currentIndex : maxIndex, -1);
+        return lastIndex === -1 ? '' : values[lastIndex] as string;
     }
     else if (isOperation(expression)) {
         let result, left, right
         if (isStringExpression(expression.left) || typeof (generateExpression(expression.left, ctx)) === 'string') {
-            left = `'${generateExpression(expression.left, ctx)}'`
+            left = "'" + generateExpression(expression.left, ctx) + "'";
         } else {
             left = generateExpression(expression.left, ctx)
         }
         if (isStringExpression(expression.right) || typeof (generateExpression(expression.right, ctx)) === 'string') {
-            right = `'${generateExpression(expression.right, ctx)}'`
+            right = "'" + generateExpression(expression.right, ctx) + "'";
         } else {
             right = generateExpression(expression.right, ctx)
         }
@@ -372,28 +369,14 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
  */
 function encodeHtml(input: string): string {
     // https://stackoverflow.com/questions/18749591/encode-html-entities-in-javascript
-    let encodedString = input.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
-        return '&#'+i.charCodeAt(0)+';';
-    });
+    const encodedString = input.replace(/[\u00A0-\u9999<>\&]/g, (i) => '&#' + i.charCodeAt(0) + ';');
     return encodedString.replace(/(\r\n|\n|\r)/gm, '<br>');
 }
 
 function generateParameters(expression: Expression[], ctx: GeneratorContext): string {
-    let result = ''
-    expression.forEach(el => {
-        let currentExpression = ''
-        if (isNumberExpression(el) === true) {
-            currentExpression = `${generateExpression(el,ctx)}`
-        } else {
-            currentExpression = `"${generateExpression(el,ctx)}"`
-        }
-        if (result === '') {
-            result = currentExpression
-        } else {
-            result = `${result}, ${currentExpression}`
-        }
-    })
-    return result
+    return expression
+        .map(el => isNumberExpression(el) ? generateExpression(el, ctx) : '"' + generateExpression(el, ctx) + '"')
+        .join(', ');
 }
 
 function formatCSS(element: SingleElement | NestingElement, ctx: GeneratorContext): string {
