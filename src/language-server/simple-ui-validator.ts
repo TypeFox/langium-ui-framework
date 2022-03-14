@@ -67,7 +67,7 @@ function checkHeadingLevel(el: Heading, accept: ValidationAcceptor): void {
 
 function checkCSSClasses(classes: CSSClasses, accept: ValidationAcceptor): void {
     const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'), 'utf8');
-    const cssClasses = fileContent.match(/(?<=\\.)[a-zA-Z\\d\\-]*/gm);
+    const cssClasses = fileContent.match(/(?<=\.)[a-zA-Z\\d\-]*/gm);
     classes.classesNames
         .filter(name => name.trim().length > 0 && !cssClasses?.includes(name))
         .forEach(element => {
