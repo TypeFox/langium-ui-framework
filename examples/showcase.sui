@@ -1,6 +1,6 @@
 title 'Langium SimpleUI Demo'
 icon 'https://langium.org/assets/nib.svg'
-topbar 'Langium SimpleUI Demo' styles[background-color: '#d34af3', font-size: '17px', text-color: '#f2f2f2']
+topbar 'Langium SimpleUI Demo' styles[background-color: '#dcabdf', font-size: '17px', text-color: '#f2f2f2']
 
 linebreak
 
@@ -22,11 +22,13 @@ usecomponent card("Welcome to our example page",
 "      
 This example page of SimpleUI (a DSL build with Langium), 
 shows what is possible with Langium. 
-This DSL combines HTML, CSS and JavaScript all into one simple language.
+This DSL combines HTML, CSS and JavaScript into one simple language.
+It also has cool extra features like components that you can 
+define once and then reuse like this card you are seeing right now!
 ")
 
 div classes[flex-container, center] {
-    div classes[border, border--hidden, shadow] styles[width: '30%'] {
+    div classes[border, border--hidden, shadow] styles[width: '70%'] {
 
         heading level: 4 "Function Showcase"
         linebreak
@@ -60,6 +62,8 @@ div classes[center]{
     image 'https://langium.org/assets/langium_logo_w_nib.svg' alt: "Langium Logo" styles[width: '10%', height: "10%"] 
 }
 
+linebreak
+
 function buttonClick() {
     popup 'and Popups to view '
     popup 'also more things in one Function!'
@@ -72,7 +76,7 @@ function calculate(numberOne: number, numberTwo: number){
 
 component card (header: string, content: string){
     div classes[flex-container, center] {
-        div classes[border, border--hidden, shadow] styles[width: '30%'] {
+        div classes[border, border--hidden, shadow] styles[width: '70%'] {
             heading level: 4 $[header]
             paragraph $[content]
         }
