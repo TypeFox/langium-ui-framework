@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, isTextboxExpression, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -140,7 +140,7 @@ function divFunc(element: Div, ctx: GeneratorContext) : CompositeGeneratorNode {
     element.name?` id="${element.name}"`:'',
     formatCSS(element, ctx),
     '>',
-     NL);
+    NL);
 
     fileNode.indent(divContent => {
         generateBody(element.content, divContent, ctx);
@@ -177,7 +177,7 @@ function buttonFunc(element: Button, ctx: GeneratorContext) : string {
     return `<button` + 
     (element.name ? ` id="${element.name}"` : '' ) +
     formatCSS(element, ctx) + 
-    (element.onclickaction ? ` onclick="${generateParameters(element.arguments, ctx)}"` : '') + 
+    (element.onclickaction ? ` onclick="${element.onclickaction.$refText}(${generateParameters(element.arguments, ctx)})"` : '') + 
     `>` + 
     generateExpression(element.buttonText, ctx) +
     `</button>`;
@@ -341,6 +341,9 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
         })
         return value
     }
+    else if (isTextboxExpression(expression)) {
+        return `(isNaN(parseInt(document.getElementById('${expression.name.ref?.name}').value)) ? document.getElementById('${expression.name.ref?.name}').value : parseInt(document.getElementById('${expression.name.ref?.name}').value))`
+    }
     else if (isOperation(expression)) {
         let result, left, right
         if (isStringExpression(expression.left) || typeof (generateExpression(expression.left, ctx)) === 'string') {
@@ -383,6 +386,8 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
     expression.forEach(el => {
         let currentExpression = ''
         if (isNumberExpression(el) === true) {
+            currentExpression = `${generateExpression(el,ctx)}`
+        } else if (isTextboxExpression(el) === true) {
             currentExpression = `${generateExpression(el,ctx)}`
         } else {
             currentExpression = `"${generateExpression(el,ctx)}"`

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { SimpleUIAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup } from '../language-server/generated/ast';
+import { SimpleUIAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup, isOperation } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
@@ -66,7 +66,10 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
         return expression.symbol.ref?.name as string
     }
     else if (isTextboxExpression(expression)){
-        return `document.getElementById('${expression.name.ref?.name}').value`
+        return `(isNaN(parseInt(document.getElementById('${expression.name.ref?.name}').value)) ? document.getElementById('${expression.name.ref?.name}').value : parseInt(document.getElementById('${expression.name.ref?.name}').value))`
+    }
+    else if (isOperation(expression)) {
+        return `${generateExpression(expression.left, ctx)} ${expression.operator} ${generateExpression(expression.right, ctx)}`
     }
     else {
         throw new Error ('Unhandled Expression type: ' + expression.$type)

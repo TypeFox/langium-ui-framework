@@ -1,13 +1,13 @@
-title 'Langium UI Framework Demo'
+title 'Langium SimpleUI Demo'
 icon 'https://langium.org/assets/nib.svg'
-topbar 'Langium UI Framwork Demo' styles[background-color: '#d34af3', font-size: '17px', text-color: '#f2f2f2']
+topbar 'Langium SimpleUI Demo' styles[background-color: '#d34af3', font-size: '17px', text-color: '#f2f2f2']
 
 linebreak
 
 div classes[flex-container, center]  {
     div classes[border, border--hidden] {
         div classes[center] {
-            heading level: 1 'Welcome to the Demo Page made with' styles[text-color: 'grey']
+            heading level: 1 'Welcome to our Demo Page for' styles[text-color: 'grey']
            
         } 
         div classes[center]{        
@@ -18,16 +18,17 @@ div classes[flex-container, center]  {
 
 linebreak
 
-usecomponent card("Welcome", 
+usecomponent card("Welcome to our example page", 
 "      
-This is the example page of SimpleUI a DSL build with Langium. 
-This DSL includes HTML, CSS and JavaScript all in one language.
+This example page of SimpleUI (a DSL build with Langium), 
+shows what is possible with Langium. 
+This DSL combines HTML, CSS and JavaScript all into one simple language.
 ")
 
 div classes[flex-container, center] {
     div classes[border, border--hidden, shadow] styles[width: '30%'] {
 
-        heading level: 4 "Showcase"
+        heading level: 4 "Function Showcase"
         linebreak
         section {
             paragraph "A simple calculator"
@@ -35,7 +36,7 @@ div classes[flex-container, center] {
             paragraph "+"
             textbox textBoxTwo placeholder: "2" 
             linebreak
-            button  'Calculate' { onClick: buttonClick() } /* { onClick: calculate(textBoxOne, textBoxTwo) } */ classes[border] 
+            button  'Calculate' { onClick: calculate(getTextbox(textBoxOne), getTextbox(textBoxTwo)) } classes[border] 
         }
 
         linebreak
@@ -65,7 +66,7 @@ function buttonClick() {
 }
 
 function calculate(numberOne: number, numberTwo: number){
-    // popup  "Result: " + numberOne + numberTwo
+    popup $[numberOne] + $[numberTwo]
 }
 
 
