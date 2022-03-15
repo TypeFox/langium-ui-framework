@@ -56,6 +56,7 @@ const generateJSFunctions: GenerateFunctions = {
 }
 
 function generateExpression(expression: Expression, ctx:GeneratorContext):string {
+    let expressionType = expression.$type
     if (isStringExpression(expression)){
         return expression.value
     }
@@ -72,7 +73,7 @@ function generateExpression(expression: Expression, ctx:GeneratorContext):string
         return `${generateExpression(expression.left, ctx)} ${expression.operator} ${generateExpression(expression.right, ctx)}`
     }
     else {
-        throw new Error ('Unhandled Expression type: ' + expression.$type)
+        throw new Error('Unhandled Expression type: ' + expressionType)
     }
 }
 
