@@ -4,6 +4,7 @@ import { LangiumDocument, LangiumServices } from 'langium';
 import path from 'path';
 import { URI } from 'vscode-uri';
 import { GenerateOptions } from '.';
+import { WorkspaceFolder } from 'vscode-languageserver';
 
 export async function extractDocument(fileName: string, extensions: string[], services: LangiumServices, options: GenerateOptions): Promise<GeneratorResult> {
     let success = true;
@@ -18,8 +19,9 @@ export async function extractDocument(fileName: string, extensions: string[], se
     }
 
     const document = services.shared.workspace.LangiumDocuments.getOrCreateDocument(URI.file(path.resolve(fileName)));
-    const buildResult = await services.shared.workspace.DocumentBuilder.build(document);
-    const validationErrors = buildResult.diagnostics.filter(e => e.severity === 1);
+    await services.shared.workspace.DocumentBuilder.build([document], { validationChecks: 'all' });
+
+    const validationErrors = (document.diagnostics ?? []).filter(e => e.severity === 1);
     if (validationErrors.length > 0) {
         success = false;
         console.error(colors.red('There are validation errors:'));
@@ -38,6 +40,21 @@ export async function extractDocument(fileName: string, extensions: string[], se
         document: document,
         success: success
     }
+}
+
+
+export async function setRootFolder(fileName: string, services: LangiumServices, root?: string): Promise<void> {
+    if (!root) {
+        root = path.dirname(fileName);
+    }
+    if (!path.isAbsolute(root)) {
+        root = path.resolve(process.cwd(), root);
+    }
+    const folders: WorkspaceFolder[] = [{
+        name: path.basename(root),
+        uri: URI.file(root).toString()
+    }];
+    await services.shared.workspace.WorkspaceManager.initializeWorkspace(folders);
 }
 
 interface FilePathData {

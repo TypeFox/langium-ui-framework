@@ -3,7 +3,7 @@ import { Command } from 'commander';
 import { SimpleUiLanguageMetaData } from '../language-server/generated/module';
 import { SimpleUi } from '../language-server/generated/ast';
 import { createSimpleUiServices } from '../language-server/simple-ui-module';
-import { extractDocument } from './cli-util';
+import { extractDocument, setRootFolder } from './cli-util';
 import { generateHTML } from './generator-html';
 import { generateCSS } from './generator-css';
 import { generateJS } from './generator-js';
@@ -22,7 +22,7 @@ program
     .option('-w, --watch', 'enables watch mode', false)
     .description('generates HTML code based on the input')
     .action(async (fileName: string, opts: GenerateOptions) => {
-              progressCommand(fileName, opts);
+            progressCommand(fileName, opts);
     });
     
 program.parse(process.argv);
@@ -39,7 +39,9 @@ async function progressCommand(fileName: string, options: GenerateOptions) {
 }
 
 async function generate(fileName: string, options: GenerateOptions) {
-    const generationResult = await extractDocument(fileName, SimpleUiLanguageMetaData.fileExtensions, createSimpleUiServices().simpleUi, options);
+    const services = createSimpleUiServices().simpleUi;
+    await setRootFolder(fileName, services, options.destination);
+    const generationResult = await extractDocument(fileName, SimpleUiLanguageMetaData.fileExtensions, services, options);
     if(generationResult.success){
         const model = generationResult.document.parseResult?.value as SimpleUi;
         const generatedHTMLFilePath = generateHTML(model, fileName, options.destination);
@@ -53,7 +55,7 @@ async function generate(fileName: string, options: GenerateOptions) {
     else {
         console.log(getTime() + colors.red('Code generation failed'));
     }
- }
+}
 
 function getTime(): string{
     let dateTime = new Date()

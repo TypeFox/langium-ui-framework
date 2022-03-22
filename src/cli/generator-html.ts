@@ -326,6 +326,7 @@ function footerFunc(element: Footer, ctx: GeneratorContext) {
 //#endregion
 
 function generateExpression(expression: Expression | SimpleExpression, ctx: GeneratorContext): string | number {
+    let expressionType = expression.$type
     if (isStringExpression(expression)) {
         return encodeHtml(expression.value);
     }
@@ -364,7 +365,7 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
         }
     }
     else {
-        throw new Error('Unhandled Expression type: ' + expression.$type)
+        throw new Error('Unhandled Expression type: ' + expressionType)
     }
 }
 

@@ -17,11 +17,11 @@ NestingElement:
 
 
 // List of single HTML Elements (HTML elements that do not contain other HTML elements). Add new ones here.
-SingleHTMLElement returns SingleElement:  
+SingleHTMLElement infers SingleElement:  
     Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
 
 // List of nesting HTML Elements. Add new ones here.
-NestingHTMLElement returns NestingElement: 
+NestingHTMLElement infers NestingElement: 
     Div | Section;
 
 // CSS
@@ -64,7 +64,7 @@ Link:
     'link' ElementName? linkUrl=Expression ('text:' linkText=Expression)?;
 
 Linebreak:    
-    {Linebreak} 'linebreak';
+    {infer Linebreak} 'linebreak';
 
 Topbar:
     'topbar' value=Expression (fixed?='fixed')? ('navlinks:' ((autoNavLinks?='auto')|('['sectionsList+=[Section:ID](','sectionsList+=[Section:ID])*']')))?;
@@ -88,19 +88,19 @@ Icon:
 Expression:
     Addition;
 
-Addition returns Expression:
-    Subtraction ({Operation.left=current} operator=('+') right=Subtraction)*;
+Addition infers Expression:
+    Subtraction ({infer Operation.left=current} operator=('+') right=Subtraction)*;
 
-Subtraction returns Expression:
-    Division ({Operation.left=current} operator=('-') right=Division)*;
+Subtraction infers Expression:
+    Division ({infer Operation.left=current} operator=('-') right=Division)*;
 
-Division returns Expression:
-    Multiplication ({Operation.left=current} operator=('/') right=Multiplication)*;
+Division infers Expression:
+    Multiplication ({infer Operation.left=current} operator=('/') right=Multiplication)*;
 
-Multiplication returns Expression:
-    Primary ({Operation.left=current} operator=('*') right=Primary)*;
+Multiplication infers Expression:
+    Primary ({infer Operation.left=current} operator=('*') right=Primary)*;
 
-Primary returns Expression:
+Primary infers Expression:
     TextboxExpression | '(' Addition ')';
 
 TextboxExpression:
