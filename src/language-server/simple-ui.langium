@@ -17,11 +17,11 @@ NestingElement:
 
 
 // List of single HTML Elements (HTML elements that do not contain other HTML elements). Add new ones here.
-SingleHTMLElement infer SingleElement:  
+SingleHTMLElement infers SingleElement:  
     Paragraph | Heading | Image | Textbox | Button | Link | Linebreak | Topbar | Footer;
 
 // List of nesting HTML Elements. Add new ones here.
-NestingHTMLElement infer NestingElement: 
+NestingHTMLElement infers NestingElement: 
     Div | Section;
 
 // CSS
@@ -88,19 +88,19 @@ Icon:
 Expression:
     Addition;
 
-Addition infer Expression:
+Addition infers Expression:
     Subtraction ({infer Operation.left=current} operator=('+') right=Subtraction)*;
 
-Subtraction infer Expression:
+Subtraction infers Expression:
     Division ({infer Operation.left=current} operator=('-') right=Division)*;
 
-Division infer Expression:
+Division infers Expression:
     Multiplication ({infer Operation.left=current} operator=('/') right=Multiplication)*;
 
-Multiplication infer Expression:
+Multiplication infers Expression:
     Primary ({infer Operation.left=current} operator=('*') right=Primary)*;
 
-Primary infer Expression:
+Primary infers Expression:
     TextboxExpression | '(' Addition ')';
 
 TextboxExpression:
