@@ -1,6 +1,6 @@
 title 'Langium SimpleUI Demo'
 icon 'https://langium.org/assets/nib.svg'
-topbar 'Langium SimpleUI Demo' styles[background-color: '#dcabdf', font-size: '17px', text-color: '#f2f2f2']
+topbar 'Langium SimpleUI Demo' navlinks: auto styles[background-color: '#dcabdf', font-size: '17px', text-color: '#f2f2f2']
 
 linebreak
 
@@ -17,43 +17,47 @@ div classes[flex-container, center]  {
 }
 
 linebreak
+section Introduction 'SimpleUI Introduction' {
+    usecomponent card("Welcome to our example page", 
+    "      
+    This example page of SimpleUI (a DSL build with Langium), 
+    shows what is possible with Langium. 
+    This DSL combines HTML, CSS and JavaScript into one simple language.
+    It also has cool extra features like components that you can 
+    define once and then reuse like this card you are seeing right now!
+    ")
+}
 
-usecomponent card("Welcome to our example page", 
-"      
-This example page of SimpleUI (a DSL build with Langium), 
-shows what is possible with Langium. 
-This DSL combines HTML, CSS and JavaScript into one simple language.
-It also has cool extra features like components that you can 
-define once and then reuse like this card you are seeing right now!
-")
+section Showcase 'Feature Showcase' {
+    div classes[flex-container, center] {
+        div classes[border, border--hidden, shadow] styles[width: '70%'] {
 
-div classes[flex-container, center] {
-    div classes[border, border--hidden, shadow] styles[width: '70%'] {
-
-        heading level: 4 "Function Showcase"
-        linebreak
-        section {
-            paragraph "A simple calculator"
-            textbox textBoxOne placeholder: "1" 
-            paragraph "+"
-            textbox textBoxTwo placeholder: "2" 
+            heading level: 4 "Function Showcase"
             linebreak
-            button  'Calculate' { onClick: calculate(getTextbox(textBoxOne), getTextbox(textBoxTwo)) } classes[border] 
-        }
+            section {
+                paragraph "A simple calculator"
+                textbox textBoxOne placeholder: "1" 
+                paragraph "+"
+                textbox textBoxTwo placeholder: "2" 
+                linebreak
+                button  'Calculate' { onClick: calculate(getTextbox(textBoxOne), getTextbox(textBoxTwo)) } classes[border] 
+            }
 
-        linebreak
+            linebreak
 
-        section {
-            paragraph "I can also add images with alt"
-            image "https://langium.org/assets/langium_logo_w_nib.svg" alt: "Langium Logo" styles[width: '40%', height: "40%"] 
+            section {
+                paragraph "I can also add images with alt"
+                image "https://langium.org/assets/langium_logo_w_nib.svg" alt: "Langium Logo" styles[width: '40%', height: "40%"] 
+            }
+            section {
+                paragraph "Links are also supported"
+                link "https://langium.org/" text: "Langium"
+            }
+            
         }
-        section {
-            paragraph "Links are also supported"
-            link "https://langium.org/" text: "Langium"
-        }
-        
     }
 }
+
 
 linebreak
 
