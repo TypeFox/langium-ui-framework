@@ -3,12 +3,31 @@
     background-color: #333;
     overflow: hidden;
     padding: 1rem 1%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 }
-.topbar > nav > a:any-link {
-    color: #f2f2f2;
-    font-size: 1.5rem;
+
+.topbar > a {
+    color:#333;
     text-decoration: none;
+    font-size: 1.5rem;
 }
+
+.topbar > nav > ul > li > a:any-link {
+    color: #333;
+    font-size: 1rem;
+    text-decoration: none;
+    background-color: #f3e2f4;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.topbar > nav > ul li {
+    display: inline;
+    margin-right: 1rem;
+}
+
 .topbar--fixed {
     position: fixed;
     top: 0;
