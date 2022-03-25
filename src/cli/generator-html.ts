@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, isTextboxExpression, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -140,7 +140,7 @@ function divFunc(element: Div, ctx: GeneratorContext) : CompositeGeneratorNode {
     element.name?` id="${element.name}"`:'',
     formatCSS(element, ctx),
     '>',
-     NL);
+    NL);
 
     fileNode.indent(divContent => {
         generateBody(element.content, divContent, ctx);
@@ -177,7 +177,7 @@ function buttonFunc(element: Button, ctx: GeneratorContext) : string {
     return `<button` + 
     (element.name ? ` id="${element.name}"` : '' ) +
     formatCSS(element, ctx) + 
-    (element.onclickaction ? ` onclick="${generateParameters(element.arguments, ctx)}"` : '') + 
+    (element.onclickaction ? ` onclick="${element.onclickaction.$refText}(${generateParameters(element.arguments, ctx)})"` : '') + 
     `>` + 
     generateExpression(element.buttonText, ctx) +
     `</button>`;
@@ -326,6 +326,7 @@ function footerFunc(element: Footer, ctx: GeneratorContext) {
 //#endregion
 
 function generateExpression(expression: Expression | SimpleExpression, ctx: GeneratorContext): string | number {
+    let expressionType = expression.$type
     if (isStringExpression(expression)) {
         return encodeHtml(expression.value);
     }
@@ -337,6 +338,9 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
         const lastIndex = values
             .reduce<number>((maxIndex, el, currentIndex) => (el as any).name === expression.symbol.ref?.name ? currentIndex : maxIndex, -1);
         return lastIndex === -1 ? '' : values[lastIndex] as string;
+    }
+    else if (isTextboxExpression(expression)) {
+        return `(isNaN(parseInt(document.getElementById('${expression.name.ref?.name}').value)) ? document.getElementById('${expression.name.ref?.name}').value : parseInt(document.getElementById('${expression.name.ref?.name}').value))`
     }
     else if (isOperation(expression)) {
         let result, left, right
@@ -358,7 +362,7 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
         }
     }
     else {
-        throw new Error('Unhandled Expression type: ' + expression.$type)
+        throw new Error('Unhandled Expression type: ' + expressionType)
     }
 }
 
@@ -374,9 +378,23 @@ function encodeHtml(input: string): string {
 }
 
 function generateParameters(expression: Expression[], ctx: GeneratorContext): string {
-    return expression
-        .map(el => isNumberExpression(el) ? generateExpression(el, ctx) : '"' + generateExpression(el, ctx) + '"')
-        .join(', ');
+    let result = ''
+    expression.forEach(el => {
+        let currentExpression = ''
+        if (isNumberExpression(el) === true) {
+            currentExpression = `${generateExpression(el,ctx)}`
+        } else if (isTextboxExpression(el) === true) {
+            currentExpression = `${generateExpression(el,ctx)}`
+        } else {
+            currentExpression = `"${generateExpression(el,ctx)}"`
+        }
+        if (result === '') {
+            result = currentExpression
+        } else {
+            result = `${result}, ${currentExpression}`
+        }
+    })
+    return result
 }
 
 function formatCSS(element: SingleElement | NestingElement, ctx: GeneratorContext): string {
