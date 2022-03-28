@@ -334,10 +334,12 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
         return expression.value
     }
     else if (isSymbolReference(expression)) {
-        const values = ctx.argumentStack[0];
-        const lastIndex = values
-            .reduce<number>((maxIndex, el, currentIndex) => (el as any).name === expression.symbol.ref?.name ? currentIndex : maxIndex, -1);
-        return lastIndex === -1 ? '' : values[lastIndex] as string;
+        let value = ''
+        ctx.argumentStack[0].forEach(function (el) {
+            if ((el as any).name === expression.symbol.ref?.name) {
+                value = (el as any).value
+            }});
+        return value
     }
     else if (isTextboxExpression(expression)) {
         return `(isNaN(parseInt(document.getElementById('${expression.name.ref?.name}').value)) ? document.getElementById('${expression.name.ref?.name}').value : parseInt(document.getElementById('${expression.name.ref?.name}').value))`
