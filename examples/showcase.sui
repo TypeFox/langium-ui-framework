@@ -61,7 +61,7 @@ section Showcase 'Feature Showcase' {
 
 linebreak
 
-paragraph "Build with ❤️ and" classes[center] styles[text-color: "rgba(38,136,140)", font-size: '24px'] 
+paragraph "Built with ❤️ and" classes[center] styles[text-color: "rgba(38,136,140)", font-size: '24px'] 
 div classes[center]{        
     image 'https://langium.org/assets/langium_logo_w_nib.svg' alt: "Langium Logo" styles[width: '10%', height: "10%"] 
 }
