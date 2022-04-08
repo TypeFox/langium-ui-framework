@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, isTextboxExpression, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
 
@@ -140,7 +140,7 @@ function divFunc(element: Div, ctx: GeneratorContext) : CompositeGeneratorNode {
     element.name?` id="${element.name}"`:'',
     formatCSS(element, ctx),
     '>',
-     NL);
+    NL);
 
     fileNode.indent(divContent => {
         generateBody(element.content, divContent, ctx);
@@ -177,7 +177,7 @@ function buttonFunc(element: Button, ctx: GeneratorContext) : string {
     return `<button` + 
     (element.name ? ` id="${element.name}"` : '' ) +
     formatCSS(element, ctx) + 
-    (element.onclickaction ? ` onclick="${generateParameters(element.arguments, ctx)}"` : '') + 
+    (element.onclickaction ? ` onclick="${element.onclickaction.$refText}(${generateParameters(element.arguments, ctx)})"` : '') + 
     `>` + 
     generateExpression(element.buttonText, ctx) +
     `</button>`;
@@ -241,9 +241,9 @@ function useComponentFunc(element: UseComponent, ctx: GeneratorContext) {
     const componentNode = new CompositeGeneratorNode();
     const refContent = element.component.ref?.content as BodyElement[];
     const refParameters = element.component.ref?.parameters as Parameter[];
-    const argumentList = refParameters.map(function (refEl: Parameter, index: integer) {
-        return ({ name: refEl.name, type: refEl.type, value: generateExpression(element.arguments[index], ctx) });
-    });
+    const argumentList = refParameters.map((refEl: Parameter, index: integer) =>
+        ({ name: refEl.name, type: refEl.type, value: generateExpression(element.arguments[index], ctx) })
+    );
     ctx.argumentStack.push(argumentList);
     generateComponent(refContent, componentNode, ctx);
     ctx.argumentStack.pop();
@@ -326,6 +326,7 @@ function footerFunc(element: Footer, ctx: GeneratorContext) {
 //#endregion
 
 function generateExpression(expression: Expression | SimpleExpression, ctx: GeneratorContext): string | number {
+    let expressionType = expression.$type
     if (isStringExpression(expression)) {
         return encodeHtml(expression.value);
     }
@@ -337,19 +338,21 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
         ctx.argumentStack[0].forEach(function (el) {
             if ((el as any).name === expression.symbol.ref?.name) {
                 value = (el as any).value
-            }
-        })
+            }});
         return value
+    }
+    else if (isTextboxExpression(expression)) {
+        return `(isNaN(parseInt(document.getElementById('${expression.name.ref?.name}').value)) ? document.getElementById('${expression.name.ref?.name}').value : parseInt(document.getElementById('${expression.name.ref?.name}').value))`
     }
     else if (isOperation(expression)) {
         let result, left, right
         if (isStringExpression(expression.left) || typeof (generateExpression(expression.left, ctx)) === 'string') {
-            left = `'${generateExpression(expression.left, ctx)}'`
+            left = "'" + generateExpression(expression.left, ctx) + "'";
         } else {
             left = generateExpression(expression.left, ctx)
         }
         if (isStringExpression(expression.right) || typeof (generateExpression(expression.right, ctx)) === 'string') {
-            right = `'${generateExpression(expression.right, ctx)}'`
+            right = "'" + generateExpression(expression.right, ctx) + "'";
         } else {
             right = generateExpression(expression.right, ctx)
         }
@@ -361,7 +364,7 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
         }
     }
     else {
-        throw new Error('Unhandled Expression type: ' + expression.$type)
+        throw new Error('Unhandled Expression type: ' + expressionType)
     }
 }
 
@@ -372,9 +375,7 @@ function generateExpression(expression: Expression | SimpleExpression, ctx: Gene
  */
 function encodeHtml(input: string): string {
     // https://stackoverflow.com/questions/18749591/encode-html-entities-in-javascript
-    let encodedString = input.replace(/[\u00A0-\u9999<>\&]/g, function(i) {
-        return '&#'+i.charCodeAt(0)+';';
-    });
+    const encodedString = input.replace(/[\u00A0-\u9999<>\&]/g, (i) => '&#' + i.charCodeAt(0) + ';');
     return encodedString.replace(/(\r\n|\n|\r)/gm, '<br>');
 }
 
@@ -383,6 +384,8 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
     expression.forEach(el => {
         let currentExpression = ''
         if (isNumberExpression(el) === true) {
+            currentExpression = `${generateExpression(el,ctx)}`
+        } else if (isTextboxExpression(el) === true) {
             currentExpression = `${generateExpression(el,ctx)}`
         } else {
             currentExpression = `"${generateExpression(el,ctx)}"`
