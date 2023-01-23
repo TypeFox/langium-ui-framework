@@ -1,10 +1,10 @@
 import fs from 'fs';
-import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { SimpleUIAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup, isOperation } from '../language-server/generated/ast';
+import { AstNode, CompositeGeneratorNode, NL, toString } from 'langium';
+import { SimpleUiAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup, isOperation } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
-    [key in SimpleUIAstType]?:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
+    [key in SimpleUiAstType]:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
 }
 
 type GeneratorContext = {
@@ -38,7 +38,7 @@ export function generateJS(model: SimpleUi, filePath: string, destination: strin
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
-    fs.writeFileSync(generatedFilePath, processGeneratorNode(fileNode));
+    fs.writeFileSync(generatedFilePath, toString(fileNode));
     return generatedFilePath;
 }
 

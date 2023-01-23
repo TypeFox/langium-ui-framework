@@ -1,13 +1,9 @@
 import fs from 'fs';
-import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
+import { CompositeGeneratorNode, NL, toString } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, isTextboxExpression, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, isTextboxExpression, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
-
-export type GenerateFunctions = {
-    [key in SimpleUIAstType]?: (el: AstNode, ctx: GeneratorContext) => string | CompositeGeneratorNode
-}
 
 type GeneratorContext = {
     argumentStack: Object[][]
@@ -46,7 +42,7 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
-    fs.writeFileSync(generatedFilePath, processGeneratorNode(fileNode));
+    fs.writeFileSync(generatedFilePath, toString(fileNode));
     return generatedFilePath;
 }
 

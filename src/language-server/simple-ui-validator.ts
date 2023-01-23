@@ -1,5 +1,5 @@
-import { ValidationAcceptor, ValidationCheck, ValidationRegistry } from 'langium';
-import { SimpleUIAstType, UseComponent, isStringExpression, isNumberExpression, Button, Heading, Parameter, CSSClasses } from './generated/ast';
+import { ValidationAcceptor, ValidationChecks, ValidationRegistry } from 'langium';
+import { SimpleUiAstType, UseComponent, isStringExpression, isNumberExpression, Button, Heading, Parameter, CSSClasses } from './generated/ast';
 import { SimpleUiServices } from './simple-ui-module';
 import fs from 'fs';
 import path from 'path';
@@ -7,7 +7,13 @@ import path from 'path';
 /**
  * Map AST node types to validation checks.
  */
-type SimpleUiChecks = { [type in SimpleUIAstType]?: ValidationCheck | ValidationCheck[] }
+//type SimpleUiChecks = { [type in SimpleUiAstType]?: ValidationCheck | ValidationCheck[] }
+const SimpleUiChecks: ValidationChecks<SimpleUiAstType> = {
+    UseComponent: checkUseComponent,
+    Button: checkButton,
+    Heading: checkHeadingLevel,
+    CSSClasses: checkCSSClasses
+};
 
 /**
  * Registry for validation checks.
@@ -15,7 +21,7 @@ type SimpleUiChecks = { [type in SimpleUIAstType]?: ValidationCheck | Validation
 export class SimpleUiValidationRegistry extends ValidationRegistry {
     constructor(services: SimpleUiServices) {
         super(services);
-        const checks: SimpleUiChecks = {
+        const checks: typeof SimpleUiChecks = {
             UseComponent: checkUseComponent,
             Button: checkButton,
             Heading: checkHeadingLevel,
