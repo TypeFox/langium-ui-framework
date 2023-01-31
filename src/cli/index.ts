@@ -8,6 +8,7 @@ import { generateHTML } from './generator-html';
 import { generateCSS } from './generator-css';
 import { generateJS } from './generator-js';
 import fs from 'fs';
+import { NodeFileSystem } from 'langium/node';
 
 const program = new Command();
 
@@ -39,7 +40,7 @@ async function progressCommand(fileName: string, options: GenerateOptions) {
 }
 
 async function generate(fileName: string, options: GenerateOptions) {
-    const services = createSimpleUiServices().simpleUi;
+    const services = createSimpleUiServices(NodeFileSystem).simpleUi;
     await setRootFolder(fileName, services, options.destination);
     const generationResult = await extractDocument(fileName, SimpleUiLanguageMetaData.fileExtensions, services, options);
     if(generationResult.success){

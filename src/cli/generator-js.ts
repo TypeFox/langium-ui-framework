@@ -3,8 +3,10 @@ import { AstNode, CompositeGeneratorNode, NL, toString } from 'langium';
 import { SimpleUiAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup, isOperation } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
+type SimpleUiAstTypeAlt = keyof SimpleUiAstType
+
 export type GenerateFunctions = {
-    [key in SimpleUiAstType]:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
+    [key in SimpleUiAstTypeAlt]:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
 }
 
 type GeneratorContext = {
@@ -53,6 +55,108 @@ const popupFunc = (popupEL: AstNode, ctx:GeneratorContext) => {
 
 const generateJSFunctions: GenerateFunctions = {
     Popup: popupFunc,
+    BodyElement: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Button: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    CSSClasses: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    CSSProperty: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Component: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Div: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Expression: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Footer: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    HeadElement: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Heading: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Icon: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Image: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    InlineCSS: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    JSElements: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    JSFunction: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    JSModel: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Linebreak: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Link: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    NestingElement: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    NumberExpression: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Operation: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Paragraph: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Parameter: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Section: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    SimpleExpression: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    SimpleUi: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    SingleElement: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    StringExpression: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    SymbolReference: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Textbox: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    TextboxExpression: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Title: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    Topbar: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    },
+    UseComponent: function (el: AstNode, ctx: GeneratorContext): string | CompositeGeneratorNode {
+        throw new Error('Function not implemented.');
+    }
 }
 
 function generateExpression(expression: Expression, ctx:GeneratorContext):string {
@@ -83,7 +187,7 @@ export function generateJSFunc(model: JSModel, bodyNode: CompositeGeneratorNode,
     {
         model.jsElements.forEach(el => {
             suiTypes.forEach(suiType => {
-                const t = suiType as SimpleUIAstType;
+                const t = suiType as SimpleUiAstTypeAlt;
                 const isInstance = reflection.isInstance(el, t);
                 if (isInstance) {
                     const func = generateJSFunctions[t];
