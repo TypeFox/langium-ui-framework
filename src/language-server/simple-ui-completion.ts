@@ -1,9 +1,10 @@
-import { AbstractElement, AstNode, CompletionAcceptor, DefaultCompletionProvider, isKeyword, isRuleCall, isCrossReference, NameProvider, LangiumServices, AstNodeDescription, findLeafNodeAtOffset, findNextFeatures, findRelevantNode, flatten, LangiumDocument, MaybePromise, stream, isParserRule} from "langium";
+import { AstNode, CompletionAcceptor, DefaultCompletionProvider, NameProvider, LangiumServices, AstNodeDescription, findLeafNodeAtOffset, findNextFeatures, LangiumDocument, MaybePromise, stream, flattenCst } from "langium";
 import fs from "fs"
 import path from "path"
 import { CompletionItem, CompletionItemKind, CompletionList } from "vscode-languageserver-types";
 import { CompletionParams } from "vscode-languageclient";
 import { CSSClasses, isCSSClasses } from "./generated/ast";
+import { AbstractElement, isCrossReference, isKeyword, isParserRule, isRuleCall } from "langium/lib/grammar/generated/ast";
 
 export class SimpleUICompletionProvider extends DefaultCompletionProvider{
     protected readonly nameProvider: NameProvider;
@@ -12,7 +13,7 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider{
         this.nameProvider = services.references.NameProvider;
     }
 
-    getCompletion(document: LangiumDocument, params: CompletionParams): MaybePromise<CompletionList> {
+    getCompletion(document: LangiumDocument, params: CompletionParams): Promise<CompletionList> {
         const root = document.parseResult.value;
         const cst = root.$cstNode;
         const items: CompletionItem[] = [];
@@ -30,7 +31,8 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider{
                 const commonSuperRule = this.findCommonSuperRule(node);
                 // In some cases, it is possible that we do not have a super rule
                 if (commonSuperRule) {
-                    const flattened = flatten(commonSuperRule.node).filter(e => e.offset < offset);
+                    // TODO flattenCst
+                    const flattened = flattenCst(commonSuperRule.node).filter(e => e.offset < offset);
                     const possibleFeatures = this.ruleInterpreter.interpretRule(commonSuperRule.rule, [...flattened], offset);
                     // Remove features which we already identified during parsing
                     const partialMatches = possibleFeatures.filter(e => {
@@ -90,7 +92,7 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider{
         let cssClasses = this.getCSSClasses();
         
         cssClasses.forEach(element => {
-                acceptor(element, {kind: CompletionItemKind.Value, detail: 'CSS Class'});
+                acceptor({kind: CompletionItemKind.Value, detail: 'CSS Class'});
         
         });
     }

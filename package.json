@@ -51,8 +51,8 @@
         "commander": "^8.0.0",
         "generator-langium": "^0.2.1",
         "langium": "1.0.1",
-        "vscode-languageclient": "^7.0.0",
-        "vscode-languageserver": "^7.0.0"
+        "vscode-languageclient": "^8.0.2",
+        "vscode-languageserver": "^8.0.2"
     },
     "devDependencies": {
         "@types/node": "^14.17.3",
