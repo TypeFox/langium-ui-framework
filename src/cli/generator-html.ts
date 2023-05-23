@@ -401,7 +401,7 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
 function formatCSS(element: SingleElement | NestingElement, ctx: GeneratorContext): string {
     const classes = element.classes ? generateCSSClasses(element.classes.classesNames) : undefined;
     const styles = element.styles ? generateInlineCSS(element.styles.properties, ctx) : undefined;
-    return ` ${styles ? `style="${styles}"` : ''}` + `${classes ? `class="${classes}"` : ''}`;
+    return `${styles ? ` style="${styles}"` : ''}` + `${classes ? ` class="${classes}"` : ''}`;
 }
 
 function generateCSSClasses(classes: string[]): string {
