@@ -41,8 +41,9 @@
     "main": "./out/extension.js",
     "scripts": {
         "vscode:prepublish": "npm run build && npm run lint",
-        "build": "tsc",
+        "build": "tsc && npx shx cp -r ./src/assets/ ./out/src/assets/",
         "watch": "tsc -w",
+        "clean": "npx shx rm -rf ./out",
         "lint": "eslint src --ext ts",
         "langium:generate": "langium generate",
         "langium:watch": "langium generate --watch"
@@ -50,7 +51,7 @@
     "dependencies": {
         "commander": "^8.0.0",
         "generator-langium": "^0.2.1",
-        "langium": "1.0.1",
+        "langium": "1.2.0",
         "vscode-languageclient": "^8.0.2",
         "vscode-languageserver": "^8.0.2"
     },

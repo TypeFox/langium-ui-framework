@@ -29,7 +29,7 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
         indentContent.append('color: #f2f2f2;', NL);
     });
     fileNode.append('}',NL);
-    fileNode.append('.footer > p{',NL);
+    fileNode.append('.footer > p {',NL);
     fileNode.indent(indentContent => {
         indentContent.append('font-size: 1.5rem;',NL);
     })
@@ -46,7 +46,7 @@ export function copyCSSClass(name: string) {
     const regex = new RegExp(`\\.${name}[\\s\\S]+?\{[\\s\\S]*?\}`,'gm');
     const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
     const regexResult = fileContent.match(regex);
-
+    
     if(regexResult){
     const output = regexResult.join('\n');
         if(!copiedCSS.includes(output)){

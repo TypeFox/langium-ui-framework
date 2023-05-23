@@ -6,13 +6,13 @@ import { AbstractElement, isKeyword, isRuleCall, isCrossReference, CrossReferenc
 import { CompletionItem, CompletionItemKind, CompletionList, CompletionParams } from 'vscode-languageserver';
 
 export class SimpleUICompletionProvider extends DefaultCompletionProvider {
-    protected readonly nameProvider: NameProvider;
+    override readonly nameProvider: NameProvider;
     constructor(services: LangiumServices) {
         super(services);
         this.nameProvider = services.references.NameProvider;
     }
 
-    async getCompletion(document: LangiumDocument, params: CompletionParams): Promise<CompletionList | undefined> {
+    override async getCompletion(document: LangiumDocument, params: CompletionParams): Promise<CompletionList | undefined> {
         const root = document.parseResult.value;
         const cst = root.$cstNode;
         if (!cst) {
@@ -84,11 +84,11 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider {
             }
         })
 
-        return CompletionList.create(items, true);
+        return CompletionList.create(filteredItems, true);
     }
 
 
-    protected completionFor(context: CompletionContext, next: NextFeature<AbstractElement>, acceptor: CompletionAcceptor): MaybePromise<void> {
+    override completionFor(context: CompletionContext, next: NextFeature<AbstractElement>, acceptor: CompletionAcceptor): MaybePromise<void> {
         const feature = next.feature;
         if (isKeyword(feature)) {
             return this.completionForKeyword(context, feature, acceptor);
