@@ -1,13 +1,9 @@
 import fs from 'fs';
-import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
+import { CompositeGeneratorNode, NL, toString } from 'langium';
 import { integer } from 'vscode-languageserver-types';
-import { BodyElement, Button, CSSProperty, Div, Expression, Footer, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, isTextboxExpression, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SimpleUIAstType, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
+import { BodyElement, Button, CSSProperty, Div, Expression, Footer, CSSClasses, HeadElement, Heading, Icon, Image, isNumberExpression, isOperation, isSection, isStringExpression, isSymbolReference, isTextboxExpression, Link, NestingElement, Paragraph, Parameter, Section, SimpleExpression, SimpleUi, SingleElement, Textbox, Title, Topbar, UseComponent } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 import { copyCSSClass } from './generator-css';
-
-export type GenerateFunctions = {
-    [key in SimpleUIAstType]?: (el: AstNode, ctx: GeneratorContext) => string | CompositeGeneratorNode
-}
 
 type GeneratorContext = {
     argumentStack: Object[][]
@@ -46,11 +42,9 @@ export function generateHTML(model: SimpleUi, filePath: string, destination: str
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
-    fs.writeFileSync(generatedFilePath, processGeneratorNode(fileNode));
+    fs.writeFileSync(generatedFilePath, toString(fileNode));
     return generatedFilePath;
 }
-
-//#region Head Generation
 
 // Check for Type and call head functions
 function generateHead(elements: HeadElement[], bodyNode: CompositeGeneratorNode, ctx: GeneratorContext) {
@@ -99,8 +93,8 @@ function generateBody(elements: BodyElement[], bodyNode: CompositeGeneratorNode,
 
 // Body functions
 function generateBodyFunctions(element: BodyElement, ctx: GeneratorContext): string | CompositeGeneratorNode {
-    // Footer: footerFunc
 
+    // Footer: footerFunc
     switch(element.$type){
         case "Div":
             return divFunc(element as Div, ctx);
@@ -117,9 +111,9 @@ function generateBodyFunctions(element: BodyElement, ctx: GeneratorContext): str
         case "Linebreak":
             return linebreakFunc();
         case "Image":
-            return imageFunc(element as Image,ctx);
+            return imageFunc(element as Image, ctx);
         case "Heading":
-            return headingFunc(element as Heading,ctx);
+            return headingFunc(element as Heading, ctx);
         case "UseComponent":
             return useComponentFunc(element as UseComponent, ctx);
         case "Topbar":
@@ -132,12 +126,10 @@ function generateBodyFunctions(element: BodyElement, ctx: GeneratorContext): str
 };
 
 // Body functions
-
 function divFunc(element: Div, ctx: GeneratorContext) : CompositeGeneratorNode {
     const fileNode = new CompositeGeneratorNode();
-    
     fileNode.append(`<div`,
-    element.name?` id="${element.name}"`:'',
+    element.name ? ` id="${element.name}"` : '',
     formatCSS(element, ctx),
     '>',
     NL);
@@ -275,7 +267,10 @@ function topbarFunc(element: Topbar, ctx: GeneratorContext) {
     } else {
         navLinks = new Array<Section>();
     }
-
+    if(element.classes === undefined)
+    {
+        element.classes = { classesNames: [] } as unknown as CSSClasses;
+    }
     element.classes.classesNames.push('topbar');
     if (element.fixed) {
         element.classes.classesNames.push('topbar--fixed');
@@ -311,7 +306,11 @@ function topbarFunc(element: Topbar, ctx: GeneratorContext) {
 
 function footerFunc(element: Footer, ctx: GeneratorContext) {
     const footerNode = new CompositeGeneratorNode();
-    element.classes.classesNames.push('footer');
+    if(element.classes === undefined)
+    {
+        element.classes = { classesNames: [] } as unknown as CSSClasses;
+    }
+    element.classes!.classesNames.push('footer');
 
     footerNode.append(`<footer `,
         formatCSS(element, ctx),
@@ -400,11 +399,9 @@ function generateParameters(expression: Expression[], ctx: GeneratorContext): st
 }
 
 function formatCSS(element: SingleElement | NestingElement, ctx: GeneratorContext): string {
-    const classes = generateCSSClasses(element.classes.classesNames);
-    const classesString = classes ? ` class="${classes}"` : '';
-    const styles = generateInlineCSS(element.styles.properties,ctx);
-    const stylesString = styles ? ` style="${styles}"` : '';
-    return classesString + stylesString;
+    const classes = element.classes ? generateCSSClasses(element.classes.classesNames) : undefined;
+    const styles = element.styles ? generateInlineCSS(element.styles.properties, ctx) : undefined;
+    return `${styles ? ` style="${styles}"` : ''}` + `${classes ? ` class="${classes}"` : ''}`;
 }
 
 function generateCSSClasses(classes: string[]): string {

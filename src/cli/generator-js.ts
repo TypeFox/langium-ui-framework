@@ -1,10 +1,10 @@
 import fs from 'fs';
-import { AstNode, CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
-import { SimpleUIAstType, SimpleUi, JSModel, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup, isOperation } from '../language-server/generated/ast';
+import { AstNode, CompositeGeneratorNode, NL, toString } from 'langium';
+import { SimpleUi, isJSElements, JSElements, reflection, isStringExpression, Expression, isNumberExpression, isSymbolReference, isTextboxExpression, Popup, isOperation, JSModel } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
 
 export type GenerateFunctions = {
-    [key in SimpleUIAstType]?:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
+    [key: string]:(el: AstNode, ctx:GeneratorContext)=>string|CompositeGeneratorNode
 }
 
 type GeneratorContext = {
@@ -34,11 +34,10 @@ export function generateJS(model: SimpleUi, filePath: string, destination: strin
         fileNode.append('};', NL)
     })
     
-
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
-    fs.writeFileSync(generatedFilePath, processGeneratorNode(fileNode));
+    fs.writeFileSync(generatedFilePath, toString(fileNode));
     return generatedFilePath;
 }
 
@@ -52,7 +51,7 @@ const popupFunc = (popupEL: AstNode, ctx:GeneratorContext) => {
 }
 
 const generateJSFunctions: GenerateFunctions = {
-    Popup: popupFunc,
+    'Popup': popupFunc
 }
 
 function generateExpression(expression: Expression, ctx:GeneratorContext):string {
@@ -83,13 +82,14 @@ export function generateJSFunc(model: JSModel, bodyNode: CompositeGeneratorNode,
     {
         model.jsElements.forEach(el => {
             suiTypes.forEach(suiType => {
-                const t = suiType as SimpleUIAstType;
-                const isInstance = reflection.isInstance(el, t);
-                if (isInstance) {
-                    const func = generateJSFunctions[t];
-                    if (func) {
-                        const content = func(el, ctx);
-                        bodyNode.append(content, NL);
+                if(isJSElements(suiType)) {
+                    const t = suiType as JSElements;
+                    const isInstance = reflection.isInstance(el, t.$type);
+                    if (isInstance) {
+                        if(t.$type in generateJSFunctions){
+                            const content = generateJSFunctions[t.$type](el, ctx);
+                            bodyNode.append(content, NL);
+                        }
                     }
                 }
             })

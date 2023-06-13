@@ -10,10 +10,10 @@ HeadElement: Title | Icon;
 BodyElement: SingleElement | NestingElement | UseComponent | Component;
 
 SingleElement: 
-    SingleHTMLElement classes=CSSClasses styles=InlineCSS;
+    SingleHTMLElement classes=CSSClasses? styles=InlineCSS?;
 
 NestingElement:
-    NestingHTMLElement classes=CSSClasses styles=InlineCSS '{' content+=BodyElement* '}';
+    NestingHTMLElement classes=CSSClasses? styles=InlineCSS? '{' content+=BodyElement* '}';
 
 
 // List of single HTML Elements (HTML elements that do not contain other HTML elements). Add new ones here.

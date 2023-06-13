@@ -2,7 +2,7 @@
     "name": "langium-simple-ui",
     "displayName": "langium-simple-ui",
     "description": "description",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "engines": {
         "vscode": "^1.56.0"
     },
@@ -10,22 +10,26 @@
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "simple-ui",
-            "aliases": [
-                "SimpleUI",
-                "simple-ui"
-            ],
-            "extensions": [
-                ".sui"
-            ],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "simple-ui",
-            "scopeName": "source.simple-ui",
-            "path": "./syntaxes/simple-ui.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "simple-ui",
+                "aliases": [
+                    "SimpleUI",
+                    "simple-ui"
+                ],
+                "extensions": [
+                    ".sui"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "simple-ui",
+                "scopeName": "source.simple-ui",
+                "path": "./syntaxes/simple-ui.tmLanguage.json"
+            }
+        ]
     },
     "activationEvents": [
         "onLanguage:simple-ui"
@@ -41,8 +45,9 @@
     "main": "./out/extension.js",
     "scripts": {
         "vscode:prepublish": "npm run build && npm run lint",
-        "build": "tsc",
+        "build": "tsc && npx shx cp -r ./src/assets/ ./out/src/assets/",
         "watch": "tsc -w",
+        "clean": "npx shx rm -rf ./out",
         "lint": "eslint src --ext ts",
         "langium:generate": "langium generate",
         "langium:watch": "langium generate --watch"
@@ -50,9 +55,9 @@
     "dependencies": {
         "commander": "^8.0.0",
         "generator-langium": "^0.2.1",
-        "langium": "0.3.0",
-        "vscode-languageclient": "^7.0.0",
-        "vscode-languageserver": "^7.0.0"
+        "langium": "1.2.0",
+        "vscode-languageclient": "^8.0.2",
+        "vscode-languageserver": "^8.0.2"
     },
     "devDependencies": {
         "@types/node": "^14.17.3",
@@ -60,7 +65,7 @@
         "@typescript-eslint/eslint-plugin": "^4.14.1",
         "@typescript-eslint/parser": "^4.14.1",
         "eslint": "^7.19.0",
-        "langium-cli": "0.3.0",
+        "langium-cli": "1.0.0",
         "source-map-loader": "^3.0.0",
         "ts-loader": "^9.2.3",
         "typescript": "^4.1.3",

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { CompositeGeneratorNode, NL, processGeneratorNode } from 'langium';
+import { CompositeGeneratorNode, NL, toString } from 'langium';
 import path from 'path';
 import { SimpleUi } from '../language-server/generated/ast';
 import { extractDestinationAndName } from './cli-util';
@@ -29,7 +29,7 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
         indentContent.append('color: #f2f2f2;', NL);
     });
     fileNode.append('}',NL);
-    fileNode.append('.footer > p{',NL);
+    fileNode.append('.footer > p {',NL);
     fileNode.indent(indentContent => {
         indentContent.append('font-size: 1.5rem;',NL);
     })
@@ -38,7 +38,7 @@ export function generateCSS(model: SimpleUi, filePath: string, destination: stri
     if (!fs.existsSync(data.destination)) {
         fs.mkdirSync(data.destination, { recursive: true });
     }
-    fs.writeFileSync(generatedFilePath, processGeneratorNode(fileNode));
+    fs.writeFileSync(generatedFilePath, toString(fileNode));
     return generatedFilePath;
 }
 
@@ -46,7 +46,7 @@ export function copyCSSClass(name: string) {
     const regex = new RegExp(`\\.${name}[\\s\\S]+?\{[\\s\\S]*?\}`,'gm');
     const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'),'utf8');
     const regexResult = fileContent.match(regex);
-
+    
     if(regexResult){
     const output = regexResult.join('\n');
         if(!copiedCSS.includes(output)){
