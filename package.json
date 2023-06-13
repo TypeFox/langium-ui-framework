@@ -2,7 +2,7 @@
     "name": "langium-simple-ui",
     "displayName": "langium-simple-ui",
     "description": "description",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "engines": {
         "vscode": "^1.56.0"
     },
@@ -10,22 +10,26 @@
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "simple-ui",
-            "aliases": [
-                "SimpleUI",
-                "simple-ui"
-            ],
-            "extensions": [
-                ".sui"
-            ],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "simple-ui",
-            "scopeName": "source.simple-ui",
-            "path": "./syntaxes/simple-ui.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "simple-ui",
+                "aliases": [
+                    "SimpleUI",
+                    "simple-ui"
+                ],
+                "extensions": [
+                    ".sui"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "simple-ui",
+                "scopeName": "source.simple-ui",
+                "path": "./syntaxes/simple-ui.tmLanguage.json"
+            }
+        ]
     },
     "activationEvents": [
         "onLanguage:simple-ui"

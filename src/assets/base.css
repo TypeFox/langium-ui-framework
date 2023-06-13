@@ -1,5 +1,5 @@
 .topbar {
-    width:100%;
+    width: 100%;
     background-color: #333;
     overflow: hidden;
     padding: 1rem 1%;
@@ -8,14 +8,14 @@
     flex-direction: row;
 }
 
-.topbar > a {
-    color:#333;
+.topbar>a {
+    color: #333;
     text-decoration: none;
     font-size: 1.5rem;
     margin-left: 1rem;
 }
 
-.topbar > nav > ul > li > a:any-link {
+.topbar>nav>ul>li>a:any-link {
     color: #333;
     font-size: 1rem;
     text-decoration: none;
@@ -24,7 +24,7 @@
     border-radius: 5px;
 }
 
-.topbar > nav > ul li {
+.topbar>nav>ul li {
     display: inline;
     margin-right: 1rem;
 }
@@ -82,3 +82,4 @@
 .shadow {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.18);
 }
+

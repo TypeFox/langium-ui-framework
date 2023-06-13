@@ -9,6 +9,23 @@ import { SimpleUiValidationRegistry } from './simple-ui-validator';
  */
 export type SimpleUiServices = LangiumServices
 
+
+let _cssClassNames: string[] = [];
+export function setCSSClassNames(cssClasses: string[]) {
+    _cssClassNames = cssClasses;
+}
+
+export function getCSSClassNames() {
+    return _cssClassNames;
+}
+
+export function getCSSClasses(content: string): string[] {
+    let regex = /(?<=\.)([a-zA-Z0-9]*([-]*[a-zA-Z0-9]*)*)/gm;
+    let cssClasses = content.match(regex);
+    if (cssClasses == null) return [];
+    return cssClasses;
+}
+
 /**
  * Dependency injection module that overrides Langium default services and contributes the
  * declared custom services. The Langium defaults can be partially specified to override only
@@ -46,3 +63,4 @@ export function createSimpleUiServices(context: DefaultSharedModuleContext): {
     // SimpleUiValidationRegistry(simpleUi);
     return { shared, simpleUi };
 }
+

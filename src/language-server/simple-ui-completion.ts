@@ -1,16 +1,15 @@
 import { CompletionAcceptor, DefaultCompletionProvider, NameProvider, LangiumServices, CompletionContext, MaybePromise, NextFeature, LangiumDocument, findLeafNodeAtOffset, getEntryRule, stream } from "langium";
-import fs from "fs"
-import path from "path"
 import { isCSSClasses } from "./generated/ast";
 import { AbstractElement, isKeyword, isRuleCall, isCrossReference, CrossReference } from "langium/lib/grammar/generated/ast";
-import { CompletionItem, CompletionItemKind, CompletionList, CompletionParams } from 'vscode-languageserver';
+import { CompletionItem, CompletionList, CompletionParams,CompletionItemKind } from 'vscode-languageserver';
+import { getCSSClassNames } from "./simple-ui-module";
 
 export class SimpleUICompletionProvider extends DefaultCompletionProvider {
     override readonly nameProvider: NameProvider;
     constructor(services: LangiumServices) {
         super(services);
         this.nameProvider = services.references.NameProvider;
-    }
+    }   
 
     override async getCompletion(document: LangiumDocument, params: CompletionParams): Promise<CompletionList | undefined> {
         const root = document.parseResult.value;
@@ -95,7 +94,7 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider {
         }
         else if (isRuleCall(feature) && feature.rule.ref) {
             if (isCSSClasses(context.node)) {
-                this.completionForCSSClasses(context, acceptor);
+                this.completionForCSSClasses(acceptor);
             }
             else {
                 return this.completionForRule(context, feature.rule.ref, acceptor);
@@ -106,9 +105,8 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider {
         }
     }
 
-    completionForCSSClasses(context: CompletionContext, acceptor: CompletionAcceptor) {
-        let cssClasses = this.getCSSClasses();
-        cssClasses.forEach((element) => {
+    completionForCSSClasses(acceptor: CompletionAcceptor) {
+        getCSSClassNames().forEach((element) => {
             acceptor({
                 label: element,
                 kind: CompletionItemKind.Value, 
@@ -118,12 +116,7 @@ export class SimpleUICompletionProvider extends DefaultCompletionProvider {
         });
     }
 
-    getCSSClasses(): string[] {
-        const fileContent = fs.readFileSync(path.resolve(__dirname + '../../../src/assets/base.css'), 'utf8');
-        let regex = /(?<=\.)([a-zA-Z0-9]*([-]*[a-zA-Z0-9]*)*)/gm;
-        let cssClasses = fileContent.match(regex);
-        if (cssClasses == null) return [];
-
-        return cssClasses;
+    isRunningInBrowser(): boolean {
+        return typeof window !== 'undefined';
     }
 }

@@ -6,6 +6,9 @@
         "fileExtensions": [".sui"],
         "textMate": {
             "out": "syntaxes/simple-ui.tmLanguage.json"
+        },
+        "monarch": {
+            "out": "syntaxes/simple-ui.monarch.json"
         }
     }],
     "out": "src/language-server/generated"
